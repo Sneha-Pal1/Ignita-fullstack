@@ -1,5 +1,7 @@
 "use client";
 
+import { ShinyButton } from "@/components/ui/shiny-button";
+
 const ExploreBtn = () => {
   return (
     <div className="mt-12 flex gap-6 justify-center items-center flex-wrap">
@@ -35,15 +37,14 @@ const ExploreBtn = () => {
         <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-sky-400/0 via-sky-400/90 to-sky-400/0 transition-opacity duration-500 group-hover:opacity-40" />
       </button>
 
-      {/* Get Started Button */}
-      <button
-        type="button"
-        className="px-8 py-2 rounded-full relative bg-emerald-950 text-white text-sm hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600"
+      {/* Get Started Button - Shiny Button */}
+      <ShinyButton
         onClick={() => console.log("GET_STARTED")}
+        className="bg-slate-800 border-slate-700 text-white"
+        style={{ "--primary": "#5dfeca" } as React.CSSProperties}
       >
-        <div className="absolute inset-x-0 h-px w-1/2 mx-auto -top-px shadow-2xl bg-gradient-to-r from-transparent via-teal-800 to-transparent" />
-        <span className="relative z-20">Get Started</span>
-      </button>
+        Get Started
+      </ShinyButton>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import { events } from "@/lib/data/events";
 import EventCard from "@/components/EventCard";
+import HowItWorks from "@/components/HowItWorks";
+import Features from "@/components/Features";
 const Home = () => {
   return (
     <section>
@@ -24,6 +26,10 @@ const Home = () => {
           ))}
         </ul>
       </div>
+
+      <Features />
+
+      <HowItWorks />
     </section>
   );
 };
