@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, BarChart3, Bookmark, Pencil } from "lucide-react";
+import PixelCard from "./ui/PixelCard";
 
 const features = [
   {
@@ -29,9 +30,7 @@ const Features = () => {
   return (
     <section className="mt-24 px-6 text-center">
       {/* Heading */}
-      <h2 className="text-3xl md:text-4xl font-semibold">
-        Why Choose Ignita?{" "}
-      </h2>
+      <h2 className="text-3xl md:text-4xl font-semibold">Top Features </h2>
 
       <p className="mt-3 text-gray-400">
         Everything you need to grow, track, and showcase your journey
@@ -43,23 +42,24 @@ const Features = () => {
           const Icon = feature.icon;
 
           return (
-            <div
+            <PixelCard
               key={index}
-              className="p-6 rounded-xl border border-white/10 bg-white/5 
-          hover:bg-white/10 transition-all duration-300 
-          group text-left hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/10"
+              variant={["blue", "yellow", "pink", "default"][index % 4] as any}
+              className="text-left"
             >
-              {/* Icon */}
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-emerald-500/10 mb-4 group-hover:scale-110 transition">
-                <Icon className="w-6 h-6 text-emerald-400" />
+              <div className="p-6">
+                {/* Icon */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-emerald-500/10 mb-4 group-hover:scale-110 transition">
+                  <Icon className="w-6 h-6 text-emerald-400" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-medium">{feature.title}</h3>
+
+                {/* Description */}
+                <p className="mt-2 text-sm text-gray-400">{feature.desc}</p>
               </div>
-
-              {/* Title */}
-              <h3 className="text-lg font-medium">{feature.title}</h3>
-
-              {/* Description */}
-              <p className="mt-2 text-sm text-gray-400">{feature.desc}</p>
-            </div>
+            </PixelCard>
           );
         })}
       </div>

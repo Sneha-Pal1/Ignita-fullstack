@@ -3,6 +3,8 @@ import { events } from "@/lib/data/events";
 import EventCard from "@/components/EventCard";
 import HowItWorks from "@/components/HowItWorks";
 import Features from "@/components/Features";
+import CTA from "@/components/CTA";
+import Footer from "@/components/Footer";
 const Home = () => {
   return (
     <section>
@@ -30,6 +32,8 @@ const Home = () => {
       <Features />
 
       <HowItWorks />
+      <CTA />
+      <Footer />
     </section>
   );
 };
