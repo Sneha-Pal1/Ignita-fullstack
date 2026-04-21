@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Left */}
         <div className="text-center md:text-left">
           <h3 className="text-xl font-semibold">Ignita</h3>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-gray-400 text-sm mt-2">
             Discover and track tech opportunities
           </p>
         </div>
