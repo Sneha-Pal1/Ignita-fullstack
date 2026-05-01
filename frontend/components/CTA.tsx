@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import BlurText from "./BlurText";
 
 const CTA = () => {
   return (
@@ -32,18 +33,32 @@ const CTA = () => {
 
       {/* BACKGROUND GLOW */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px]
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-75
     bg-emerald-500/20 blur-3xl rounded-full opacity-40"
       ></div>
       {/* CONTENT */}
       <div className="relative z-10 text-center max-w-2xl">
-        <h2 className="text-4xl md:text-5xl font-semibold">
-          Never Miss Your Next Big Opportunity
-        </h2>
+        <BlurText
+          text="Find Your Next Event"
+          delay={200}
+          animateBy="words"
+          direction="top"
+          className="text-4xl md:text-5xl font-semibold"
+          animationFrom={undefined}
+          animationTo={undefined}
+          onAnimationComplete={undefined}
+        />
 
-        <p className="mt-4 text-gray-400">
-          Fuel your growth with the right opportunities
-        </p>
+        <BlurText
+          text="Fuel your growth with the right opportunities"
+          delay={400}
+          animateBy="words"
+          direction="top"
+          className="mt-4 text-gray-400"
+          animationFrom={undefined}
+          animationTo={undefined}
+          onAnimationComplete={undefined}
+        />
 
         <div className="mt-8 flex justify-center">
           <Link
