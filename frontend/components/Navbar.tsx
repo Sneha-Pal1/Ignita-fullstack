@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+
 const Navbar = () => {
   return (
     <header>
@@ -21,6 +24,10 @@ const Navbar = () => {
           <Link href="/events">Events</Link>
 
           <Link href="/create">Create Event</Link>
+
+          <Link href="/login" className="auth-button-navbar">
+            Sign In / Sign Up
+          </Link>
         </ul>
       </nav>
     </header>
