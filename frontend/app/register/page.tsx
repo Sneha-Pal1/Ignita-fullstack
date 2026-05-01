@@ -3,31 +3,36 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/use-auth";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const router = useRouter();
+  const { register, loading, error } = useAuth();
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
       return;
     }
-    // Add your signup logic here
-    console.log("Signup attempt:", {
-      fullName,
-      email,
-      password,
-      agreedToTerms,
-    });
-    // You can add registration logic here
+    try {
+      await register({
+        name: fullName,
+        email,
+        phone,
+        password,
+      });
+      router.push("/events");
+    } catch {
+      // Error is handled by useAuth hook
+    }
   };
 
   return (
@@ -46,6 +51,20 @@ export default function RegisterPage() {
             Get started with your free Ignita account
           </p>
 
+          {error && (
+            <div
+              style={{
+                padding: "10px",
+                backgroundColor: "#fee",
+                color: "#c33",
+                borderRadius: "4px",
+                marginBottom: "16px",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="fullName" className="form-label">
               Full Name
@@ -57,6 +76,7 @@ export default function RegisterPage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="form-input"
+              disabled={loading}
               required
             />
           </div>
@@ -72,6 +92,23 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
+              disabled={loading}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="phone" className="form-label">
+              Phone
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              placeholder="Enter your phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="form-input"
+              disabled={loading}
               required
             />
           </div>
@@ -88,12 +125,14 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="form-input"
+                disabled={loading}
                 required
               />
               <button
                 type="button"
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
               >
                 👁️
               </button>
@@ -112,16 +151,29 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="form-input"
+                disabled={loading}
                 required
               />
               <button
                 type="button"
                 className="password-toggle"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={loading}
               >
                 👁️
               </button>
             </div>
+            {password !== confirmPassword && confirmPassword && (
+              <p
+                style={{
+                  color: "#c33",
+                  fontSize: "0.875rem",
+                  marginTop: "4px",
+                }}
+              >
+                Passwords do not match
+              </p>
+            )}
           </div>
 
           <div className="form-group checkbox-group">
@@ -131,6 +183,7 @@ export default function RegisterPage() {
               checked={agreedToTerms}
               onChange={(e) => setAgreedToTerms(e.target.checked)}
               className="checkbox-input"
+              disabled={loading}
               required
             />
             <label htmlFor="terms" className="checkbox-label">
@@ -145,8 +198,12 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          <button type="submit" className="auth-button">
-            Create Account
+          <button
+            type="submit"
+            className="auth-button"
+            disabled={loading || password !== confirmPassword}
+          >
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
 
           <p className="auth-footer">

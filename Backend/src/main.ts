@@ -7,7 +7,7 @@ async function bootstrap() {
 
   // Enable CORS so frontend can call backend
   app.enableCors({
-    origin: 'http://localhost:3000', // your Next.js dev server
+    origin: ['http://localhost:3000', 'http://localhost:3001'], // Next.js dev servers
     credentials: true,
   });
 

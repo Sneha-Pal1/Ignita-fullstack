@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/use-auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,12 +11,16 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
+  const { login, loading, error } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log("Login attempt:", { email, password, rememberMe });
-    // You can add authentication logic here
+    try {
+      await login({ email, password });
+      router.push("/events");
+    } catch {
+      // Error is handled by useAuth hook
+    }
   };
 
   return (
@@ -32,6 +37,20 @@ export default function LoginPage() {
             Enter your credentials to access your account
           </p>
 
+          {error && (
+            <div
+              style={{
+                padding: "10px",
+                backgroundColor: "#fee",
+                color: "#c33",
+                borderRadius: "4px",
+                marginBottom: "16px",
+              }}
+            >
+              {error}
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email" className="form-label">
               Email
@@ -43,6 +62,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
+              disabled={loading}
               required
             />
           </div>
@@ -59,12 +79,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="form-input"
+                disabled={loading}
                 required
               />
               <button
                 type="button"
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
               >
                 👁️
               </button>
@@ -78,6 +100,7 @@ export default function LoginPage() {
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
               className="checkbox-input"
+              disabled={loading}
             />
             <label htmlFor="remember" className="checkbox-label">
               Remember me
@@ -87,8 +110,8 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <button type="submit" className="auth-button">
-            Sign In
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
           </button>
 
           <p className="auth-footer">
