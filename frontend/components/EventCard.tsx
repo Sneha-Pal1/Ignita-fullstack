@@ -10,6 +10,7 @@ interface Props {
   time: string;
   organizer?: string;
   participants?: string;
+  showDetailsButton?: boolean;
 }
 
 const EventCard = ({
@@ -21,6 +22,7 @@ const EventCard = ({
   time,
   organizer,
   participants,
+  showDetailsButton = true,
 }: Props) => {
   return (
     <div
@@ -72,12 +74,14 @@ const EventCard = ({
 
         <p className="text-sm text-gray-400 line-clamp-2">{time}</p>
 
-        <Link
-          href={`/events/${slug}`}
-          className="block w-full mt-4 px-4 py-2 bg-white text-black font-medium rounded-lg text-center hover:bg-gray-200 transition-colors"
-        >
-          View Details
-        </Link>
+        {showDetailsButton && (
+          <Link
+            href={`/events/${slug}`}
+            className="block w-full mt-4 px-4 py-2 bg-white text-black font-medium rounded-lg text-center hover:bg-gray-200 transition-colors"
+          >
+            View Details
+          </Link>
+        )}
       </div>
     </div>
   );
