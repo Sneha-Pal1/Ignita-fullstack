@@ -59,14 +59,19 @@ export const authStorage = {
 
 export const authAPI = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    const { rememberMe, ...loginData } = credentials;
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",
-      credentials,
+      loginData,
     );
-    if (response.access_token) {
-      authStorage.setToken(response.access_token);
+    if (response.accessToken) {
+      authStorage.setToken(response.accessToken);
       if (response.user) {
         authStorage.setUser(response.user);
+      }
+      // Emit auth change event
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("auth-change"));
       }
     }
     return response;
@@ -77,10 +82,14 @@ export const authAPI = {
       "/auth/register",
       credentials,
     );
-    if (response.access_token) {
-      authStorage.setToken(response.access_token);
+    if (response.accessToken) {
+      authStorage.setToken(response.accessToken);
       if (response.user) {
         authStorage.setUser(response.user);
+      }
+      // Emit auth change event
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("auth-change"));
       }
     }
     return response;
@@ -88,6 +97,10 @@ export const authAPI = {
 
   logout: () => {
     authStorage.clear();
+    // Emit auth change event
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("auth-change"));
+    }
   },
 
   isAuthenticated: () => {

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useBookmark } from "@/lib/hooks/useBookmark";
 
 interface Props {
   title: string;
@@ -24,6 +27,8 @@ const EventCard = ({
   participants,
   showDetailsButton = true,
 }: Props) => {
+  const { isBookmarked, isLoading, toggleBookmark } = useBookmark(slug, title);
+
   return (
     <div
       id="event-card"
@@ -35,6 +40,7 @@ const EventCard = ({
         width={410}
         height={250}
         className="w-full h-48 object-cover"
+        style={{ width: "100%", height: "auto" }}
         loading="eager"
       />
 
@@ -47,7 +53,13 @@ const EventCard = ({
 
         <div className="space-y-2 text-sm text-gray-300">
           <div className="flex items-center gap-2">
-            <Image src="/icons/pin.svg" alt="location" width={14} height={14} />
+            <Image
+              src="/icons/pin.svg"
+              alt="location"
+              width={14}
+              height={14}
+              style={{ width: "auto", height: "auto" }}
+            />
             <p>{location}</p>
           </div>
 
@@ -57,6 +69,7 @@ const EventCard = ({
               alt="date"
               width={14}
               height={14}
+              style={{ width: "auto", height: "auto" }}
             />
             <p>{date}</p>
           </div>
@@ -67,6 +80,7 @@ const EventCard = ({
               alt="participants"
               width={14}
               height={14}
+              style={{ width: "auto", height: "auto" }}
             />
             <p>{participants}</p>
           </div>
@@ -74,14 +88,27 @@ const EventCard = ({
 
         <p className="text-sm text-gray-400 line-clamp-2">{time}</p>
 
-        {showDetailsButton && (
-          <Link
-            href={`/events/${slug}`}
-            className="block w-full mt-4 px-4 py-2 bg-white text-black font-medium rounded-lg text-center hover:bg-gray-200 transition-colors"
+        <div className="flex gap-2 mt-4">
+          {showDetailsButton && (
+            <Link
+              href={`/events/${slug}`}
+              className="flex-1 px-4 py-2 bg-white text-black font-medium rounded-lg text-center hover:bg-gray-200 transition-colors"
+            >
+              View Details
+            </Link>
+          )}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleBookmark();
+            }}
+            disabled={isLoading}
+            className="flex-1 px-4 py-2 border border-white/20 text-white font-medium rounded-lg hover:border-white/40 transition-colors disabled:opacity-50"
           >
-            View Details
-          </Link>
-        )}
+            {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Save"}
+          </button>
+        </div>
       </div>
     </div>
   );

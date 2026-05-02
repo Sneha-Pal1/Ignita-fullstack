@@ -16,8 +16,13 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login({ email, password });
-      router.push("/events");
+      // await login({ email, password, rememberMe });
+      const res = await login({ email, password, rememberMe });
+      console.log(res);
+      // Add small delay to ensure auth context updates
+      setTimeout(() => {
+        router.push("/events");
+      }, 100);
     } catch {
       // Error is handled by useAuth hook
     }

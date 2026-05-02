@@ -54,3 +54,17 @@ export const apiClient = {
     request<T>(endpoint, { method: "PUT", body: JSON.stringify(body) }),
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
 };
+
+// Bookmark API methods
+export const bookmarkAPI = {
+  saveBookmark: (eventSlug: string, eventTitle: string) =>
+    apiClient.post("/bookmark", { eventSlug, eventTitle }),
+
+  getBookmarks: () =>
+    apiClient.get<Array<{ id: string; eventSlug: string; eventTitle: string }>>(
+      "/bookmark",
+    ),
+
+  removeBookmark: (bookmarkId: string) =>
+    apiClient.delete(`/bookmark/${bookmarkId}`),
+};

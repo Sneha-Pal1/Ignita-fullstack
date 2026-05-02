@@ -4,6 +4,7 @@ import { events } from "@/lib/data/events";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Bookmark, Gift, CheckCircle } from "lucide-react";
+import { useBookmark } from "@/lib/hooks/useBookmark";
 
 const EventDetailPage = () => {
   const params = useParams();
@@ -11,6 +12,10 @@ const EventDetailPage = () => {
   const slug = params.slug as string;
 
   const event = events.find((e) => e.slug === slug);
+  const { isBookmarked, isLoading, toggleBookmark } = useBookmark(
+    slug,
+    event?.title || "",
+  );
 
   if (!event) {
     return (
@@ -51,8 +56,13 @@ const EventDetailPage = () => {
         <button className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
           Apply Now
         </button>
-        <button className="px-6 py-2 border border-white/20 text-white font-semibold rounded-lg hover:border-white/40 transition-colors flex items-center gap-2">
-          <Bookmark size={18} /> Bookmark Event
+        <button
+          onClick={toggleBookmark}
+          disabled={isLoading}
+          className="px-6 py-2 border border-white/20 text-white font-semibold rounded-lg hover:border-white/40 transition-colors flex items-center gap-2 disabled:opacity-50"
+        >
+          <Bookmark size={18} fill={isBookmarked ? "currentColor" : "none"} />
+          {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Bookmark Event"}
         </button>
       </div>
 
