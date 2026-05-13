@@ -56,7 +56,7 @@ const BookmarksPage = () => {
   ) => {
     try {
       setDeletingId(bookmarkId);
-      await apiClient.delete(`/bookmark/${eventSlug}`);
+      await apiClient.delete(`/bookmark/${bookmarkId}`);
       setBookmarks(bookmarks.filter((b) => b.id !== bookmarkId));
     } catch (err) {
       console.error("Failed to delete bookmark:", err);

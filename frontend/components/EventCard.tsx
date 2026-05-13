@@ -17,6 +17,7 @@ interface Props {
   eventData?: any; // Added for storing full event data
   isBookmarkCard?: boolean; // Show delete button instead of save
   onDelete?: () => void; // Callback for delete action
+  hideBookmarkButton?: boolean; // Hide save/delete button
 }
 
 const EventCard = ({
@@ -32,6 +33,7 @@ const EventCard = ({
   eventData,
   isBookmarkCard = false,
   onDelete,
+  hideBookmarkButton = false,
 }: Props) => {
   const { isBookmarked, isLoading, toggleBookmark } = useBookmark(
     slug,
@@ -107,31 +109,32 @@ const EventCard = ({
               View Details
             </Link>
           )}
-          {isBookmarkCard ? (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDelete?.();
-              }}
-              disabled={isLoading}
-              className="flex-1 px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-            >
-              {isLoading ? "..." : "Delete"}
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleBookmark();
-              }}
-              disabled={isLoading}
-              className="flex-1 px-4 py-2 border border-white/20 text-white font-medium rounded-lg hover:border-white/40 transition-colors disabled:opacity-50"
-            >
-              {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Save"}
-            </button>
-          )}
+          {!hideBookmarkButton &&
+            (isBookmarkCard ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete?.();
+                }}
+                disabled={isLoading}
+                className="flex-1 px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "..." : "Delete"}
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleBookmark();
+                }}
+                disabled={isLoading}
+                className="flex-1 px-4 py-2 border border-white/20 text-white font-medium rounded-lg hover:border-white/40 transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Save"}
+              </button>
+            ))}
         </div>
       </div>
     </div>

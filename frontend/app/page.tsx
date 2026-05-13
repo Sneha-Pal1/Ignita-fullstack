@@ -23,7 +23,11 @@ const Home = () => {
         <ul className="events">
           {events.map((event) => (
             <li key={event.title}>
-              <EventCard {...event} showDetailsButton={false} />
+              <EventCard
+                {...event}
+                showDetailsButton={false}
+                hideBookmarkButton={true}
+              />
             </li>
           ))}
         </ul>
