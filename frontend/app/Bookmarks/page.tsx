@@ -8,14 +8,28 @@ import Link from "next/link";
 
 interface Bookmark {
   id: string;
-  eventSlug: string;
-  eventTitle: string;
+  event: {
+    id: string;
+    title: string;
+    description?: string;
+    category?: string;
+    type?: string;
+    organizer?: string;
+    registrationLink?: string;
+    startDate?: string;
+    endDate?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+  user?: any;
+  createdAt?: string;
 }
 
 const BookmarksPage = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -36,11 +50,54 @@ const BookmarksPage = () => {
     fetchBookmarks();
   }, []);
 
+  const handleDeleteBookmark = async (
+    bookmarkId: string,
+    eventSlug: string,
+  ) => {
+    try {
+      setDeletingId(bookmarkId);
+      await apiClient.delete(`/bookmark/${eventSlug}`);
+      setBookmarks(bookmarks.filter((b) => b.id !== bookmarkId));
+    } catch (err) {
+      console.error("Failed to delete bookmark:", err);
+      alert("Failed to delete bookmark");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const bookmarkedEvents = bookmarks
-    .map((bookmark) =>
-      events.find((event) => event.slug === bookmark.eventSlug),
-    )
-    .filter((event) => event !== undefined);
+    .map((bookmark) => {
+      const backendEvent = bookmark.event;
+
+      // First try to find from local events array using title
+      const localEvent = events.find(
+        (event) =>
+          event.title.toLowerCase() === backendEvent.title.toLowerCase(),
+      );
+
+      // If found, return the complete local event data
+      if (localEvent) {
+        return {
+          ...localEvent,
+          _bookmarkId: bookmark.id, // Add unique ID for React key
+        };
+      }
+
+      // Fallback: create event object from backend data
+      return {
+        slug: backendEvent.title.toLowerCase().replace(/\s+/g, "-"),
+        title: backendEvent.title,
+        image: "/images/event1.png", // Fallback image
+        location: "TBA",
+        date: "TBA",
+        time: backendEvent.description || "Check for details",
+        organizer: backendEvent.organizer || "Event",
+        participants: "TBA",
+        _bookmarkId: bookmark.id, // Add unique ID for React key
+      };
+    })
+    .filter((event) => event !== null && event !== undefined);
 
   return (
     <main className="px-6 py-10 max-w-7xl mx-auto">
@@ -58,7 +115,15 @@ const BookmarksPage = () => {
       ) : bookmarkedEvents.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {bookmarkedEvents.map((event) => (
-            <EventCard key={event.slug} {...event} showDetailsButton={true} />
+            <EventCard
+              key={event._bookmarkId}
+              {...event}
+              showDetailsButton={true}
+              isBookmarkCard={true}
+              onDelete={() =>
+                handleDeleteBookmark(event._bookmarkId, event.slug)
+              }
+            />
           ))}
         </div>
       ) : (

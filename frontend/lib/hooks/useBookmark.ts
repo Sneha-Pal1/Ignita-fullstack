@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { apiClient } from "@/lib/api-client";
 
-export const useBookmark = (eventSlug: string, eventTitle: string) => {
+export const useBookmark = (
+  eventSlug: string,
+  eventTitle: string,
+  eventData?: any,
+) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,8 +17,12 @@ export const useBookmark = (eventSlug: string, eventTitle: string) => {
         await apiClient.delete(`/bookmark/${eventSlug}`);
         setIsBookmarked(false);
       } else {
-        // Add bookmark
-        await apiClient.post("/bookmark", { eventSlug, eventTitle });
+        // Add bookmark with full event data
+        await apiClient.post("/bookmark", {
+          eventSlug,
+          eventTitle,
+          eventData: eventData || {},
+        });
         setIsBookmarked(true);
       }
     } catch (error) {

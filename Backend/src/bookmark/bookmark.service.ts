@@ -26,8 +26,48 @@ export class BookmarkService {
     return await this.bookmarkRepo.save(bookmark);
   }
 
+  async createBySlug(userId: string, eventSlug: string, eventTitle: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    // Try to find event by title (since we don't have slug in Event entity)
+    let event = await this.eventRepo.findOne({
+      where: { title: eventTitle },
+    });
+
+    // If event doesn't exist, create it
+    if (!event) {
+      const newEvent = new Event();
+      newEvent.title = eventTitle;
+      (newEvent as any).category = 'WORKSHOP';
+      (newEvent as any).type = 'ONLINE';
+      event = await this.eventRepo.save(newEvent);
+    }
+
+    // Check if bookmark already exists
+    const existingBookmark = await this.bookmarkRepo.findOne({
+      where: { user: { id: userId }, event: { id: event.id } },
+    });
+
+    if (existingBookmark) {
+      return existingBookmark;
+    }
+
+    const bookmark = new Bookmark();
+    bookmark.user = user;
+    bookmark.event = event;
+    return await this.bookmarkRepo.save(bookmark);
+  }
+
   async findAll() {
     return await this.bookmarkRepo.find({ relations: ['user', 'event'] });
+  }
+
+  async findByUserId(userId: string) {
+    return await this.bookmarkRepo.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'event'],
+    });
   }
 
   async findOne(id: string) {
