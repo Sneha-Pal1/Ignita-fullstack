@@ -54,6 +54,8 @@ const Navbar = () => {
 
           <Link href="/create">About</Link>
 
+          {user && <Link href="/Dashboard">Dashboard</Link>}
+
           {!isLoading && (
             <>
               {user ? (
