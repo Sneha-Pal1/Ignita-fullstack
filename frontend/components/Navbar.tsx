@@ -71,7 +71,6 @@ const Navbar = () => {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-xs font-bold">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
-                    <span>{user.name}</span>
                   </Link>
                   <button
                     onClick={logout}
