@@ -2,12 +2,15 @@
 
 import { activities } from "@/lib/data/dashboard";
 import { Bookmark, CheckCircle, Share2, Bell } from "lucide-react";
+import { useMotionPreference } from "@/hooks/useMotionPreference";
 
 const iconMap: Record<string, React.ReactNode> = {
-  bookmark: <Bookmark className="w-5 h-5" />,
-  "check-circle": <CheckCircle className="w-5 h-5" />,
-  share2: <Share2 className="w-5 h-5" />,
-  bell: <Bell className="w-5 h-5" />,
+  bookmark: <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
+  "check-circle": (
+    <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
+  ),
+  share2: <Share2 className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
+  bell: <Bell className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
 };
 
 const colorMap: Record<string, string> = {
@@ -17,41 +20,59 @@ const colorMap: Record<string, string> = {
   alert: "from-orange-500 to-yellow-500",
 };
 
+const typeLabels: Record<string, string> = {
+  bookmark: "Bookmark activity",
+  registration: "Event registration",
+  post: "Post generated",
+  alert: "Alert created",
+};
+
 export const ActivityTimeline = () => {
+  const prefersReducedMotion = useMotionPreference();
+  const transitionClass = prefersReducedMotion
+    ? ""
+    : "transition-all duration-200";
+
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white mb-6">Activity Timeline</h2>
+    <section className="px-4 sm:px-0">
+      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
+        Activity Timeline
+      </h2>
 
-      <div className="space-y-4">
+      <ol className="space-y-6 sm:space-y-8 relative">
+        {/* Vertical timeline line - hidden on mobile */}
+        <div
+          className="hidden sm:block absolute left-5 sm:left-6 top-12 bottom-0 w-0.5 bg-gradient-to-b from-slate-500/50 to-transparent"
+          aria-hidden="true"
+        />
+
         {activities.map((activity, index) => (
-          <div key={activity.id} className="flex gap-4">
-            {/* Timeline line */}
-            <div className="flex flex-col items-center">
-              {/* Icon */}
+          <li key={activity.id} className="relative sm:pl-8">
+            {/* Timeline icon circle */}
+            <div
+              className={`relative z-10 inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${colorMap[activity.type]} text-white sm:absolute sm:left-0 sm:top-0 shadow-lg`}
+              role="img"
+              aria-label={typeLabels[activity.type] || activity.type}
+            >
+              {iconMap[activity.icon]}
+            </div>
+
+            {/* Content card */}
+            <div className="mt-3 sm:mt-0 pl-14 sm:pl-0">
               <div
-                className={`relative z-10 w-10 h-10 rounded-full bg-gradient-to-br ${colorMap[activity.type]} flex items-center justify-center text-white mb-4`}
+                className={`p-5 sm:p-6 rounded-lg sm:rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 hover:border-white/20 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 ${transitionClass}`}
               >
-                {iconMap[activity.icon]}
-              </div>
-
-              {/* Line */}
-              {index !== activities.length - 1 && (
-                <div className="w-1 h-12 bg-gradient-to-b from-white/20 to-transparent" />
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 pt-2 pb-4">
-              <div className="p-4 rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 hover:border-white/20 transition-all duration-300">
-                <p className="text-white font-medium">{activity.description}</p>
-                <p className="text-sm text-gray-400 mt-2">
-                  {activity.timestamp}
+                <p className="text-base sm:text-lg text-white font-medium leading-relaxed">
+                  {activity.description}
                 </p>
+                <time className="text-xs sm:text-sm text-slate-400 mt-3 block">
+                  {activity.timestamp}
+                </time>
               </div>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ol>
+    </section>
   );
 };

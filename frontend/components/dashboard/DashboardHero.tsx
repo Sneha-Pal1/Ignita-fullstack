@@ -1,27 +1,32 @@
 "use client";
 
 import { useAuthContext } from "@/lib/auth-context";
+import { useMotionPreference } from "@/hooks/useMotionPreference";
 
 export const DashboardHero = () => {
   const { user } = useAuthContext();
   const firstName = user?.name?.split(" ")[0] || "User";
+  const prefersReducedMotion = useMotionPreference();
+  const transitionClass = prefersReducedMotion
+    ? ""
+    : "transition-all duration-300";
 
   return (
-    <div className="relative mb-12">
-      {/* Glow background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-3xl -z-10" />
-
-      <div className="px-6 py-12 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+    <header className="relative mb-12 sm:mb-16">
+      <div className="px-6 sm:px-8 py-12 sm:py-16 lg:py-20 rounded-2xl ${transitionClass}">
+        {/* Main Heading with WCAG AA+ contrast */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
           Welcome back,{" "}
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300 mt-2 sm:mt-3">
             {firstName}
           </span>
         </h1>
-        <p className="text-lg text-gray-400">
+
+        {/* Subheading with proper contrast */}
+        <p className="text-lg sm:text-xl text-slate-200 leading-relaxed max-w-3xl">
           Track your saved events, alerts, and activity in one place
         </p>
       </div>
-    </div>
+    </header>
   );
 };
