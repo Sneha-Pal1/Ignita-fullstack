@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { bookmarks } from "@/lib/data/dashboard";
-import { Calendar, MapPin } from "lucide-react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
+import { Calendar, MapPin } from "lucide-react";
 
 export const RecentBookmarks = () => {
   const prefersReducedMotion = useMotionPreference();
@@ -20,7 +20,7 @@ export const RecentBookmarks = () => {
         </h2>
         <Link
           href="/Bookmarks"
-          className={`text-cyan-400 hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-3 py-2 text-sm font-medium ${transitionClass}`}
+          className={`text-cyan-400 hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-950 rounded px-3 py-2 text-sm font-medium ${transitionClass}`}
         >
           View All
           <span aria-hidden="true" className="ml-2">
@@ -33,7 +33,7 @@ export const RecentBookmarks = () => {
         {bookmarks.map((bookmark) => (
           <article
             key={bookmark.id}
-            className={`group relative rounded-xl sm:rounded-2xl overflow-hidden backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 hover:border-white/20 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 ${transitionClass}`}
+            className={`group relative rounded-2xl overflow-hidden bg-slate-900/30 border border-slate-700/50 hover:border-slate-600 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-950 ${transitionClass}`}
           >
             {/* Image with aspect ratio for CLS prevention */}
             <div
@@ -55,7 +55,7 @@ export const RecentBookmarks = () => {
             </div>
 
             {/* Content */}
-            <div className="p-5 sm:p-6 space-y-4">
+            <div className="p-5 sm:p-6 space-y-3">
               <p className="text-xs sm:text-sm text-slate-400 font-medium uppercase tracking-wide">
                 {bookmark.organizer}
               </p>
@@ -65,15 +65,15 @@ export const RecentBookmarks = () => {
               </h3>
 
               {/* Meta info */}
-              <div className="space-y-2.5 text-sm sm:text-base text-slate-300">
-                <div className="flex items-center gap-3">
+              <div className="space-y-2 text-sm sm:text-base text-slate-300">
+                <div className="flex items-center gap-2">
                   <Calendar
                     className="w-4 h-4 text-cyan-400 flex-shrink-0"
                     aria-hidden="true"
                   />
                   <span>{bookmark.date}</span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <MapPin
                     className="w-4 h-4 text-cyan-400 flex-shrink-0"
                     aria-hidden="true"
@@ -81,14 +81,6 @@ export const RecentBookmarks = () => {
                   <span>{bookmark.location}</span>
                 </div>
               </div>
-
-              {/* Button - Min 44px touch target */}
-              <Link
-                href="/events"
-                className={`inline-flex w-full justify-center items-center min-h-11 px-4 py-3 sm:py-4 mt-6 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-medium text-sm sm:text-base rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ring-offset-slate-900 ${transitionClass}`}
-              >
-                View Details
-              </Link>
             </div>
           </article>
         ))}

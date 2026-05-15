@@ -1,23 +1,21 @@
 "use client";
 
 import { activities } from "@/lib/data/dashboard";
-import { Bookmark, CheckCircle, Share2, Bell } from "lucide-react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
+import { Bookmark, CheckCircle, FileText, Bell } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
-  bookmark: <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
-  "check-circle": (
-    <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
-  ),
-  share2: <Share2 className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
-  bell: <Bell className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />,
+  bookmark: <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" />,
+  "check-circle": <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />,
+  share2: <FileText className="w-5 h-5 sm:w-6 sm:h-6" />,
+  bell: <Bell className="w-5 h-5 sm:w-6 sm:h-6" />,
 };
 
-const colorMap: Record<string, string> = {
-  bookmark: "from-purple-500 to-pink-500",
-  registration: "from-green-500 to-emerald-500",
-  post: "from-blue-500 to-cyan-500",
-  alert: "from-orange-500 to-yellow-500",
+const typeIcons: Record<string, React.ReactNode> = {
+  bookmark: <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" />,
+  registration: <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />,
+  post: <FileText className="w-5 h-5 sm:w-6 sm:h-6" />,
+  alert: <Bell className="w-5 h-5 sm:w-6 sm:h-6" />,
 };
 
 const typeLabels: Record<string, string> = {
@@ -42,25 +40,25 @@ export const ActivityTimeline = () => {
       <ol className="space-y-6 sm:space-y-8 relative">
         {/* Vertical timeline line - hidden on mobile */}
         <div
-          className="hidden sm:block absolute left-5 sm:left-6 top-12 bottom-0 w-0.5 bg-gradient-to-b from-slate-500/50 to-transparent"
+          className="hidden sm:block absolute left-5 sm:left-6 top-12 bottom-0 w-0.5 bg-gradient-to-b from-slate-600 to-transparent"
           aria-hidden="true"
         />
 
-        {activities.map((activity, index) => (
+        {activities.map((activity) => (
           <li key={activity.id} className="relative sm:pl-8">
             {/* Timeline icon circle */}
             <div
-              className={`relative z-10 inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${colorMap[activity.type]} text-white sm:absolute sm:left-0 sm:top-0 shadow-lg`}
+              className="relative z-10 inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 sm:absolute sm:left-0 sm:top-0"
               role="img"
               aria-label={typeLabels[activity.type] || activity.type}
             >
-              {iconMap[activity.icon]}
+              {typeIcons[activity.type]}
             </div>
 
             {/* Content card */}
             <div className="mt-3 sm:mt-0 pl-14 sm:pl-0">
               <div
-                className={`p-5 sm:p-6 rounded-lg sm:rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/2 border border-white/10 hover:border-white/20 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 ${transitionClass}`}
+                className={`p-5 sm:p-6 rounded-xl bg-slate-900/30 border border-slate-700/50 hover:border-slate-600 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-950 ${transitionClass}`}
               >
                 <p className="text-base sm:text-lg text-white font-medium leading-relaxed">
                   {activity.description}

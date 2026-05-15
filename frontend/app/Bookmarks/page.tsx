@@ -5,6 +5,8 @@ import EventCard from "@/components/EventCard";
 import { apiClient } from "@/lib/api-client";
 import { events } from "@/lib/data/events";
 import Link from "next/link";
+import { useAuthContext } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 interface Bookmark {
   id: string;
@@ -26,15 +28,33 @@ interface Bookmark {
 }
 
 const BookmarksPage = () => {
+  const { user, isLoading: authLoading } = useAuthContext();
+  const router = useRouter();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Auth check
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, authLoading, router]);
+
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
         setIsLoading(true);
+        // Get fresh token before fetching
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("auth_token")
+            : null;
+        if (!token) {
+          setError("Authentication token not found. Please login again.");
+          return;
+        }
         const data = await apiClient.get<Bookmark[]>("/bookmark");
         setBookmarks(data || []);
         setError(null);
@@ -47,8 +67,10 @@ const BookmarksPage = () => {
       }
     };
 
-    fetchBookmarks();
-  }, []);
+    if (!authLoading && user) {
+      fetchBookmarks();
+    }
+  }, [user, authLoading]);
 
   const handleDeleteBookmark = async (
     bookmarkId: string,
@@ -108,7 +130,7 @@ const BookmarksPage = () => {
       </div>
 
       {/* CONTENT */}
-      {isLoading ? (
+      {authLoading || isLoading ? (
         <div className="text-gray-400 text-center py-12">Loading...</div>
       ) : error ? (
         <div className="text-red-400 text-center py-12">{error}</div>

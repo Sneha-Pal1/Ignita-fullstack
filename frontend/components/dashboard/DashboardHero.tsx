@@ -13,7 +13,7 @@ export const DashboardHero = () => {
 
   return (
     <header className="relative mb-12 sm:mb-16">
-      <div className="px-6 sm:px-8 py-12 sm:py-16 lg:py-20 rounded-2xl ${transitionClass}">
+      <div className={`px-0 ${transitionClass}`}>
         {/* Main Heading with WCAG AA+ contrast */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
           Welcome back,{" "}

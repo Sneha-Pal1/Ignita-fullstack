@@ -1,14 +1,14 @@
 "use client";
 
-import { Calendar, Bookmark, Bell, Share2 } from "lucide-react";
 import { stats } from "@/lib/data/dashboard";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
+import { Calendar, Bookmark, Bell, Upload } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
-  calendar: <Calendar className="w-7 h-7 sm:w-8 sm:h-8" />,
-  bookmark: <Bookmark className="w-7 h-7 sm:w-8 sm:h-8" />,
-  bell: <Bell className="w-7 h-7 sm:w-8 sm:h-8" />,
-  share2: <Share2 className="w-7 h-7 sm:w-8 sm:h-8" />,
+  calendar: <Calendar className="w-6 h-6 sm:w-7 sm:h-7" />,
+  bookmark: <Bookmark className="w-6 h-6 sm:w-7 sm:h-7" />,
+  bell: <Bell className="w-6 h-6 sm:w-7 sm:h-7" />,
+  share2: <Upload className="w-6 h-6 sm:w-7 sm:h-7" />,
 };
 
 export const StatsCards = () => {
@@ -26,20 +26,17 @@ export const StatsCards = () => {
       {stats.map((stat) => (
         <article
           key={stat.id}
-          className={`relative p-6 sm:p-8 rounded-xl sm:rounded-2xl bg-slate-800/50 border border-slate-700 hover:border-slate-600 hover:bg-slate-800/70 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 overflow-hidden group ${transitionClass}`}
+          className={`relative p-6 sm:p-8 rounded-2xl bg-transparent border border-slate-700/50 hover:border-slate-600 hover:bg-slate-900/30 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-950 overflow-hidden group ${transitionClass}`}
           role="region"
           aria-label={`${stat.title}: ${stat.value}`}
         >
-          {/* Icon Container - Min 44x44px for touch */}
-          <div
-            className="inline-flex items-center justify-center min-w-12 min-h-12 p-3 rounded-lg sm:rounded-xl bg-slate-700/60 mb-5 sm:mb-6 text-blue-400 flex-shrink-0 group-hover:bg-slate-600/80 ${transitionClass}"
-            aria-hidden="true"
-          >
+          {/* Icon Container */}
+          <div className="text-cyan-400 mb-4 sm:mb-6" aria-hidden="true">
             {iconMap[stat.icon]}
           </div>
 
           {/* Stats Content */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-2 sm:space-y-3">
             <h3 className="text-slate-400 text-xs sm:text-sm font-medium tracking-widest uppercase leading-tight">
               {stat.title}
             </h3>
@@ -54,7 +51,7 @@ export const StatsCards = () => {
 
           {/* Bottom accent line - Motion-friendly */}
           <div
-            className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 transform origin-left ${
+            className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 transform origin-left ${
               prefersReducedMotion
                 ? "scale-x-0"
                 : "scale-x-0 group-hover:scale-x-100 group-focus-within:scale-x-100"
