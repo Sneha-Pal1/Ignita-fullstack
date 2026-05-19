@@ -65,6 +65,12 @@ const Navbar = () => {
                   >
                     Bookmarks
                   </Link>
+                  <Link
+                    href="/linkedin-post-generator"
+                    className="text-white hover:text-gray-300"
+                  >
+                    LinkedIn
+                  </Link>
                   <NotificationBell />
                   <Link
                     href="/profile"
