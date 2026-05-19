@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/lib/auth-context";
 import { authStorage } from "@/lib/auth";
+import NotificationBell from "./notifications/NotificationBell";
 import type { User } from "@/lib/auth-types";
 
 const Navbar = () => {
@@ -64,6 +65,7 @@ const Navbar = () => {
                   >
                     Bookmarks
                   </Link>
+                  <NotificationBell />
                   <Link
                     href="/profile"
                     className="flex items-center gap-2 text-white hover:text-gray-300"

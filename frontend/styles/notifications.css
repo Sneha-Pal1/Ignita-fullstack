@@ -1,0 +1,323 @@
+/**
+ * Notifications & Alerts System - CSS Utilities
+ * Add these to your global CSS or use directly in components
+ */
+
+/* Glassmorphism effect for notification containers */
+.glass-effect {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-effect-hover:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Emerald glow effect */
+.emerald-glow {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.emerald-glow-hover:hover {
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+}
+
+/* Notification card base styles */
+.notification-card {
+  @apply relative p-4 rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-300;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.notification-card.unread {
+  @apply border-emerald-500/50 bg-gradient-to-r from-emerald-500/5 to-teal-500/5;
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.notification-card:hover {
+  @apply border-emerald-500/50 bg-white/5;
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Unread indicator line */
+.unread-indicator {
+  @apply absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full animate-pulse;
+}
+
+/* Gradient text utilities */
+.gradient-text-emerald {
+  @apply bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent;
+}
+
+.gradient-text-cyan {
+  @apply bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent;
+}
+
+.gradient-bg-emerald {
+  @apply bg-gradient-to-r from-emerald-600 to-teal-600;
+}
+
+.gradient-bg-cyan {
+  @apply bg-gradient-to-r from-cyan-600 to-blue-600;
+}
+
+/* Badge styles */
+.badge {
+  @apply px-3 py-1 rounded-full text-xs font-medium transition-all duration-200;
+}
+
+.badge-unread {
+  @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+}
+
+.badge-active {
+  @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+}
+
+.badge-inactive {
+  @apply bg-gray-500/20 text-gray-400 border border-gray-500/30;
+}
+
+.badge-default {
+  @apply bg-white/5 text-gray-300 border border-white/10;
+}
+
+/* Button styles for notification actions */
+.notification-btn {
+  @apply px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200;
+}
+
+.notification-btn-primary {
+  @apply bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500;
+}
+
+.notification-btn-secondary {
+  @apply bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:border-white/20;
+}
+
+.notification-btn-danger {
+  @apply bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20;
+}
+
+/* Dropdown panel styles */
+.notification-dropdown {
+  @apply absolute right-0 top-12 w-96 max-h-96 rounded-xl overflow-hidden z-50;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Timeline styles */
+.timeline-container {
+  @apply space-y-4;
+}
+
+.timeline-item {
+  @apply relative flex gap-4 animate-in fade-in slide-in-from-top duration-300;
+}
+
+.timeline-icon {
+  @apply flex-shrink-0 relative z-10;
+}
+
+.timeline-circle {
+  @apply w-11 h-11 rounded-full flex items-center justify-center text-lg transition-all duration-300 hover:scale-110;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.timeline-line {
+  @apply absolute left-5 top-12 w-0.5 h-8 bg-gradient-to-b from-emerald-500/30 to-transparent;
+}
+
+.timeline-content {
+  @apply flex-1 pt-1 group cursor-pointer transition-all duration-200;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timeline-content:hover {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Empty state styles */
+.empty-state {
+  @apply w-full py-16 px-6 text-center;
+}
+
+.empty-state-icon {
+  @apply w-24 h-24 rounded-full flex items-center justify-center text-5xl;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 40px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Modal overlay and content */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-in fade-in duration-300;
+}
+
+.modal-content {
+  @apply w-full max-w-md rounded-2xl overflow-hidden;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 0 40px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Form input styles */
+.notification-input {
+  @apply w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white placeholder-gray-500 transition-all duration-200;
+}
+
+.notification-input:focus {
+  @apply border-emerald-500 outline-none ring-2 ring-emerald-500/30;
+}
+
+/* Scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
+}
+
+/* Animation utilities */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .notification-dropdown {
+    @apply w-full max-w-sm right-0;
+  }
+
+  .modal-content {
+    @apply max-w-full mx-4;
+  }
+
+  .timeline-container {
+    @apply px-2;
+  }
+
+  .notification-card {
+    @apply p-3;
+  }
+}
+
+/* Dark mode specific (if needed) */
+@media (prefers-color-scheme: dark) {
+  .glass-effect {
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .notification-card {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+/* Accessibility utilities */
+.focus-visible {
+  @apply outline-none ring-2 ring-emerald-500/50;
+}
+
+.sr-only {
+  @apply absolute w-1 h-1 p-0 -m-1 overflow-hidden clip-path-inset-50 whitespace-nowrap border-0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  .glass-effect {
+    border-color: rgba(16, 185, 129, 0.5);
+  }
+
+  .notification-card {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Print styles */
+@media print {
+  .notification-dropdown,
+  .modal-overlay,
+  .modal-content {
+    display: none;
+  }
+
+  .notification-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
