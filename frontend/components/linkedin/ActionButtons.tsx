@@ -31,9 +31,7 @@ export default function ActionButtons({
             Generating...
           </>
         ) : (
-          <>
-            ✨ Generate Post
-          </>
+          <>✨ Generate Post</>
         )}
       </button>
 

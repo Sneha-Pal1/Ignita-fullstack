@@ -8,7 +8,10 @@ interface SkillsInputProps {
   onSkillsChange: (skills: string[]) => void;
 }
 
-export default function SkillsInput({ skills, onSkillsChange }: SkillsInputProps) {
+export default function SkillsInput({
+  skills,
+  onSkillsChange,
+}: SkillsInputProps) {
   const [inputValue, setInputValue] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -21,7 +24,7 @@ export default function SkillsInput({ skills, onSkillsChange }: SkillsInputProps
       const filtered = suggestedSkills.filter(
         (skill) =>
           skill.toLowerCase().includes(value.toLowerCase()) &&
-          !skills.includes(skill)
+          !skills.includes(skill),
       );
       setFilteredSuggestions(filtered);
       setShowSuggestions(true);

@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { achievementTypes, roleOptions, lengthOptions } from "@/lib/data/linkedinTemplates";
+import {
+  achievementTypes,
+  roleOptions,
+  lengthOptions,
+} from "@/lib/data/linkedinTemplates";
 import SkillsInput from "./SkillsInput";
 import ToneSelector from "./ToneSelector";
 
@@ -22,7 +26,10 @@ interface GeneratorFormProps {
   isLoading: boolean;
 }
 
-export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProps) {
+export default function GeneratorForm({
+  onSubmit,
+  isLoading,
+}: GeneratorFormProps) {
   const [formData, setFormData] = useState<FormData>({
     achievementType: "Hackathon",
     eventName: "",
@@ -36,7 +43,9 @@ export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProp
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -148,10 +157,7 @@ export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProp
       />
 
       {/* Tone Selector */}
-      <ToneSelector
-        tone={formData.tone}
-        onToneChange={handleToneChange}
-      />
+      <ToneSelector tone={formData.tone} onToneChange={handleToneChange} />
 
       {/* Length */}
       <div>
@@ -163,7 +169,9 @@ export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProp
             <button
               key={option.value}
               type="button"
-              onClick={() => setFormData((prev) => ({ ...prev, length: option.value }))}
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, length: option.value }))
+              }
               className={`p-2 rounded-lg text-xs text-center transition-colors border ${
                 formData.length === option.value
                   ? "bg-emerald-500/10 border-emerald-500 text-emerald-100"
@@ -202,7 +210,11 @@ export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProp
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={isLoading || !formData.eventName.trim() || !formData.description.trim()}
+        disabled={
+          isLoading ||
+          !formData.eventName.trim() ||
+          !formData.description.trim()
+        }
         className="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 mt-6"
       >
         {isLoading ? (
@@ -211,9 +223,7 @@ export default function GeneratorForm({ onSubmit, isLoading }: GeneratorFormProp
             Generating...
           </>
         ) : (
-          <>
-            ✨ Generate Post
-          </>
+          <>✨ Generate Post</>
         )}
       </button>
     </form>

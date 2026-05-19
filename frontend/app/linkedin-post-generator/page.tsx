@@ -36,7 +36,7 @@ export default function LinkedInGeneratorPage() {
       formData.description,
       formData.skills,
       formData.tone,
-      formData.includeEmojis
+      formData.includeEmojis,
     );
 
     // Adjust length if needed
@@ -53,14 +53,14 @@ export default function LinkedInGeneratorPage() {
 
   const handleRegenerate = async () => {
     if (!currentFormData) return;
-    
+
     // Vary the tone slightly or regenerate with different variation
     await handleGeneratePost(currentFormData);
   };
 
   const handleCopy = () => {
     if (!post) return;
-    
+
     const textToCopy = post.includeHashtags
       ? `${post.content}\n\n${post.hashtags.join(" ")}`
       : post.content;
@@ -93,7 +93,8 @@ export default function LinkedInGeneratorPage() {
             <h1 className="text-3xl font-bold">LinkedIn Post Generator</h1>
           </div>
           <p className="text-zinc-400">
-            Transform your achievements into compelling LinkedIn posts with AI-powered suggestions
+            Transform your achievements into compelling LinkedIn posts with
+            AI-powered suggestions
           </p>
         </div>
       </div>
@@ -127,11 +128,15 @@ export default function LinkedInGeneratorPage() {
             {/* Action Buttons */}
             {post && (
               <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-                <h3 className="text-sm font-medium text-zinc-300 mb-3">Actions</h3>
+                <h3 className="text-sm font-medium text-zinc-300 mb-3">
+                  Actions
+                </h3>
                 <ActionButtons
                   isLoading={isLoading}
                   isGenerated={!!post}
-                  onGenerate={() => currentFormData && handleGeneratePost(currentFormData)}
+                  onGenerate={() =>
+                    currentFormData && handleGeneratePost(currentFormData)
+                  }
                   onRegenerate={handleRegenerate}
                   onCopy={handleCopy}
                   onClear={handleClear}
@@ -146,19 +151,26 @@ export default function LinkedInGeneratorPage() {
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
             <h3 className="font-medium text-emerald-400 mb-2">💡 Pro Tip</h3>
             <p className="text-sm text-zinc-400">
-              Be specific in your description—include challenges faced and solutions implemented
+              Be specific in your description—include challenges faced and
+              solutions implemented
             </p>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-            <h3 className="font-medium text-emerald-400 mb-2">🎯 Best Practice</h3>
+            <h3 className="font-medium text-emerald-400 mb-2">
+              🎯 Best Practice
+            </h3>
             <p className="text-sm text-zinc-400">
-              Use the appropriate tone for your audience. Technical tone works best for engineering communities
+              Use the appropriate tone for your audience. Technical tone works
+              best for engineering communities
             </p>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-            <h3 className="font-medium text-emerald-400 mb-2">⚡ Quick Start</h3>
+            <h3 className="font-medium text-emerald-400 mb-2">
+              ⚡ Quick Start
+            </h3>
             <p className="text-sm text-zinc-400">
-              Try different tones and regenerate posts to find the perfect version for your audience
+              Try different tones and regenerate posts to find the perfect
+              version for your audience
             </p>
           </div>
         </div>

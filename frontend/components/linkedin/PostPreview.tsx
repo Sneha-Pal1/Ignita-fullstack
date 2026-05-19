@@ -33,8 +33,12 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
     return (
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-8 h-full flex flex-col items-center justify-center text-center">
         <div className="text-4xl mb-3">📝</div>
-        <p className="text-zinc-400">Your generated LinkedIn post will appear here</p>
-        <p className="text-xs text-zinc-600 mt-2">Fill in the form and click "Generate Post"</p>
+        <p className="text-zinc-400">
+          Your generated LinkedIn post will appear here
+        </p>
+        <p className="text-xs text-zinc-600 mt-2">
+          Fill in the form and click "Generate Post"
+        </p>
       </div>
     );
   }
@@ -77,9 +81,15 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
 
           {/* Engagement Preview */}
           <div className="pt-4 border-t border-zinc-800 flex gap-4 text-xs text-zinc-500">
-            <button className="hover:text-emerald-400 transition-colors">👍 Like</button>
-            <button className="hover:text-emerald-400 transition-colors">💬 Comment</button>
-            <button className="hover:text-emerald-400 transition-colors">↗ Share</button>
+            <button className="hover:text-emerald-400 transition-colors">
+              👍 Like
+            </button>
+            <button className="hover:text-emerald-400 transition-colors">
+              💬 Comment
+            </button>
+            <button className="hover:text-emerald-400 transition-colors">
+              ↗ Share
+            </button>
           </div>
         </div>
       </div>
