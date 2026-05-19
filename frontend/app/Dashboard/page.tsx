@@ -1,12 +1,13 @@
 "use client";
 
 import { useAuthContext } from "@/lib/auth-context";
-import { DashboardHero } from "@/components/dashboard/DashboardHero";
+import { WelcomeCard } from "@/components/dashboard/WelcomeCard";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { RecentBookmarks } from "@/components/dashboard/RecentBookmarks";
 import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
+import { ProductivityTracker } from "@/components/dashboard/ProductivityTracker";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -31,35 +32,49 @@ export default function DashboardPage() {
 
   return (
     <main
-      className="min-h-dvh max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-12 sm:pb-16 lg:pb-20 space-y-12 sm:space-y-16"
+      className="min-h-dvh w-full px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-12 sm:pb-16 lg:pb-20 bg-slate-950"
       id="main-content"
       role="main"
       aria-label="Dashboard content"
     >
-      {/* Hero Section */}
-      <DashboardHero />
+      <div className="max-w-7xl mx-auto">
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-5 auto-rows-max">
+          {/* Welcome Card - spans 2 columns on desktop */}
+          <div className="lg:col-span-2">
+            <WelcomeCard />
+          </div>
 
-      {/* Stats Section */}
-      <StatsCards />
+          {/* Stats Cards - 2 columns on desktop */}
+          <div className="lg:col-span-2">
+            <StatsCards />
+          </div>
 
-      {/* Main content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-10">
-        {/* Left column - 2 columns wide */}
-        <div className="lg:col-span-2 space-y-12 sm:space-y-16">
-          {/* Recent Bookmarks Section */}
-          <RecentBookmarks />
+          {/* Quick Actions - spans 2 columns */}
+          <div className="md:col-span-2 lg:col-span-2">
+            <QuickActions />
+          </div>
 
-          {/* Upcoming Events Section */}
-          <UpcomingEvents />
+          {/* Upcoming Events - spans 2 columns */}
+          <div className="md:col-span-2 lg:col-span-2">
+            <UpcomingEvents />
+          </div>
 
-          {/* Quick Actions Section */}
-          <QuickActions />
+          {/* Productivity Tracker - spans full width on mobile, 2 on desktop */}
+          <div className="md:col-span-2 lg:col-span-2">
+            <ProductivityTracker />
+          </div>
+
+          {/* Recent Bookmarks - spans 2 on mobile, 2 on desktop */}
+          <div className="md:col-span-2 lg:col-span-2">
+            <RecentBookmarks />
+          </div>
+
+          {/* Activity Timeline - spans full on mobile, 2 on desktop */}
+          <div className="md:col-span-2 lg:col-span-2">
+            <ActivityTimeline />
+          </div>
         </div>
-
-        {/* Right column - Activity Timeline */}
-        <aside className="lg:col-span-1" aria-label="Recent activity">
-          <ActivityTimeline />
-        </aside>
       </div>
     </main>
   );

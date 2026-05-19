@@ -15,51 +15,98 @@ export const StatsCards = () => {
   const prefersReducedMotion = useMotionPreference();
   const transitionClass = prefersReducedMotion
     ? ""
-    : "transition-all duration-200";
+    : "transition-all duration-300";
 
   return (
     <section
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16"
+      className="grid grid-cols-2 gap-3 sm:gap-4"
       aria-label="Dashboard statistics overview"
       role="region"
     >
-      {stats.map((stat) => (
-        <article
-          key={stat.id}
-          className={`relative p-6 sm:p-8 rounded-2xl bg-transparent border border-slate-700/50 hover:border-slate-600 hover:bg-slate-900/30 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-950 overflow-hidden group ${transitionClass}`}
-          role="region"
-          aria-label={`${stat.title}: ${stat.value}`}
-        >
-          {/* Icon Container */}
-          <div className="text-cyan-400 mb-4 sm:mb-6" aria-hidden="true">
-            {iconMap[stat.icon]}
-          </div>
+      {stats.map((stat, index) => {
+        // Assign gradient colors alternately
+        const gradients = [
+          "from-emerald-500/20 to-teal-500/20",
+          "from-teal-500/20 to-emerald-500/20",
+          "from-emerald-500/10 to-cyan-500/20",
+          "from-teal-500/15 to-cyan-500/15",
+        ];
+        const glowColors = [
+          "emerald-500",
+          "teal-500",
+          "emerald-500",
+          "teal-500",
+        ];
+        const gradientClass = gradients[index % gradients.length];
+        const glowColor = glowColors[index % glowColors.length];
 
-          {/* Stats Content */}
-          <div className="space-y-2 sm:space-y-3">
-            <h3 className="text-slate-400 text-xs sm:text-sm font-medium tracking-widest uppercase leading-tight">
-              {stat.title}
-            </h3>
-            <p
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tabular-nums leading-tight"
-              role="status"
-              aria-live="polite"
-            >
-              {stat.value}
-            </p>
-          </div>
+        return (
+          <article
+            key={stat.id}
+            className={`relative group overflow-hidden rounded-2xl p-5 sm:p-6 border border-emerald-500/20 hover:border-emerald-400/30 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-950 ${transitionClass}`}
+            role="region"
+            aria-label={`${stat.title}: ${stat.value}`}
+          >
+            {/* Gradient background */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-0 group-hover:opacity-100 ${transitionClass}`}
+              aria-hidden="true"
+            />
 
-          {/* Bottom accent line - Motion-friendly */}
-          <div
-            className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 transform origin-left ${
-              prefersReducedMotion
-                ? "scale-x-0"
-                : "scale-x-0 group-hover:scale-x-100 group-focus-within:scale-x-100"
-            } ${transitionClass}`}
-            aria-hidden="true"
-          />
-        </article>
-      ))}
+            {/* Glow effect on hover */}
+            <div
+              className={`absolute -top-8 -right-8 w-24 h-24 bg-${glowColor}/30 rounded-full blur-2xl opacity-0 group-hover:opacity-100 ${transitionClass}`}
+              aria-hidden="true"
+            />
+
+            {/* Dark overlay for glassmorphism */}
+            <div
+              className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
+              aria-hidden="true"
+            />
+
+            {/* Content */}
+            <div className="relative z-10 space-y-3">
+              {/* Icon Container with glow */}
+              <div
+                className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/30 group-hover:shadow-lg group-hover:shadow-emerald-500/50 ${transitionClass}`}
+                aria-hidden="true"
+              >
+                {iconMap[stat.icon]}
+              </div>
+
+              {/* Stats Label */}
+              <h3 className="text-xs sm:text-sm text-zinc-400 font-medium tracking-widest uppercase leading-tight">
+                {stat.title}
+              </h3>
+
+              {/* Stats Value */}
+              <p
+                className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-white tabular-nums leading-tight group-hover:text-emerald-300 ${transitionClass}`}
+                role="status"
+                aria-live="polite"
+              >
+                {stat.value}
+              </p>
+            </div>
+
+            {/* Bottom accent gradient line */}
+            <div
+              className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-transparent transform origin-left scale-x-0 group-hover:scale-x-100 ${transitionClass}`}
+              aria-hidden="true"
+            />
+
+            {/* Border glow effect */}
+            <div
+              className={`absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 ${transitionClass}`}
+              style={{
+                boxShadow: "inset 0 0 20px rgba(16, 185, 129, 0.1)",
+              }}
+              aria-hidden="true"
+            />
+          </article>
+        );
+      })}
     </section>
   );
 };
