@@ -71,6 +71,12 @@ const Navbar = () => {
                   >
                     LinkedIn
                   </Link>
+                  <Link
+                    href="/analytics"
+                    className="text-white hover:text-gray-300"
+                  >
+                    Analytics
+                  </Link>
                   <NotificationBell />
                   <Link
                     href="/profile"
