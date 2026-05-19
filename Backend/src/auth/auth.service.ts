@@ -39,14 +39,36 @@ export class AuthService {
     };
   }
   async login(dto: LoginDto) {
+    console.log('🔐 Login attempt for email:', dto.email);
+
     const user = await this.userRepo.findOneBy({
       email: dto.email,
     });
-    if (!user || !(await this.verifyPassword(dto.password, user.password))) {
+
+    if (!user) {
+      console.log('❌ User not found:', dto.email);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const passwordMatch = await this.verifyPassword(
+      dto.password,
+      user.password,
+    );
+    console.log(
+      '🔑 Password verification:',
+      passwordMatch ? 'MATCH' : 'NO MATCH',
+    );
+
+    if (!passwordMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const tokens = this.generateTokens(user);
+    console.log('✅ Tokens generated for user:', user.id);
+    console.log(
+      '📦 Access Token preview:',
+      tokens.accessToken.substring(0, 30) + '...',
+    );
 
     return {
       ...tokens,

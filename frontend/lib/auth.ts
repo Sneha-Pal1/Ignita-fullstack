@@ -60,19 +60,37 @@ export const authStorage = {
 export const authAPI = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const { rememberMe, ...loginData } = credentials;
+    console.log("🔐 Attempting login with:", loginData.email);
+
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",
       loginData,
     );
+
+    console.log("📨 Login response received:", {
+      hasAccessToken: !!response.accessToken,
+      tokenLength: response.accessToken?.length,
+      tokenPreview: response.accessToken
+        ? response.accessToken.substring(0, 20) + "..."
+        : "NO TOKEN",
+      hasUser: !!response.user,
+      user: response.user,
+    });
+
     if (response.accessToken) {
       authStorage.setToken(response.accessToken);
+      console.log("✅ Token saved to localStorage");
+
       if (response.user) {
         authStorage.setUser(response.user);
+        console.log("✅ User saved to localStorage");
       }
       // Emit auth change event
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("auth-change"));
       }
+    } else {
+      console.error("❌ No accessToken in response!");
     }
     return response;
   },

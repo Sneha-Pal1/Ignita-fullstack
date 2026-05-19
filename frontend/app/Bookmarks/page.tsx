@@ -46,20 +46,13 @@ const BookmarksPage = () => {
     const fetchBookmarks = async () => {
       try {
         setIsLoading(true);
-        // Get fresh token before fetching
-        const token =
-          typeof window !== "undefined"
-            ? localStorage.getItem("auth_token")
-            : null;
-        if (!token) {
-          setError("Authentication token not found. Please login again.");
-          return;
-        }
+        console.log("📋 Fetching bookmarks...");
         const data = await apiClient.get<Bookmark[]>("/bookmark");
+        console.log("✅ Bookmarks loaded:", data);
         setBookmarks(data || []);
         setError(null);
       } catch (err) {
-        console.error("Failed to fetch bookmarks:", err);
+        console.error("❌ Failed to fetch bookmarks:", err);
         setError("Failed to load bookmarks");
         setBookmarks([]);
       } finally {

@@ -16,8 +16,18 @@ async function request<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+
+  let token: string | null = null;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("auth_token");
+  }
+
+  console.log("🌐 API Request:", {
+    endpoint,
+    url,
+    hasToken: !!token,
+    tokenLength: token?.length || 0,
+  });
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
@@ -25,26 +35,51 @@ async function request<T>(
   };
 
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
+    console.log("✅ Authorization header added");
+  } else {
+    console.warn("⚠️ No token found for request to", endpoint);
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-    credentials: "include",
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      credentials: "include",
+    });
 
-  const data = await response.json().catch(() => null);
+    let data: unknown = null;
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
 
-  if (!response.ok) {
-    throw new APIError(
-      response.status,
-      data,
-      data?.message || "API request failed",
-    );
+    if (!response.ok) {
+      console.error("❌ API Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        endpoint,
+        data,
+      });
+      throw new APIError(
+        response.status,
+        data,
+        data && typeof data === "object" && "message" in data
+          ? (data as any).message
+          : "API request failed",
+      );
+    }
+
+    console.log("✅ API Success:", { endpoint, status: response.status });
+    return data as T;
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    console.error("❌ Network Error:", error);
+    throw new APIError(0, null, "Network request failed");
   }
-
-  return data as T;
 }
 
 export const apiClient = {
