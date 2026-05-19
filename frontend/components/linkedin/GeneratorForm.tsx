@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Wand2 } from "lucide-react";
 import {
   achievementTypes,
   roleOptions,
@@ -223,7 +224,10 @@ export default function GeneratorForm({
             Generating...
           </>
         ) : (
-          <>✨ Generate Post</>
+          <>
+            <Wand2 className="w-4 h-4" />
+            Generate Post
+          </>
         )}
       </button>
     </form>

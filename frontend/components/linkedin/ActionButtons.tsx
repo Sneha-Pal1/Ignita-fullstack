@@ -1,5 +1,7 @@
 "use client";
 
+import { Wand2, RotateCcw, Copy, RotateCw } from "lucide-react";
+
 interface ActionButtonsProps {
   isLoading: boolean;
   isGenerated: boolean;
@@ -31,7 +33,10 @@ export default function ActionButtons({
             Generating...
           </>
         ) : (
-          <>✨ Generate Post</>
+          <>
+            <Wand2 className="w-4 h-4" />
+            Generate Post
+          </>
         )}
       </button>
 
@@ -41,23 +46,26 @@ export default function ActionButtons({
           <button
             onClick={onRegenerate}
             disabled={isLoading}
-            className="w-full px-4 py-2 bg-zinc-700/50 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-100 font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-zinc-700/50 hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-100 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
           >
-            🔄 Regenerate
+            <RotateCcw className="w-4 h-4" />
+            Regenerate
           </button>
 
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={onCopy}
-              className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium rounded-lg transition-colors text-sm"
+              className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
             >
-              📋 Copy
+              <Copy className="w-4 h-4" />
+              Copy
             </button>
             <button
               onClick={onClear}
-              className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium rounded-lg transition-colors text-sm"
+              className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium rounded-lg transition-colors text-sm flex items-center justify-center gap-2"
             >
-              ↻ Clear
+              <RotateCw className="w-4 h-4" />
+              Clear
             </button>
           </div>
         </>

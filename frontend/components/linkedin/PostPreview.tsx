@@ -1,6 +1,13 @@
 "use client";
 
 import { GeneratedPost } from "@/lib/data/linkedinTemplates";
+import {
+  FileText,
+  Globe,
+  ThumbsUp,
+  MessageCircle,
+  ArrowUpRight,
+} from "lucide-react";
 
 interface PostPreviewProps {
   post: GeneratedPost | null;
@@ -32,7 +39,7 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
   if (!post) {
     return (
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-8 h-full flex flex-col items-center justify-center text-center">
-        <div className="text-4xl mb-3">📝</div>
+        <FileText className="w-12 h-12 text-zinc-500 mb-3" />
         <p className="text-zinc-400">
           Your generated LinkedIn post will appear here
         </p>
@@ -52,7 +59,10 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
           <div className="w-12 h-12 bg-linear-to-br from-emerald-400 to-emerald-600 rounded-full shrink-0" />
           <div>
             <div className="font-semibold text-zinc-100">Your Name</div>
-            <div className="text-xs text-zinc-500">@yourprofile • 1s • 🌐</div>
+            <div className="text-xs text-zinc-500 flex items-center gap-1">
+              @yourprofile • 1s •
+              <Globe className="w-3 h-3" />
+            </div>
           </div>
         </div>
 
@@ -81,14 +91,17 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
 
           {/* Engagement Preview */}
           <div className="pt-4 border-t border-zinc-800 flex gap-4 text-xs text-zinc-500">
-            <button className="hover:text-emerald-400 transition-colors">
-              👍 Like
+            <button className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+              <ThumbsUp className="w-3 h-3" />
+              Like
             </button>
-            <button className="hover:text-emerald-400 transition-colors">
-              💬 Comment
+            <button className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+              <MessageCircle className="w-3 h-3" />
+              Comment
             </button>
-            <button className="hover:text-emerald-400 transition-colors">
-              ↗ Share
+            <button className="hover:text-emerald-400 transition-colors flex items-center gap-1">
+              <ArrowUpRight className="w-3 h-3" />
+              Share
             </button>
           </div>
         </div>
