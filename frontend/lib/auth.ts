@@ -7,6 +7,7 @@ import type {
 } from "./auth-types";
 
 const TOKEN_KEY = "auth_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
 const USER_KEY = "auth_user";
 
 export const authStorage = {
@@ -26,6 +27,25 @@ export const authStorage = {
   removeToken: () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem(TOKEN_KEY);
+    }
+  },
+
+  setRefreshToken: (refreshToken: string) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    }
+  },
+
+  getRefreshToken: () => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(REFRESH_TOKEN_KEY);
+    }
+    return null;
+  },
+
+  removeRefreshToken: () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
     }
   },
 
@@ -52,6 +72,7 @@ export const authStorage = {
   clear: () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
     }
   },
@@ -73,13 +94,24 @@ export const authAPI = {
       tokenPreview: response.accessToken
         ? response.accessToken.substring(0, 20) + "..."
         : "NO TOKEN",
+      hasRefreshToken: !!(response.refreshToken || response.refresh_token),
       hasUser: !!response.user,
       user: response.user,
     });
 
-    if (response.accessToken) {
-      authStorage.setToken(response.accessToken);
-      console.log("✅ Token saved to localStorage");
+    const accessToken = response.accessToken || response.access_token;
+    const refreshToken = response.refreshToken || response.refresh_token;
+
+    if (accessToken) {
+      authStorage.setToken(accessToken);
+      console.log("✅ Access token saved to localStorage");
+
+      if (refreshToken) {
+        authStorage.setRefreshToken(refreshToken);
+        console.log("✅ Refresh token saved to localStorage");
+      } else {
+        console.warn("⚠️ No refresh token in response!");
+      }
 
       if (response.user) {
         authStorage.setUser(response.user);
@@ -100,10 +132,22 @@ export const authAPI = {
       "/auth/register",
       credentials,
     );
-    if (response.accessToken) {
-      authStorage.setToken(response.accessToken);
+
+    const accessToken = response.accessToken || response.access_token;
+    const refreshToken = response.refreshToken || response.refresh_token;
+
+    if (accessToken) {
+      authStorage.setToken(accessToken);
+      console.log("✅ Access token saved to localStorage");
+
+      if (refreshToken) {
+        authStorage.setRefreshToken(refreshToken);
+        console.log("✅ Refresh token saved to localStorage");
+      }
+
       if (response.user) {
         authStorage.setUser(response.user);
+        console.log("✅ User saved to localStorage");
       }
       // Emit auth change event
       if (typeof window !== "undefined") {

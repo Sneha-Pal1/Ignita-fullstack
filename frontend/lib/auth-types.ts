@@ -14,6 +14,8 @@ export interface RegisterCredentials {
 export interface AuthResponse {
   accessToken: any;
   access_token: string;
+  refreshToken?: string;
+  refresh_token?: string;
   user?: {
     id: string;
     email: string;

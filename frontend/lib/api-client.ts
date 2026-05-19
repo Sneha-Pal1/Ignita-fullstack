@@ -1,4 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
 
 export class APIError extends Error {
   constructor(
@@ -11,9 +13,94 @@ export class APIError extends Error {
   }
 }
 
+// Refresh token function - call the backend to get a new access token
+async function refreshAccessToken(): Promise<string | null> {
+  // Prevent multiple simultaneous refresh calls
+  if (isRefreshing) {
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+
+  refreshPromise = (async () => {
+    try {
+      // Retrieve refresh token if available
+      let refreshToken: string | null = null;
+      if (
+        typeof window !== "undefined" &&
+        typeof localStorage !== "undefined"
+      ) {
+        refreshToken = localStorage.getItem("refresh_token");
+      }
+
+      if (!refreshToken) {
+        console.warn("⚠️ No refresh token available. Logging out.");
+        // No refresh token, clear auth and logout
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_user");
+          localStorage.removeItem("refresh_token");
+          window.dispatchEvent(new Event("auth-change"));
+        }
+        return null;
+      }
+
+      const response = await fetch(`${API_URL}/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        console.warn("⚠️ Token refresh failed:", response.status);
+        // Refresh failed, clear auth
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_user");
+          localStorage.removeItem("refresh_token");
+          window.dispatchEvent(new Event("auth-change"));
+        }
+        return null;
+      }
+
+      const data = await response.json();
+      const newAccessToken = data.accessToken || data.access_token;
+
+      if (newAccessToken) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("auth_token", newAccessToken);
+          console.log("✅ Access token refreshed successfully");
+        }
+        return newAccessToken;
+      }
+
+      return null;
+    } catch (error) {
+      console.error("❌ Token refresh error:", error);
+      // On error, clear auth
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("auth_user");
+        localStorage.removeItem("refresh_token");
+        window.dispatchEvent(new Event("auth-change"));
+      }
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
+  retryCount = 0,
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
 
@@ -63,6 +150,22 @@ async function request<T>(
       data = await response.json();
     } catch {
       data = null;
+    }
+
+    // Handle 401 Unauthorized - try to refresh token
+    if (response.status === 401 && retryCount === 0) {
+      console.warn("⚠️ Received 401 Unauthorized. Attempting token refresh...");
+      const newToken = await refreshAccessToken();
+
+      if (newToken) {
+        console.log("🔄 Retrying request with refreshed token...");
+        // Retry the request with new token
+        return request<T>(endpoint, options, retryCount + 1);
+      } else {
+        console.error("❌ Token refresh failed. User logged out.");
+        // Token refresh failed, throw error
+        throw new APIError(401, data, "Session expired. Please log in again.");
+      }
     }
 
     if (!response.ok) {
