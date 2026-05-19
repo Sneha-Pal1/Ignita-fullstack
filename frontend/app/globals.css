@@ -308,11 +308,11 @@
 
   /* Auth Pages Styling */
   .auth-container {
-    @apply min-h-screen bg-background flex flex-col items-center justify-center px-4;
+    @apply min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4;
   }
 
   .auth-card {
-    @apply w-full max-w-md bg-dark-100 border border-dark-200 rounded-lg shadow-2xl p-8;
+    @apply w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-8 hover:border-zinc-700 transition-colors duration-200;
   }
 
   .auth-header {
@@ -323,7 +323,7 @@
     }
 
     .auth-subtitle {
-      @apply text-light-200 text-sm;
+      @apply text-zinc-400 text-sm;
     }
   }
 
@@ -335,7 +335,7 @@
     }
 
     .form-description {
-      @apply text-light-200 text-sm text-center mb-4;
+      @apply text-zinc-400 text-sm text-center mb-4;
     }
   }
 
@@ -348,14 +348,14 @@
   }
 
   .form-label {
-    @apply text-foreground font-medium text-sm;
+    @apply text-white font-medium text-sm;
   }
 
   .form-input {
-    @apply w-full bg-dark-200 border border-dark-200 rounded-lg px-4 py-3 text-foreground placeholder-light-200 focus:outline-none focus:border-primary transition-colors;
+    @apply w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-colors duration-200;
 
     &::placeholder {
-      @apply text-light-200;
+      @apply text-zinc-500;
     }
   }
 
@@ -367,39 +367,39 @@
     }
 
     .password-toggle {
-      @apply absolute right-3 cursor-pointer bg-none border-none text-lg hover:opacity-70 transition-opacity;
+      @apply absolute right-3 cursor-pointer bg-none border-none text-lg text-zinc-400 hover:text-zinc-300 transition-colors;
     }
   }
 
   .checkbox-input {
-    @apply w-5 h-5 cursor-pointer accent-primary;
+    @apply w-5 h-5 cursor-pointer accent-emerald-500;
   }
 
   .checkbox-label {
-    @apply text-foreground text-sm flex items-center gap-2;
+    @apply text-white text-sm flex items-center gap-2;
   }
 
   .forgot-password {
-    @apply text-primary hover:text-primary/80 text-sm ml-auto;
+    @apply text-emerald-400 hover:text-emerald-300 text-sm ml-auto transition-colors;
   }
 
   .auth-button {
-    @apply w-full bg-primary text-black font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors cursor-pointer mt-4;
+    @apply w-full bg-emerald-600 text-white font-semibold py-3 rounded-lg hover:bg-emerald-500 transition-colors cursor-pointer mt-4;
   }
 
   .auth-footer {
-    @apply text-center text-light-200 text-sm;
+    @apply text-center text-zinc-400 text-sm;
 
     .auth-link {
-      @apply text-primary hover:text-primary/80 font-semibold;
+      @apply text-emerald-400 hover:text-emerald-300 font-semibold transition-colors;
     }
   }
 
   .auth-link {
-    @apply text-primary hover:text-primary/80 transition-colors;
+    @apply text-emerald-400 hover:text-emerald-300 transition-colors;
   }
 
   .back-button {
-    @apply text-center text-light-200 hover:text-foreground text-sm mt-6 inline-block transition-colors;
+    @apply text-center text-zinc-400 hover:text-white text-sm mt-6 transition-colors inline-flex items-center gap-2;
   }
 }

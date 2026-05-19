@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -43,16 +44,8 @@ export default function LoginPage() {
           </p>
 
           {error && (
-            <div
-              style={{
-                padding: "10px",
-                backgroundColor: "#fee",
-                color: "#c33",
-                borderRadius: "4px",
-                marginBottom: "16px",
-              }}
-            >
-              {error}
+            <div className="p-3 bg-red-950/40 border border-red-900/50 rounded-lg mb-4">
+              <p className="text-sm text-red-300">{error}</p>
             </div>
           )}
 
@@ -92,8 +85,13 @@ export default function LoginPage() {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                👁️
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -127,8 +125,9 @@ export default function LoginPage() {
           </p>
         </form>
 
-        <Link href="/" className="back-button">
-          ← Back to Home
+        <Link href="/" className="back-button flex items-center gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
         </Link>
       </div>
     </div>

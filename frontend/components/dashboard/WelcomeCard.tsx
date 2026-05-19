@@ -22,14 +22,8 @@ export const WelcomeCard = () => {
 
   return (
     <div className="relative group h-full">
-      {/* Gradient background blur */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
-
       {/* Main card */}
-      <div className="relative h-full p-6 sm:p-8 rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-slate-900/80 to-slate-950/80 backdrop-blur-xl overflow-hidden">
-        {/* Glow accent - top right */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-
+      <div className="relative h-full p-6 sm:p-8 rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden hover:border-zinc-700 transition-colors duration-200">
         {/* Content */}
         <div className="relative z-10">
           {/* Greeting */}
