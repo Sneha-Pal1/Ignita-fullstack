@@ -17,9 +17,16 @@ async function request<T>(
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
 
+  // Retrieve token from localStorage on client side
   let token: string | null = null;
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
     token = localStorage.getItem("auth_token");
+
+    // If no token found, try again after a brief moment (in case auth context is still syncing)
+    if (!token) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      token = localStorage.getItem("auth_token");
+    }
   }
 
   console.log("🌐 API Request:", {
@@ -29,10 +36,13 @@ async function request<T>(
     tokenLength: token?.length || 0,
   });
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...options.headers,
   };
+
+  if (options.headers) {
+    Object.assign(headers, options.headers);
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
