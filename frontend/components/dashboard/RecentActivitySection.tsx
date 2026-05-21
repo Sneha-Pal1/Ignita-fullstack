@@ -96,7 +96,9 @@ export const RecentActivitySection = () => {
 
             {/* Time */}
             <div className="flex-shrink-0">
-              <p className="text-xs text-zinc-500 text-right">{activity.time}</p>
+              <p className="text-xs text-zinc-500 text-right">
+                {activity.time}
+              </p>
             </div>
           </div>
         ))}

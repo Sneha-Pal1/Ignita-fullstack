@@ -20,7 +20,7 @@ export const NavbarWrapper = () => {
   ];
 
   const shouldHideNavbar = dashboardRoutes.some(
-    (route) => pathname.startsWith(route) || pathname === route
+    (route) => pathname.startsWith(route) || pathname === route,
   );
 
   if (shouldHideNavbar) {

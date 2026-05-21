@@ -123,7 +123,10 @@ export const DashboardSkeleton = () => {
                 </div>
                 <div className="p-4 space-y-3">
                   {Array.from({ length: 2 }).map((_, i) => (
-                    <div key={i} className="p-3 rounded-lg bg-zinc-800/30 space-y-2">
+                    <div
+                      key={i}
+                      className="p-3 rounded-lg bg-zinc-800/30 space-y-2"
+                    >
                       <div className="h-4 w-32 bg-zinc-800 rounded" />
                       <div className="h-3 w-24 bg-zinc-800 rounded" />
                     </div>

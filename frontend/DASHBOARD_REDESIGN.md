@@ -1,6 +1,7 @@
 # Ignita Dashboard Redesign - Complete Implementation Guide
 
 ## Overview
+
 Your Ignita Dashboard has been completely redesigned with a modern, professional SaaS layout inspired by Unstop's organizer architecture, while maintaining Ignita's signature dark premium branding with emerald accents.
 
 ---
@@ -8,6 +9,7 @@ Your Ignita Dashboard has been completely redesigned with a modern, professional
 ## 🎨 Design System
 
 ### Color Palette
+
 ```
 Primary Background:     bg-zinc-950 (#09090b)
 Secondary Background:   bg-zinc-900 (#18181b)
@@ -21,6 +23,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 ```
 
 ### Spacing & Sizing
+
 - Sidebar Width: `w-64` (256px)
 - Top Header Height: `h-20` responsive (`h-16 sm:h-20`)
 - Border Radius: `rounded-xl` (12px) for all cards
@@ -31,8 +34,10 @@ Secondary Accents:      teal-400 (#14b8a6)
 ## 📐 Layout Architecture
 
 ### Sidebar Navigation
+
 **Location**: Fixed left, `ml-64` on main content  
 **Features**:
+
 - Ignita logo with gradient icon
 - 8 main navigation items with icon + label
 - Active route highlighting (emerald accent border + background)
@@ -40,6 +45,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 - Responsive: Collapses to drawer on mobile/tablet
 
 **Navigation Items**:
+
 1. Dashboard (LayoutGrid icon)
 2. Events (Calendar icon)
 3. Bookmarks (Bookmark icon)
@@ -50,9 +56,11 @@ Secondary Accents:      teal-400 (#14b8a6)
 8. Settings (Settings icon)
 
 ### Top Header
+
 **Location**: Sticky, full-width below navbar  
 **Height**: 80px (responsive to 64px on mobile)  
 **Contains**:
+
 - Welcome message: `Welcome back, {firstName}`
 - Productivity streak badge (emerald): `7 day streak`
 - Quick search bar (hidden on mobile)
@@ -60,6 +68,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 - User avatar (profile link)
 
 **Responsive Behavior**:
+
 - Mobile: Compact view, hidden search
 - Tablet+: Full search visible
 - Streak badge: Hidden on small screens
@@ -67,6 +76,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 ### Main Content Area
 
 #### Three-Column Layout
+
 ```
 ┌─────────────────────────────────┐
 │ Desktop (lg+):                   │
@@ -102,6 +112,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 ## 🎯 Dashboard Sections
 
 ### 1️⃣ Compact Stats Cards
+
 **Grid**: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`  
 **Cards**: 4 metric cards with equal width distribution
 
@@ -114,6 +125,7 @@ Secondary Accents:      teal-400 (#14b8a6)
 | Posts Generated | Upload | Cyan | 8 |
 
 **Card Design**:
+
 - Icon (9x9) with colored background
 - Large value (text-2xl font-bold)
 - Small label (text-xs uppercase)
@@ -121,9 +133,11 @@ Secondary Accents:      teal-400 (#14b8a6)
 - Transition: `transition-all duration-300`
 
 ### 2️⃣ Recent Activity Section
+
 **Layout**: List with dividers  
 **Contains**: Bookmarks, Events, Posts, Alerts  
 **Per Item**:
+
 - Icon (type-specific color)
 - Title (activity description)
 - Description (action taken)
@@ -132,8 +146,10 @@ Secondary Accents:      teal-400 (#14b8a6)
 **Responsive**: Full width, scrolls on mobile
 
 ### 3️⃣ Upcoming Events
+
 **Layout**: Card list  
 **Per Event Card**:
+
 - Title with event badge (Hackathon/Workshop/Bootcamp)
 - Date, Location, Attendee count
 - Right arrow indicator
@@ -142,21 +158,25 @@ Secondary Accents:      teal-400 (#14b8a6)
 **Responsive**: Full width, stacked on mobile
 
 ### 4️⃣ Right Sidebar Panel (lg+ screens only)
+
 Three sticky panels:
 
 #### Notifications
+
 - Alert/Reminder/Streak types
 - Icon (type-specific color)
 - Title + Description
 - CTA Link (View/Explore)
 
 #### Upcoming Deadlines
+
 - Y Combinator Applications (Closes in 3 days)
 - React Workshop (Closes in 5 days)
 - Urgency badges: Urgent (amber), Soon (cyan)
 - Calendar dates
 
 #### Recommendations
+
 - Gradient background (emerald/teal)
 - Personalized suggestion text
 - "Explore Now" CTA link
@@ -166,18 +186,22 @@ Three sticky panels:
 ## 🎬 Animations & Transitions
 
 ### Duration Standards
+
 - Hover effects: `duration-200` (200ms)
 - Transitions: `duration-300` (300ms)
 - Sidebar animation: `duration-300` (slide in/out)
 
 ### Key Animations
+
 1. **Sidebar Mobile Animation**
+
    ```
    -translate-x-full → translate-x-0
    duration-300 ease-out
    ```
 
 2. **Hover States**
+
    ```
    Cards: border-zinc-800 → border-zinc-700
          bg-zinc-900/50 → bg-zinc-900
@@ -192,6 +216,7 @@ Three sticky panels:
    ```
 
 ### Prefers Reduced Motion
+
 All animations check `useMotionPreference()` hook to respect user preferences.
 
 ---
@@ -199,6 +224,7 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 ## 📱 Responsive Breakpoints
 
 ### Mobile (default, sm: 640px)
+
 - Single column layout
 - Sidebar as drawer (overlay)
 - Right panel hidden
@@ -208,6 +234,7 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 - Padding: `p-4`
 
 ### Tablet (md: 768px)
+
 - Collapsible sidebar
 - Main content still full-width
 - Right panel appears below on scroll
@@ -215,6 +242,7 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 - Stats: 2-4 column responsive
 
 ### Desktop (lg: 1024px+)
+
 - Sidebar fixed, always visible
 - Three-column layout
 - Right panel sticky
@@ -227,22 +255,26 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 ## ✨ Interactive Features
 
 ### Navigation
+
 - Active route highlighting with emerald accent
 - Smooth hover transitions
 - Icons + labels for clarity
 - User profile dropdown in sidebar
 
 ### Search
+
 - Hover state: `border-zinc-800 bg-zinc-900/50`
 - Focus state: `border-emerald-500/50 bg-zinc-900`
 - Placeholder: "Search events, bookmarks..."
 
 ### Buttons & Links
+
 - Hover effect: Background color change
 - Text color transition: `text-zinc-400 → text-zinc-100`
 - All transitions: `transition-colors duration-200`
 
 ### Cards
+
 - Hover: Border color + background lift
 - Active state: Emerald accent highlight
 - Smooth transitions throughout
@@ -252,11 +284,13 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 ## 🔧 Component Files
 
 ### Layout Components
+
 - **Sidebar.tsx**: Navigation + user profile
 - **TopHeader.tsx**: Welcome + search + notifications + user avatar
 - **NavbarWrapper.tsx**: Conditional navbar visibility (hides on dashboard routes)
 
 ### Dashboard Components
+
 - **CompactStatsCards.tsx**: 4-metric overview
 - **RecentActivitySection.tsx**: Activity timeline
 - **UpcomingEventsList.tsx**: Event listings
@@ -264,6 +298,7 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 - **DashboardSkeleton.tsx**: Loading skeleton UI
 
 ### Updated Files
+
 - **app/Dashboard/page.tsx**: Main dashboard layout
 - **app/layout.tsx**: Root layout (NavbarWrapper integration)
 - **components/NavbarWrapper.tsx**: Conditional navbar
@@ -273,32 +308,38 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 ## 🎯 Design Principles Applied
 
 ✅ **Modern SaaS Aesthetic**
+
 - Dark theme with premium feel
 - Clean, minimal surfaces
 - Professional typography
 
 ✅ **Emerald Accent Strategy**
+
 - Primary interactive elements
 - Active states
 - Key information highlights
 
 ✅ **Responsive First**
+
 - Mobile drawer sidebar
 - Adaptive grid layouts
 - Context-aware visibility
 
 ✅ **Performance Optimized**
+
 - Minimal animations
 - Efficient re-renders
 - Lazy loading support
 
 ✅ **Accessibility**
+
 - Semantic HTML structure
 - ARIA labels & roles
 - Keyboard navigation
 - Color contrast compliant
 
 ✅ **Productivity Focused**
+
 - Quick access navigation
 - Glanceable metrics
 - Action-oriented CTAs
@@ -309,7 +350,9 @@ All animations check `useMotionPreference()` hook to respect user preferences.
 ## 🚀 Usage
 
 ### Navigation Routes
+
 All sidebar items link to their respective pages:
+
 - `/Dashboard` - Main dashboard
 - `/events` - Events page
 - `/Bookmarks` - Saved bookmarks
@@ -320,10 +363,13 @@ All sidebar items link to their respective pages:
 - `/settings` - Settings page
 
 ### Authentication
+
 Dashboard automatically redirects unauthenticated users to `/login`.
 
 ### Data Integration
+
 Components use placeholder data. To integrate real data:
+
 1. Update `CompactStatsCards` to fetch user stats
 2. Update `RecentActivitySection` with real activity data
 3. Update `UpcomingEventsList` with real event data
@@ -334,18 +380,23 @@ Components use placeholder data. To integrate real data:
 ## 💡 Customization
 
 ### Colors
+
 Update colors in components (search/replace):
+
 - `emerald-400` → your primary color
 - `zinc-950/900/800` → your neutral palette
 - `teal/cyan/amber-400` → your accent colors
 
 ### Sidebar Items
+
 Edit `navItems` array in `Sidebar.tsx` to add/remove navigation items.
 
 ### Header Content
+
 Modify `TopHeader.tsx` to customize greeting, search placeholder, or streak calculation.
 
 ### Dashboard Sections
+
 Add/remove sections in `app/Dashboard/page.tsx` main grid layout.
 
 ---

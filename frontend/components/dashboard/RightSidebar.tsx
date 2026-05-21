@@ -51,9 +51,7 @@ export const RightSidebar = () => {
         <div className="divide-y divide-zinc-800">
           {notifications.map((notification) => {
             const iconMap = {
-              alert: (
-                <AlertCircle className="w-5 h-5 text-amber-400" />
-              ),
+              alert: <AlertCircle className="w-5 h-5 text-amber-400" />,
               reminder: <Clock className="w-5 h-5 text-cyan-400" />,
               streak: <Zap className="w-5 h-5 text-emerald-400" />,
             };
@@ -98,7 +96,9 @@ export const RightSidebar = () => {
       <section className="rounded-xl border border-zinc-800 bg-zinc-900/50">
         {/* Header */}
         <div className="p-6 border-b border-zinc-800">
-          <h2 className="text-lg font-semibold text-white">Upcoming Deadlines</h2>
+          <h2 className="text-lg font-semibold text-white">
+            Upcoming Deadlines
+          </h2>
         </div>
 
         {/* Content */}
@@ -123,9 +123,7 @@ export const RightSidebar = () => {
           <div className="p-3 rounded-lg bg-zinc-800/30 border border-zinc-700">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="text-sm font-medium text-white">
-                  React Workshop
-                </p>
+                <p className="text-sm font-medium text-white">React Workshop</p>
                 <div className="flex items-center gap-1 mt-1">
                   <Calendar className="w-3 h-3 text-zinc-500" />
                   <p className="text-xs text-zinc-400">Closes in 5 days</p>
