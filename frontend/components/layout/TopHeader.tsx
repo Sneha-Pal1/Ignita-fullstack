@@ -1,0 +1,84 @@
+"use client";
+
+import { useAuthContext } from "@/lib/auth-context";
+import { Search, Bell, Zap } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
+export const TopHeader = () => {
+  const { user } = useAuthContext();
+  const [searchFocused, setSearchFocused] = useState(false);
+  const firstName = user?.name?.split(" ")[0] || "User";
+
+  // Get current day info for streak badge
+  const streakDays = 7; // This should come from user data
+
+  return (
+    <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm">
+      <div className="h-16 sm:h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        {/* Left: Welcome & Streak */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden sm:block">
+              <p className="text-xs sm:text-sm text-zinc-500">Welcome back,</p>
+              <p className="text-base sm:text-lg font-semibold text-white">
+                {firstName}
+              </p>
+            </div>
+            <div className="sm:hidden">
+              <p className="text-sm font-semibold text-white">{firstName}</p>
+            </div>
+            {/* Productivity Streak Badge - Hidden on small screens */}
+            <div className="ml-auto lg:ml-6 hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+              <Zap className="w-4 h-4 text-emerald-400" />
+              <span className="text-sm font-medium text-emerald-400 hidden sm:inline">
+                {streakDays} day streak
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Search + Notifications */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Quick Search - Hidden on mobile */}
+          <div
+            className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 ${
+              searchFocused
+                ? "border-emerald-500/50 bg-zinc-900"
+                : "border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900"
+            }`}
+          >
+            <Search className="w-4 h-4 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="Search events, bookmarks..."
+              className="bg-transparent text-sm text-white placeholder-zinc-600 outline-none w-40 md:w-48"
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+            />
+          </div>
+
+          {/* Notifications Button */}
+          <Link
+            href="/Notification"
+            className="relative p-2 hover:bg-zinc-900 rounded-lg transition-colors group"
+          >
+            <Bell className="w-5 h-5 text-zinc-400 group-hover:text-zinc-100 transition-colors" />
+            {/* Notification Badge */}
+            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500" />
+          </Link>
+
+          {/* User Avatar */}
+          <Link
+            href="/profile"
+            className="ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center hover:border-emerald-500/50 transition-colors"
+          >
+            <span className="font-semibold text-emerald-400 text-sm">
+              {user?.name?.charAt(0).toUpperCase() || "U"}
+            </span>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+};

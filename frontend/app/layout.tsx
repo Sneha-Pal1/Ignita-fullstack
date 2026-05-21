@@ -3,7 +3,7 @@ import { Schibsted_Grotesk, Martian_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import LightRays from "@/components/ui/LightRays";
-import Navbar from "@/components/Navbar";
+import { NavbarWrapper } from "@/components/NavbarWrapper";
 import { AuthProvider } from "@/lib/auth-context";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -35,8 +35,9 @@ export default function RootLayout({
         className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen antialiased`}
       >
         <AuthProvider>
-          <Navbar />
-          <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+          <NavbarWrapper />
+          {/* Background Rays - Hidden for Dashboard Routes */}
+          <div className="absolute inset-0 top-0 z-[-1] min-h-screen pointer-events-none">
             <LightRays
               raysOrigin="top-center-offset"
               raysColor="#5dfeca"

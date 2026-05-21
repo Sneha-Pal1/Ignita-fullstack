@@ -35,7 +35,7 @@ export default function DashboardPage() {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+      <div className="flex-1 flex flex-col overflow-hidden ml-64">
         {/* Top Header */}
         <TopHeader />
 
@@ -46,11 +46,11 @@ export default function DashboardPage() {
           role="main"
           aria-label="Dashboard content"
         >
-          <div className="p-4 sm:p-6 lg:p-8">
+          <div className="p-6 lg:p-8">
             {/* Main Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left Column - Main Content */}
-              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+              <div className="lg:col-span-2 space-y-6">
                 {/* Stats Row */}
                 <section role="region" aria-label="Dashboard statistics">
                   <CompactStatsCards />
