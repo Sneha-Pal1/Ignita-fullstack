@@ -127,8 +127,12 @@ export const Sidebar = () => {
         {/* Logo Section */}
         <div className="h-20 px-6 flex items-center border-b border-zinc-800">
           <Link href="/Dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-              <span className="font-bold text-white text-lg">I</span>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+              <img
+                src="/icons/iglogoremovebg.png"
+                alt="Ignita Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="font-bold text-xl text-white group-hover:text-emerald-400 transition-colors">
               Ignita
