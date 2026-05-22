@@ -268,7 +268,9 @@ export default function NotificationPage() {
                           </h3>
                           <div className="mt-3 flex flex-wrap gap-4 text-sm">
                             <div>
-                              <span className="text-gray-500">Reminder Type:</span>
+                              <span className="text-gray-500">
+                                Reminder Type:
+                              </span>
                               <p className="text-white font-medium capitalize">
                                 {alert.reminderType}
                               </p>
