@@ -2,47 +2,58 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/lib/auth-context";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  LayoutGrid,
-  Calendar,
-  Bookmark,
-  Bell,
-  TrendingUp,
-  Share2,
-  User,
-  Settings,
-  LogOut,
-  ChevronDown,
-  Menu,
-  X,
-} from "lucide-react";
+  GridIcon,
+  Calendar01Icon,
+  Bookmark01Icon,
+  BellDotIcon,
+  TrendingUpDownIcon,
+  Share01Icon,
+  UserIcon,
+  Settings01Icon,
+  Logout01Icon,
+  ArrowDown01Icon,
+  Menu01Icon,
+  Cancel01Icon,
+} from "@hugeicons/core-free-icons";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutGrid, href: "/Dashboard", section: "main" },
-  { label: "Events", icon: Calendar, href: "/events", section: "main" },
-  { label: "Bookmarks", icon: Bookmark, href: "/Bookmarks", section: "main" },
+  { label: "Dashboard", icon: GridIcon, href: "/Dashboard", section: "main" },
+  { label: "Events", icon: Calendar01Icon, href: "/events", section: "main" },
+  {
+    label: "Bookmarks",
+    icon: Bookmark01Icon,
+    href: "/Bookmarks",
+    section: "main",
+  },
   {
     label: "Notifications",
-    icon: Bell,
+    icon: BellDotIcon,
     href: "/Notification",
     section: "main",
   },
   {
     label: "Analytics",
-    icon: TrendingUp,
+    icon: TrendingUpDownIcon,
     href: "/analytics",
     section: "main",
   },
   {
     label: "LinkedIn Generator",
-    icon: Share2,
+    icon: Share01Icon,
     href: "/linkedin-post-generator",
     section: "main",
   },
-  { label: "Profile", icon: User, href: "/profile", section: "user" },
-  { label: "Settings", icon: Settings, href: "/settings", section: "user" },
+  { label: "Profile", icon: UserIcon, href: "/profile", section: "user" },
+  {
+    label: "Settings",
+    icon: Settings01Icon,
+    href: "/settings",
+    section: "user",
+  },
 ];
 
 export const Sidebar = () => {
@@ -80,9 +91,19 @@ export const Sidebar = () => {
         className="fixed top-4 left-4 z-50 lg:hidden p-2 hover:bg-zinc-900 rounded-lg transition-colors"
       >
         {sidebarOpen ? (
-          <X className="w-6 h-6 text-white" />
+          <HugeiconsIcon
+            icon={Cancel01Icon}
+            size="24"
+            strokeWidth={2}
+            className="text-white"
+          />
         ) : (
-          <Menu className="w-6 h-6 text-white" />
+          <HugeiconsIcon
+            icon={Menu01Icon}
+            size="24"
+            strokeWidth={2}
+            className="text-white"
+          />
         )}
       </button>
 
@@ -119,7 +140,7 @@ export const Sidebar = () => {
         <nav className="flex-1 px-4 py-6 space-y-1">
           <div className="space-y-1 mb-8">
             {mainItems.map((item) => {
-              const Icon = item.icon;
+              const icon = item.icon;
               const active = isActive(item.href);
 
               return (
@@ -136,7 +157,12 @@ export const Sidebar = () => {
                   }
                 `}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={icon}
+                    size="20"
+                    strokeWidth={2}
+                    className="flex-shrink-0"
+                  />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -149,7 +175,7 @@ export const Sidebar = () => {
           {/* User Section Items */}
           <div className="space-y-1">
             {userItems.map((item) => {
-              const Icon = item.icon;
+              const icon = item.icon;
               const active = isActive(item.href);
 
               return (
@@ -166,7 +192,12 @@ export const Sidebar = () => {
                   }
                 `}
                 >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={icon}
+                    size="20"
+                    strokeWidth={2}
+                    className="flex-shrink-0"
+                  />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -193,7 +224,12 @@ export const Sidebar = () => {
                 {user?.email || "user@example.com"}
               </p>
             </div>
-            <ChevronDown className="w-4 h-4 text-zinc-500 flex-shrink-0" />
+            <HugeiconsIcon
+              icon={ArrowDown01Icon}
+              size="16"
+              strokeWidth={2}
+              className="text-zinc-500 flex-shrink-0"
+            />
 
             {/* Dropdown Menu */}
             {showUserMenu && (
@@ -202,7 +238,11 @@ export const Sidebar = () => {
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors text-left"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <HugeiconsIcon
+                    icon={Logout01Icon}
+                    size="16"
+                    strokeWidth={2}
+                  />
                   Sign Out
                 </button>
               </div>

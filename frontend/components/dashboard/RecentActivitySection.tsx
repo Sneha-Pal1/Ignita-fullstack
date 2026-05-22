@@ -1,6 +1,12 @@
 "use client";
 
-import { Bookmark, Calendar, FileText, Clock } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Bookmark01Icon,
+  Calendar01Icon,
+  Note01Icon,
+  Clock01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface ActivityItem {
   id: string;
@@ -8,7 +14,7 @@ interface ActivityItem {
   title: string;
   description: string;
   time: string;
-  icon: React.ReactNode;
+  icon: any;
 }
 
 const recentActivities: ActivityItem[] = [
@@ -18,7 +24,7 @@ const recentActivities: ActivityItem[] = [
     title: "TechCrunch Disrupt 2026",
     description: "You registered for this event",
     time: "2 hours ago",
-    icon: <Calendar className="w-5 h-5" />,
+    icon: Calendar01Icon,
   },
   {
     id: "2",
@@ -26,7 +32,7 @@ const recentActivities: ActivityItem[] = [
     title: "Web3 Development Bootcamp",
     description: "Added to bookmarks",
     time: "5 hours ago",
-    icon: <Bookmark className="w-5 h-5" />,
+    icon: Bookmark01Icon,
   },
   {
     id: "3",
@@ -34,7 +40,7 @@ const recentActivities: ActivityItem[] = [
     title: "LinkedIn Post Generated",
     description: "Your AI post is ready to publish",
     time: "1 day ago",
-    icon: <FileText className="w-5 h-5" />,
+    icon: Note01Icon,
   },
   {
     id: "4",
@@ -42,7 +48,7 @@ const recentActivities: ActivityItem[] = [
     title: "Application Deadline Reminder",
     description: "Y Combinator applications close in 3 days",
     time: "1 day ago",
-    icon: <Clock className="w-5 h-5" />,
+    icon: Clock01Icon,
   },
 ];
 
@@ -83,7 +89,7 @@ export const RecentActivitySection = () => {
             <div
               className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${typeColorMap[activity.type]}`}
             >
-              {activity.icon}
+              <HugeiconsIcon icon={activity.icon} size="20" strokeWidth={2} />
             </div>
 
             {/* Content */}

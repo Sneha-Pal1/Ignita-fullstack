@@ -1,7 +1,9 @@
 "use client";
 
 import { useAuthContext } from "@/lib/auth-context";
-import { Search, Bell, Zap } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, BellDotIcon } from "@hugeicons/core-free-icons";
+import { Zap } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -30,7 +32,7 @@ export const TopHeader = () => {
             </div>
             {/* Productivity Streak Badge - Hidden on small screens */}
             <div className="ml-auto lg:ml-6 hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
-              <Zap className="w-4 h-4 text-emerald-400" />
+              <Zap className="w-4 h-4 text-emerald-400" strokeWidth={2} />
               <span className="text-sm font-medium text-emerald-400 hidden sm:inline">
                 {streakDays} day streak
               </span>
@@ -48,7 +50,12 @@ export const TopHeader = () => {
                 : "border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900"
             }`}
           >
-            <Search className="w-4 h-4 text-zinc-500" />
+            <HugeiconsIcon
+              icon={Search01Icon}
+              size="16"
+              strokeWidth={2}
+              className="text-zinc-500"
+            />
             <input
               type="text"
               placeholder="Search events, bookmarks..."
@@ -63,7 +70,12 @@ export const TopHeader = () => {
             href="/Notification"
             className="relative p-2 hover:bg-zinc-900 rounded-lg transition-colors group"
           >
-            <Bell className="w-5 h-5 text-zinc-400 group-hover:text-zinc-100 transition-colors" />
+            <HugeiconsIcon
+              icon={BellDotIcon}
+              size="20"
+              strokeWidth={2}
+              className="text-zinc-400 group-hover:text-zinc-100 transition-colors"
+            />
             {/* Notification Badge */}
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500" />
           </Link>

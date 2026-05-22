@@ -1,13 +1,19 @@
 "use client";
 
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import { Calendar, Bookmark, Bell, Upload } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Calendar01Icon,
+  Bookmark01Icon,
+  BellDotIcon,
+  Upload01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface StatCard {
   id: string;
   title: string;
   value: string | number;
-  icon: React.ReactNode;
+  icon: any;
   color: string;
 }
 
@@ -16,28 +22,28 @@ const stats: StatCard[] = [
     id: "events",
     title: "Events Joined",
     value: 12,
-    icon: <Calendar className="w-5 h-5" />,
+    icon: Calendar01Icon,
     color: "emerald",
   },
   {
     id: "bookmarks",
     title: "Bookmarks",
     value: 24,
-    icon: <Bookmark className="w-5 h-5" />,
+    icon: Bookmark01Icon,
     color: "teal",
   },
   {
     id: "alerts",
     title: "Alerts Active",
     value: 5,
-    icon: <Bell className="w-5 h-5" />,
+    icon: BellDotIcon,
     color: "amber",
   },
   {
     id: "posts",
     title: "Posts Generated",
     value: 8,
-    icon: <Upload className="w-5 h-5" />,
+    icon: Upload01Icon,
     color: "cyan",
   },
 ];
@@ -76,7 +82,7 @@ export const CompactStatsCards = () => {
           <div
             className={`inline-flex items-center justify-center w-9 h-9 rounded-lg mb-3 ${colorMap[stat.color]} border`}
           >
-            {stat.icon}
+            <HugeiconsIcon icon={stat.icon} size="20" strokeWidth={2} />
           </div>
 
           {/* Value */}
