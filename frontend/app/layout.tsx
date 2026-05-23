@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "IGNITA",
   description:
     "an event aggregator for students and developers to discover hackathons, internships, coding contests, and tech events",
+  icons: {
+    icon: "/icons/iglogoremovebg.png",
+  },
 };
 
 export default function RootLayout({
