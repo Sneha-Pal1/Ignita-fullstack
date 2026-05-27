@@ -14,6 +14,13 @@ export interface RegisterCredentials {
   role?: Exclude<UserRole, "ADMIN">;
 }
 
+export interface AdminCreateCredentials {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+}
+
 export interface AuthResponse {
   accessToken: any;
   access_token: string;
@@ -34,4 +41,9 @@ export interface User {
   name: string;
   phone?: string;
   role?: UserRole;
+}
+
+export interface AdminCreateResponse {
+  message: string;
+  user?: User;
 }

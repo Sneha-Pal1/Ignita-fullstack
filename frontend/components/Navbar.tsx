@@ -55,6 +55,10 @@ const Navbar = () => {
 
           {user?.role === "ADMIN" && <Link href="/create">Create Event</Link>}
 
+          {user?.role === "ADMIN" && (
+            <Link href="/admin/create">Create Admin</Link>
+          )}
+
           {user && <Link href="/Dashboard">Dashboard</Link>}
 
           {!isLoading && (
@@ -84,7 +88,7 @@ const Navbar = () => {
                     href="/profile"
                     className="flex items-center gap-2 text-white hover:text-gray-300"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-xs font-bold">
+                    <div className="w-8 h-8 rounded-full bg-linear-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-xs font-bold">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                   </Link>

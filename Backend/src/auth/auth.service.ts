@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -47,6 +48,35 @@ export class AuthService {
         role: savedUser.role,
       },
       message: 'user registered successfully',
+    };
+  }
+
+  async createAdmin(dto: CreateAdminDto) {
+    const exits = await this.userRepo.findOneBy({
+      email: dto.email,
+    });
+    if (exits) {
+      throw new ConflictException('Email already registered');
+    }
+
+    const hash = await this.hashPassword(dto.password);
+    const user = this.userRepo.create({
+      ...dto,
+      role: UserRole.ADMIN,
+      password: hash,
+    });
+
+    const savedUser = await this.userRepo.save(user);
+
+    return {
+      message: 'admin account created successfully',
+      user: {
+        id: savedUser.id,
+        name: savedUser.name,
+        email: savedUser.email,
+        phone: savedUser.phone,
+        role: savedUser.role,
+      },
     };
   }
   async login(dto: LoginDto) {

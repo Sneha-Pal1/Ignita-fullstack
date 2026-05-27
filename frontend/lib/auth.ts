@@ -2,6 +2,8 @@ import { apiClient } from "./api-client";
 import type {
   LoginCredentials,
   RegisterCredentials,
+  AdminCreateCredentials,
+  AdminCreateResponse,
   AuthResponse,
   User,
 } from "./auth-types";
@@ -155,6 +157,15 @@ export const authAPI = {
       }
     }
     return response;
+  },
+
+  createAdmin: async (
+    credentials: AdminCreateCredentials,
+  ): Promise<AdminCreateResponse> => {
+    return apiClient.post<AdminCreateResponse>(
+      "/auth/admin/register",
+      credentials,
+    );
   },
 
   logout: () => {
