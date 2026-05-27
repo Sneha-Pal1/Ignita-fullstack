@@ -4,11 +4,14 @@ export interface LoginCredentials {
   rememberMe?: boolean;
 }
 
+export type UserRole = 'ADMIN' | 'USER' | 'STUDENT';
+
 export interface RegisterCredentials {
   name: string;
   email: string;
   password: string;
   phone: string;
+  role?: Exclude<UserRole, 'ADMIN'>;
 }
 
 export interface AuthResponse {
@@ -21,7 +24,7 @@ export interface AuthResponse {
     email: string;
     name: string;
     phone?: string;
-    role?: string;
+    role?: UserRole;
   };
 }
 
@@ -30,5 +33,5 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
-  role?: string;
+  role?: UserRole;
 }

@@ -2,12 +2,41 @@ import { apiClient } from "./api-client";
 
 export interface Event {
   id: string;
-  name: string;
+  title: string;
   description?: string;
-  date?: string;
   category?: string;
-  type?: string;
-  // Add other fields as needed
+  mode?: string;
+  organizer?: string;
+  location?: string;
+  registrationLink?: string;
+  startDate?: string;
+  endDate?: string;
+  bannerImage?: string;
+  tags?: string[];
+  deadline?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: {
+    id: string;
+    name: string;
+    email: string;
+    role?: string;
+  };
+}
+
+export interface CreateEventPayload {
+  title: string;
+  description?: string;
+  category: string;
+  mode: string;
+  organizer?: string;
+  location?: string;
+  registrationLink?: string;
+  startDate: string;
+  endDate: string;
+  bannerImage?: string;
+  tags?: string[];
+  deadline?: string;
 }
 
 export const eventsAPI = {
@@ -22,12 +51,12 @@ export const eventsAPI = {
   },
 
   // Create event
-  create: async (data: Partial<Event>) => {
+  create: async (data: CreateEventPayload) => {
     return apiClient.post<Event>("/events", data);
   },
 
   // Update event
-  update: async (id: string, data: Partial<Event>) => {
+  update: async (id: string, data: Partial<CreateEventPayload>) => {
     return apiClient.put<Event>(`/events/${id}`, data);
   },
 
@@ -42,7 +71,7 @@ export const bookmarkAPI = {
     return apiClient.get("/bookmark");
   },
 
-  create: async (data: any) => {
+  create: async (data: Record<string, unknown>) => {
     return apiClient.post("/bookmark", data);
   },
 
@@ -72,7 +101,7 @@ export const userAPI = {
     return apiClient.get("/user/profile");
   },
 
-  updateProfile: async (data: any) => {
+  updateProfile: async (data: Record<string, unknown>) => {
     return apiClient.put("/user/profile", data);
   },
 };

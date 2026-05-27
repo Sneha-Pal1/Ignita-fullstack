@@ -53,6 +53,8 @@ const Navbar = () => {
 
           <Link href="/events">Events</Link>
 
+          {user?.role === "ADMIN" && <Link href="/create">Create Event</Link>}
+
           {user && <Link href="/Dashboard">Dashboard</Link>}
 
           {!isLoading && (

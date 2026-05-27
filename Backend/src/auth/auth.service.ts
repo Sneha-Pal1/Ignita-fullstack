@@ -11,6 +11,7 @@ import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from './enum/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -31,10 +32,20 @@ export class AuthService {
     const hash = await this.hashPassword(dto.password);
     const user = this.userRepo.create({
       ...dto,
+      role: dto.role ?? UserRole.USER,
       password: hash,
     });
-    await this.userRepo.save(user);
+    const savedUser = await this.userRepo.save(user);
+    const tokens = this.generateTokens(savedUser);
     return {
+      ...tokens,
+      user: {
+        id: savedUser.id,
+        name: savedUser.name,
+        email: savedUser.email,
+        phone: savedUser.phone,
+        role: savedUser.role,
+      },
       message: 'user registered successfully',
     };
   }

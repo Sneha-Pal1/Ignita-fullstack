@@ -1,17 +1,125 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EventCard from "@/components/EventCard";
-import { events } from "@/lib/data/events";
+import { events as mockEvents } from "@/lib/data/events";
+import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
+
+type EventCardData = {
+  id: string;
+  title: string;
+  image: string;
+  slug: string;
+  location: string;
+  date: string;
+  time: string;
+  organizer?: string;
+  participants?: string;
+  tags?: string[];
+};
+
+function formatDateRange(
+  startDate?: string,
+  endDate?: string,
+  deadline?: string,
+) {
+  const formatDate = (value?: string) => {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  };
+
+  const start = formatDate(startDate);
+  const end = formatDate(endDate);
+  const applicationDeadline = formatDate(deadline);
+
+  if (start && end) return `${start} - ${end}`;
+  if (start) return start;
+  if (applicationDeadline) return `Deadline ${applicationDeadline}`;
+  return "Date coming soon";
+}
+
+function mapBackendEvent(event: BackendEvent): EventCardData {
+  const tags = Array.isArray(event.tags) ? event.tags : [];
+
+  return {
+    id: event.id,
+    title: event.title,
+    image: event.bannerImage || "/images/event1.png",
+    slug: event.id,
+    location: event.location || "TBA",
+    date: formatDateRange(event.startDate, event.endDate, event.deadline),
+    time: event.description || "View event details",
+    organizer: event.organizer ? `by ${event.organizer}` : "IGNITA",
+    participants: event.mode || event.category || "Live event",
+    tags,
+  };
+}
+
+function mapMockEvent(event: (typeof mockEvents)[number]): EventCardData {
+  return {
+    id: event.slug,
+    title: event.title,
+    image: event.image,
+    slug: event.slug,
+    location: event.location,
+    date: event.date,
+    time: event.time,
+    organizer: event.organizer,
+    participants: event.participants,
+    tags: event.tags,
+  };
+}
 
 const EventsPage = () => {
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState("");
   const [mode, setMode] = useState("");
-
-  const filteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase()),
+  const [events, setEvents] = useState<EventCardData[]>(
+    mockEvents.map(mapMockEvent),
   );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setIsLoading(true);
+        const data = await eventsAPI.getAll();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setEvents(data.map(mapBackendEvent));
+        } else {
+          setEvents(mockEvents.map(mapMockEvent));
+        }
+        setError(null);
+      } catch (fetchError) {
+        console.error("Failed to fetch events:", fetchError);
+        setError("Using local sample events until the backend is available.");
+        setEvents(mockEvents.map(mapMockEvent));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = useMemo(() => {
+    return events.filter((event) => {
+      const matchesSearch = event.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      const matchesMode =
+        !mode || event.participants?.toLowerCase().includes(mode.toLowerCase());
+      return matchesSearch && matchesMode;
+    });
+  }, [events, mode, search]);
 
   return (
     <>
@@ -79,7 +187,11 @@ const EventsPage = () => {
           </select>
         </div>
         {/* EVENTS GRID */}
-        {filteredEvents.length > 0 ? (
+        {isLoading ? (
+          <p className="text-gray-400">Loading events...</p>
+        ) : error ? (
+          <p className="mb-4 text-sm text-emerald-400">{error}</p>
+        ) : filteredEvents.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredEvents.map((event) => (
               <EventCard key={event.slug} {...event} />

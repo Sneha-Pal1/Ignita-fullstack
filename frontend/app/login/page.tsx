@@ -22,7 +22,7 @@ export default function LoginPage() {
       console.log(res);
       // Add small delay to ensure auth context updates
       setTimeout(() => {
-        router.push("/events");
+        router.push(res.user?.role === "ADMIN" ? "/create" : "/events");
       }, 100);
     } catch {
       // Error is handled by useAuth hook

@@ -16,15 +16,24 @@ export class EventsService {
   async create(dto: CreateEventDto, user: User) {
     const event = this.eventRepo.create({
       ...dto,
+      startDate: new Date(dto.startDate),
+      endDate: new Date(dto.endDate),
+      deadline: dto.deadline ? new Date(dto.deadline) : undefined,
       createdBy: user,
     });
     return await this.eventRepo.save(event);
   }
   async findAll() {
-    return await this.eventRepo.find();
+    return await this.eventRepo.find({
+      relations: { createdBy: true },
+      order: { createdAt: 'DESC' },
+    });
   }
   async findOne(id: string) {
-    return await this.eventRepo.findOneBy({ id });
+    return await this.eventRepo.findOne({
+      where: { id },
+      relations: { createdBy: true },
+    });
   }
   async update(id: string, dto: UpdateEventDto) {
     return await this.eventRepo.update(id, dto);

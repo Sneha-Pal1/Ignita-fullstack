@@ -11,6 +11,7 @@ export const TopHeader = () => {
   const { user } = useAuthContext();
   const [searchFocused, setSearchFocused] = useState(false);
   const firstName = user?.name?.split(" ")[0] || "User";
+  const isAdmin = user?.role === "ADMIN";
 
   // Get current day info for streak badge
   const streakDays = 7; // This should come from user data
@@ -42,6 +43,15 @@ export const TopHeader = () => {
 
         {/* Right: Search + Notifications */}
         <div className="flex items-center gap-2 sm:gap-4">
+          {isAdmin && (
+            <Link
+              href="/create"
+              className="hidden sm:inline-flex items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400"
+            >
+              Create Event
+            </Link>
+          )}
+
           {/* Quick Search - Hidden on mobile */}
           <div
             className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 ${
@@ -83,7 +93,7 @@ export const TopHeader = () => {
           {/* User Avatar */}
           <Link
             href="/profile"
-            className="ml-2 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center hover:border-emerald-500/50 transition-colors"
+            className="ml-2 w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center hover:border-emerald-500/50 transition-colors"
           >
             <span className="font-semibold text-emerald-400 text-sm">
               {user?.name?.charAt(0).toUpperCase() || "U"}

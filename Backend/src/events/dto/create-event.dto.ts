@@ -1,4 +1,11 @@
-import { IsDateString, IsOptional, IsString, IsEnum } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { EventCategory } from '../enums/event-category.enum';
 import { EventType } from '../enums/event-type.enum';
 
@@ -20,11 +27,24 @@ export class CreateEventDto {
   @IsString()
   location?: string;
 
+  @IsOptional()
+  @IsDateString()
+  deadline?: string;
+
+  @IsOptional()
+  @IsUrl()
+  bannerImage?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
+
   @IsEnum(EventCategory)
   category!: EventCategory;
 
   @IsEnum(EventType)
-  type!: EventType;
+  mode!: EventType;
 
   @IsOptional()
   @IsString()

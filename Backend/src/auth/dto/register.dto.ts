@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { UserRole } from '../enum/user-role.enum';
 
 export class RegisterDto {
   @IsEmail({}, { message: 'Please enter a valid email address' })
@@ -16,4 +24,10 @@ export class RegisterDto {
   @IsString({ message: 'Please enter your phone number' })
   @IsNotEmpty({ message: 'Phone number cannot be empty' })
   phone!: string;
+
+  @IsOptional()
+  @IsEnum(UserRole, {
+    message: 'Please select a valid role',
+  })
+  role?: UserRole;
 }

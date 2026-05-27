@@ -33,6 +33,8 @@ export default function ProfilePage() {
     router.push("/");
   };
 
+  const isAdmin = user.role === "ADMIN";
+
   return (
     <main className="px-6 py-10 max-w-2xl mx-auto">
       {/* Back Button */}
@@ -47,7 +49,7 @@ export default function ProfilePage() {
       <div className="bg-gray-900/50 border border-white/10 rounded-lg p-8">
         {/* Avatar */}
         <div className="flex justify-center mb-6">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-4xl font-bold text-white">
+          <div className="w-24 h-24 rounded-full bg-linear-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-4xl font-bold text-white">
             {user.name?.charAt(0).toUpperCase()}
           </div>
         </div>
@@ -116,13 +118,22 @@ export default function ProfilePage() {
           <p className="text-white font-semibold">Explore Events</p>
           <p className="text-gray-400 text-sm mt-1">Browse all events</p>
         </Link>
-        <Link
-          href="/create"
-          className="p-4 bg-gray-900/50 border border-white/10 rounded-lg hover:border-white/20 transition-colors text-center"
-        >
-          <p className="text-white font-semibold">Create Event</p>
-          <p className="text-gray-400 text-sm mt-1">Post a new event</p>
-        </Link>
+        {isAdmin ? (
+          <Link
+            href="/create"
+            className="p-4 bg-gray-900/50 border border-emerald-500/20 rounded-lg hover:border-emerald-400/40 transition-colors text-center"
+          >
+            <p className="text-white font-semibold">Create Event</p>
+            <p className="text-gray-400 text-sm mt-1">Post a new event</p>
+          </Link>
+        ) : (
+          <div className="p-4 bg-gray-900/50 border border-white/10 rounded-lg text-center">
+            <p className="text-white font-semibold">Admin access only</p>
+            <p className="text-gray-400 text-sm mt-1">
+              Event creation is available to admins.
+            </p>
+          </div>
+        )}
       </div>
     </main>
   );

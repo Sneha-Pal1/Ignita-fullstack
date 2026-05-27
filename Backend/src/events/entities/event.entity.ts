@@ -24,11 +24,14 @@ export class Event {
   @Column({ type: 'enum', enum: EventCategory })
   category!: EventCategory;
 
-  @Column({ type: 'enum', enum: EventType })
-  type!: EventType;
+  @Column({ type: 'enum', enum: EventType, default: EventType.ONLINE })
+  mode!: EventType;
 
   @Column({ nullable: true })
   organizer?: string;
+
+  @Column({ nullable: true })
+  location?: string;
 
   @Column({ nullable: true })
   registrationLink?: string;
@@ -38,6 +41,15 @@ export class Event {
 
   @Column({ type: 'timestamp', nullable: true })
   endDate?: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  deadline?: Date;
+
+  @Column({ nullable: true })
+  bannerImage?: string;
+
+  @Column({ type: 'simple-json', nullable: true })
+  tags?: string[];
 
   @ManyToOne(() => User, (user) => user.id, { nullable: true })
   createdBy?: User;

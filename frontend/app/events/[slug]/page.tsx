@@ -1,21 +1,124 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { events } from "@/lib/data/events";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Bookmark, Gift, CheckCircle } from "lucide-react";
 import { useBookmark } from "@/lib/hooks/useBookmark";
+import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
+
+type DetailData = {
+  title: string;
+  image: string;
+  organizer?: string;
+  tags?: string[];
+  date: string;
+  applicationDeadline: string;
+  location: string;
+  prizes: string;
+  participants: string;
+  requirements: string;
+  about: string;
+  schedule?: { time: string; activity: string }[];
+  registrationLink?: string;
+};
+
+function formatDate(value?: string) {
+  if (!value) return "TBA";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "TBA";
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function mapBackendEvent(event: BackendEvent): DetailData {
+  return {
+    title: event.title,
+    image: event.bannerImage || "/images/event1.png",
+    organizer: event.organizer ? `by ${event.organizer}` : "IGNITA",
+    tags: event.tags || [],
+    date:
+      event.startDate && event.endDate
+        ? `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
+        : formatDate(event.startDate),
+    applicationDeadline: formatDate(event.deadline),
+    location: event.location || "TBA",
+    prizes: event.mode || event.category || "Live event",
+    participants: event.tags?.length
+      ? event.tags.join(", ")
+      : "Open registration",
+    requirements: event.registrationLink
+      ? "Registration available"
+      : "Check event details",
+    about: event.description || "Event details will be shared by the admin.",
+    registrationLink: event.registrationLink,
+  };
+}
 
 const EventDetailPage = () => {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
 
-  const event = events.find((e) => e.slug === slug);
+  const mockEvent = events.find((e) => e.slug === slug);
+  const [backendEvent, setBackendEvent] = useState<DetailData | null>(null);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(!mockEvent);
+
+  useEffect(() => {
+    if (mockEvent) {
+      setIsLoadingEvent(false);
+      return;
+    }
+
+    const fetchEvent = async () => {
+      try {
+        setIsLoadingEvent(true);
+        const data = await eventsAPI.getById(slug);
+        setBackendEvent(mapBackendEvent(data));
+      } catch (error) {
+        console.error("Failed to fetch event details:", error);
+        setBackendEvent(null);
+      } finally {
+        setIsLoadingEvent(false);
+      }
+    };
+
+    fetchEvent();
+  }, [mockEvent, slug]);
+
+  const event = mockEvent
+    ? {
+        title: mockEvent.title,
+        image: mockEvent.image,
+        organizer: mockEvent.organizer,
+        tags: mockEvent.tags,
+        date: mockEvent.date,
+        applicationDeadline: mockEvent.applicationDeadline,
+        location: mockEvent.location,
+        prizes: mockEvent.prizes,
+        participants: mockEvent.participants,
+        requirements: mockEvent.requirements,
+        about: mockEvent.about,
+        schedule: mockEvent.schedule,
+      }
+    : backendEvent;
+
   const { isBookmarked, isLoading, toggleBookmark } = useBookmark(
     slug,
     event?.title || "",
   );
+
+  if (isLoadingEvent) {
+    return (
+      <main className="px-6 py-10 max-w-4xl mx-auto">
+        <p className="text-gray-400">Loading event...</p>
+      </main>
+    );
+  }
 
   if (!event) {
     return (
@@ -53,9 +156,20 @@ const EventDetailPage = () => {
 
       {/* Action Buttons */}
       <div className="flex gap-4 mb-8">
-        <button className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-          Apply Now
-        </button>
+        {event.registrationLink ? (
+          <a
+            href={event.registrationLink}
+            target="_blank"
+            rel="noreferrer"
+            className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            Apply Now
+          </a>
+        ) : (
+          <button className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+            Apply Now
+          </button>
+        )}
         <button
           onClick={toggleBookmark}
           disabled={isLoading}

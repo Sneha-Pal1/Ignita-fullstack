@@ -6,12 +6,20 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
+const roleOptions = [
+  { value: "STUDENT", label: "Student" },
+  { value: "USER", label: "General User" },
+] as const;
+
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState<(typeof roleOptions)[number]["value"]>(
+    "STUDENT",
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -24,13 +32,14 @@ export default function RegisterPage() {
       return;
     }
     try {
-      await register({
+      const response = await register({
         name: fullName,
         email,
         phone,
         password,
+        role,
       });
-      router.push("/events");
+      router.push(response.user?.role === "ADMIN" ? "/create" : "/events");
     } catch {
       // Error is handled by useAuth hook
     }
@@ -57,6 +66,31 @@ export default function RegisterPage() {
               <p className="text-sm text-red-300">{error}</p>
             </div>
           )}
+
+          <div className="form-group">
+            <label htmlFor="role" className="form-label">
+              Role
+            </label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) =>
+                setRole(e.target.value as (typeof roleOptions)[number]["value"])
+              }
+              className="form-input"
+              disabled={loading}
+              required
+            >
+              {roleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-2">
+              Admin accounts are created separately.
+            </p>
+          </div>
 
           <div className="form-group">
             <label htmlFor="fullName" className="form-label">

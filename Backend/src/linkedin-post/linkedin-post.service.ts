@@ -23,9 +23,9 @@ export class LinkedinPostService {
     }
 
     return `🎉 I just participated in "${event.title}"! 
-It was an amazing experience to connect, learn, and grow.
-Thank you "${event.organizer}" and the entire team for organizing such a wonderful event. 
+  It was an amazing experience to connect, learn, and grow.
+  Thank you "${event.organizer}" and the entire team for organizing such a wonderful event. 
 
-#Ignita #${event.type || 'Event'} #${user.role || 'Student'} #Growth`;
+  #Ignita #${event.mode || event.category || 'Event'} #${user.role || 'Student'} #Growth`;
   }
 }
