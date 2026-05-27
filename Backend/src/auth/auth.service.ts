@@ -122,6 +122,34 @@ export class AuthService {
       },
     };
   }
+
+  async refreshAccessToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token required');
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync<{ sub: string }>(
+        refreshToken,
+        {
+          secret: this.configService.get('JWT_REFRESH_SECRET'),
+        },
+      );
+
+      const user = await this.userRepo.findOneBy({ id: payload.sub });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return {
+        accessToken: this.generateAccessToken(user),
+        message: 'access token refreshed successfully',
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
   private async hashPassword(pw: string): Promise<string> {
     const saltRounds = 10;
     return bcrypt.hash(pw, saltRounds);

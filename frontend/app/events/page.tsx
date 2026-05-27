@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useAuthContext } from "@/lib/auth-context";
 import EventCard from "@/components/EventCard";
 import { events as mockEvents } from "@/lib/data/events";
 import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
@@ -77,6 +79,8 @@ function mapMockEvent(event: (typeof mockEvents)[number]): EventCardData {
 }
 
 const EventsPage = () => {
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuthContext();
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState("");
   const [mode, setMode] = useState("");
@@ -85,6 +89,7 @@ const EventsPage = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isAdmin = user?.role === "ADMIN";
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -110,6 +115,22 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
+  const handleDeleteEvent = async (id: string) => {
+    const confirmed = window.confirm(
+      "Delete this event? This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await eventsAPI.delete(id);
+      setEvents((current) => current.filter((event) => event.id !== id));
+    } catch (deleteError) {
+      console.error("Failed to delete event:", deleteError);
+      setError("Unable to delete the event right now.");
+    }
+  };
+
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
       const matchesSearch = event.title
@@ -120,6 +141,14 @@ const EventsPage = () => {
       return matchesSearch && matchesMode;
     });
   }, [events, mode, search]);
+
+  if (authLoading) {
+    return (
+      <main className="px-6 py-10 max-w-7xl mx-auto">
+        <p className="text-gray-400">Loading...</p>
+      </main>
+    );
+  }
 
   return (
     <>
@@ -194,7 +223,13 @@ const EventsPage = () => {
         ) : filteredEvents.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredEvents.map((event) => (
-              <EventCard key={event.slug} {...event} />
+              <EventCard
+                key={event.slug}
+                {...event}
+                showAdminActions={isAdmin}
+                onEdit={isAdmin ? () => router.push(`/create?edit=${event.id}`) : undefined}
+                onDelete={isAdmin ? () => handleDeleteEvent(event.id) : undefined}
+              />
             ))}
           </div>
         ) : (

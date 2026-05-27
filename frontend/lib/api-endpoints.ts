@@ -57,7 +57,7 @@ export const eventsAPI = {
 
   // Update event
   update: async (id: string, data: Partial<CreateEventPayload>) => {
-    return apiClient.put<Event>(`/events/${id}`, data);
+    return apiClient.patch<Event>(`/events/${id}`, data);
   },
 
   // Delete event

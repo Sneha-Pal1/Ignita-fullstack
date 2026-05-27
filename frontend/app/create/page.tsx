@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/lib/auth-context";
 import { eventsAPI } from "@/lib/api-endpoints";
 import { ArrowLeft, Loader2, Plus } from "lucide-react";
@@ -53,6 +53,8 @@ const modeOptions = [
 export default function CreateEventPage() {
   const { user, isLoading: authLoading } = useAuthContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const [form, setForm] = useState<FormState>(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,6 +62,8 @@ export default function CreateEventPage() {
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof FormState, string>>
   >({});
+  const [isLoadingEvent, setIsLoadingEvent] = useState(false);
+  const isEditing = Boolean(editId);
 
   useEffect(() => {
     if (authLoading) {
@@ -75,6 +79,41 @@ export default function CreateEventPage() {
       router.replace("/Dashboard");
     }
   }, [authLoading, router, user]);
+
+  useEffect(() => {
+    if (!editId || authLoading || !user || user.role !== "ADMIN") {
+      return;
+    }
+
+    const loadEvent = async () => {
+      try {
+        setIsLoadingEvent(true);
+        const event = await eventsAPI.getById(editId);
+
+        setForm({
+          title: event.title ?? "",
+          description: event.description ?? "",
+          category: event.category ?? "HACKATHON",
+          mode: event.mode ?? "ONLINE",
+          organizer: event.organizer ?? "",
+          location: event.location ?? "",
+          registrationLink: event.registrationLink ?? "",
+          startDate: toLocalDateTime(event.startDate),
+          endDate: toLocalDateTime(event.endDate),
+          bannerImage: event.bannerImage ?? "",
+          tags: Array.isArray(event.tags) ? event.tags.join(", ") : "",
+          deadline: toLocalDateTime(event.deadline),
+        });
+      } catch (loadError) {
+        console.error("Failed to load event for editing:", loadError);
+        setErrorMessage("Unable to load the event details for editing.");
+      } finally {
+        setIsLoadingEvent(false);
+      }
+    };
+
+    loadEvent();
+  }, [authLoading, editId, user]);
 
   const handleChange = (field: keyof FormState, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -160,8 +199,13 @@ export default function CreateEventPage() {
         deadline: new Date(form.deadline).toISOString(),
       };
 
-      await eventsAPI.create(payload);
-      setSuccessMessage("Event created successfully. Redirecting to events...");
+      if (isEditing && editId) {
+        await eventsAPI.update(editId, payload);
+        setSuccessMessage("Event updated successfully. Redirecting to events...");
+      } else {
+        await eventsAPI.create(payload);
+        setSuccessMessage("Event created successfully. Redirecting to events...");
+      }
       setForm(initialState);
 
       window.setTimeout(() => {
@@ -176,7 +220,7 @@ export default function CreateEventPage() {
     }
   };
 
-  if (authLoading || !user || user.role !== "ADMIN") {
+  if (authLoading || !user || user.role !== "ADMIN" || isLoadingEvent) {
     return (
       <main className="min-h-dvh bg-zinc-950 px-6 py-10 text-white">
         <div className="mx-auto max-w-3xl rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
@@ -206,14 +250,17 @@ export default function CreateEventPage() {
             <div className="mb-8 flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
-                  Create Event
+                  {isEditing ? "Edit Event" : "Create Event"}
                 </p>
                 <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
-                  Publish a new IGNITA opportunity
+                  {isEditing
+                    ? "Update the event details"
+                    : "Publish a new IGNITA opportunity"}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-                  Add a new event with the key details the platform needs. The
-                  event will be visible on the live events feed once saved.
+                  {isEditing
+                    ? "Update the event with the latest details. Changes will appear on the live events feed once saved."
+                    : "Add a new event with the key details the platform needs. The event will be visible on the live events feed once saved."}
                 </p>
               </div>
               <div className="hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-400 md:block">
@@ -384,7 +431,7 @@ export default function CreateEventPage() {
                       <Loader2 size={16} className="animate-spin" /> Saving...
                     </>
                   ) : (
-                    "Publish Event"
+                    isEditing ? "Update Event" : "Publish Event"
                   )}
                 </button>
               </div>
@@ -439,6 +486,21 @@ function Field({
       {error ? <p className="text-xs text-red-400">{error}</p> : null}
     </label>
   );
+}
+
+function toLocalDateTime(value?: string) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 const inputClass =

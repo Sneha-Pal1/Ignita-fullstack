@@ -17,6 +17,8 @@ interface Props {
   eventData?: any; // Added for storing full event data
   isBookmarkCard?: boolean; // Show delete button instead of save
   onDelete?: () => void; // Callback for delete action
+  onEdit?: () => void;
+  showAdminActions?: boolean;
   hideBookmarkButton?: boolean; // Hide save/delete button
 }
 
@@ -33,6 +35,8 @@ const EventCard = ({
   eventData,
   isBookmarkCard = false,
   onDelete,
+  onEdit,
+  showAdminActions = false,
   hideBookmarkButton = false,
 }: Props) => {
   const { isBookmarked, isLoading, toggleBookmark } = useBookmark(
@@ -99,6 +103,35 @@ const EventCard = ({
         </div>
 
         <p className="text-sm text-gray-400 line-clamp-2">{time}</p>
+
+        {showAdminActions && (onEdit || onDelete) ? (
+          <div className="flex gap-2 pt-1">
+            {onEdit ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit();
+                }}
+                className="flex-1 px-4 py-2 border border-emerald-500/40 text-emerald-300 font-medium rounded-lg hover:border-emerald-400 hover:text-emerald-200 transition-colors"
+              >
+                Edit
+              </button>
+            ) : null}
+            {onDelete ? (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                className="flex-1 px-4 py-2 border border-red-500/40 text-red-300 font-medium rounded-lg hover:border-red-400 hover:text-red-200 transition-colors"
+              >
+                Delete
+              </button>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="flex gap-2 mt-4">
           {showDetailsButton && (

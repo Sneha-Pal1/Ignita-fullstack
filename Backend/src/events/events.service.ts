@@ -36,7 +36,14 @@ export class EventsService {
     });
   }
   async update(id: string, dto: UpdateEventDto) {
-    return await this.eventRepo.update(id, dto);
+    await this.eventRepo.update(id, {
+      ...dto,
+      startDate: dto.startDate ? new Date(dto.startDate) : undefined,
+      endDate: dto.endDate ? new Date(dto.endDate) : undefined,
+      deadline: dto.deadline ? new Date(dto.deadline) : undefined,
+    });
+
+    return await this.findOne(id);
   }
   async remove(id: string) {
     return await this.eventRepo.delete(id);
