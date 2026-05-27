@@ -7,9 +7,9 @@
  */
 export const DashboardSkeleton = () => {
   return (
-    <div className="flex h-dvh overflow-hidden bg-zinc-950">
+    <div className="flex min-h-screen bg-zinc-950">
       {/* Sidebar Skeleton */}
-      <aside className="fixed left-0 top-0 h-dvh w-64 bg-zinc-950 border-r border-zinc-800 animate-pulse">
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-zinc-950 border-r border-zinc-800 animate-pulse">
         {/* Logo */}
         <div className="h-20 px-6 flex items-center border-b border-zinc-800">
           <div className="flex items-center gap-3">
@@ -30,7 +30,7 @@ export const DashboardSkeleton = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden ml-64">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         {/* Top Header Skeleton */}
         <header className="h-20 border-b border-zinc-800 bg-zinc-950 animate-pulse px-8 flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
@@ -44,7 +44,7 @@ export const DashboardSkeleton = () => {
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 p-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column */}
             <div className="lg:col-span-2 space-y-6">

@@ -76,7 +76,7 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-zinc-950 text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       {sidebarOpen ? (
         <button
           type="button"
@@ -87,7 +87,7 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
       ) : null}
 
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-dvh w-72 flex-col border-r border-zinc-800 bg-zinc-950 transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-40 flex h-screen w-72 flex-col overflow-y-auto border-r border-zinc-800 bg-zinc-950 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -217,7 +217,7 @@ export const AdminShell = ({ children }: { children: ReactNode }) => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-zinc-950">{children}</main>
+        <main className="flex-1 bg-zinc-950">{children}</main>
       </div>
     </div>
   );

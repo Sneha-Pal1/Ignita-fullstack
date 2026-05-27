@@ -6,18 +6,18 @@ import { ReactNode } from "react";
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex h-dvh overflow-hidden bg-zinc-950">
+    <div className="flex min-h-screen bg-zinc-950">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden ml-64">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         {/* Top Header */}
         <TopHeader />
 
         {/* Main Content Area */}
         <main
-          className="flex-1 overflow-y-auto"
+          className="flex-1"
           id="main-content"
           role="main"
           aria-label="Dashboard content"

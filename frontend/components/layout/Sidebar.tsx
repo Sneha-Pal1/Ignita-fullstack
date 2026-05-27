@@ -118,7 +118,7 @@ export const Sidebar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed left-0 top-0 h-dvh w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col overflow-y-auto z-40
+          fixed left-0 top-0 h-screen w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col overflow-y-auto z-40
           transition-transform duration-300 ease-out
           lg:translate-x-0
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
