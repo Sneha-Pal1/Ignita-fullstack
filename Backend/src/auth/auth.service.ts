@@ -77,6 +77,7 @@ export class AuthService {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
       },
     };
   }
@@ -97,7 +98,11 @@ export class AuthService {
   }
 
   private generateAccessToken(user: User): string {
-    const payload = { sub: user.id, phone: user.phone };
+    const payload = {
+      sub: user.id,
+      phone: user.phone,
+      role: user.role,
+    };
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: this.configService.get('JWT_EXPIRY') || '15m',
