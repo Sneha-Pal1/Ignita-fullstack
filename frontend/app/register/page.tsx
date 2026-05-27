@@ -17,9 +17,8 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<(typeof roleOptions)[number]["value"]>(
-    "STUDENT",
-  );
+  const [role, setRole] =
+    useState<(typeof roleOptions)[number]["value"]>("STUDENT");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
