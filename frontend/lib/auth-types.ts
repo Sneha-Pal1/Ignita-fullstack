@@ -41,6 +41,8 @@ export interface User {
   name: string;
   phone?: string;
   role?: UserRole;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AdminCreateResponse {

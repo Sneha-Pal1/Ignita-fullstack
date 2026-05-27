@@ -53,7 +53,11 @@ const Navbar = () => {
 
           <Link href="/events">Events</Link>
 
-          {user?.role === "ADMIN" && <Link href="/create">Create Event</Link>}
+          {user?.role === "ADMIN" && <Link href="/admin">Admin Dashboard</Link>}
+
+          {user?.role === "ADMIN" && (
+            <Link href="/admin/create-event">Create Event</Link>
+          )}
 
           {user?.role === "ADMIN" && (
             <Link href="/admin/create">Create Admin</Link>

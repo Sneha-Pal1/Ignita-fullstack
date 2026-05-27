@@ -12,6 +12,8 @@ import { Event } from './events/entities/event.entity';
 import { Bookmark } from './bookmark/entities/bookmark.entity';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { NotificationModule } from './notification/notification.module';
+import { AdminModule } from './admin/admin.module';
+import { Alert } from './alerts/entities/alert.entity';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { NotificationModule } from './notification/notification.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User, Bookmark, Event],
+      entities: [User, Bookmark, Event, Alert],
       synchronize: true,
       logging: true,
     }),
@@ -34,6 +36,7 @@ import { NotificationModule } from './notification/notification.module';
     LinkedinPostModule,
     AnalyticsModule,
     NotificationModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],
