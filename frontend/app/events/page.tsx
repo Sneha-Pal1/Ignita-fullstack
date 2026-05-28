@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAuthContext } from "@/lib/auth-context";
@@ -166,6 +167,13 @@ const EventsPage = () => {
       <main className="px-6 py-10 max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="mb-8">
+          <Link
+            href="/"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-white/20 hover:bg-gray-800"
+          >
+            <span aria-hidden="true">←</span>
+            Back to Home
+          </Link>
           <h1 className="text-3xl font-semibold">Explore Events</h1>
           <p className="text-gray-400 mt-2">
             Find hackathons, internships, and more opportunities
@@ -227,8 +235,14 @@ const EventsPage = () => {
                 key={event.slug}
                 {...event}
                 showAdminActions={isAdmin}
-                onEdit={isAdmin ? () => router.push(`/create?edit=${event.id}`) : undefined}
-                onDelete={isAdmin ? () => handleDeleteEvent(event.id) : undefined}
+                onEdit={
+                  isAdmin
+                    ? () => router.push(`/create?edit=${event.id}`)
+                    : undefined
+                }
+                onDelete={
+                  isAdmin ? () => handleDeleteEvent(event.id) : undefined
+                }
               />
             ))}
           </div>

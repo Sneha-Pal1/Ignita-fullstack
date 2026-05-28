@@ -1,13 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { ShinyButton } from "@/components/ui/shiny-button";
 
 const ExploreBtn = () => {
   return (
     <div className="mt-12 flex gap-6 justify-center items-center flex-wrap">
       {/* Explore Events Button */}
-      <button
-        type="button"
+      <Link
+        href="/events"
         className="px-8 py-2 rounded-md text-white font-bold transition duration-200 border-2 border-transparent"
         style={{
           backgroundColor: "#123e2e",
@@ -22,7 +23,6 @@ const ExploreBtn = () => {
           e.currentTarget.style.color = "white";
           e.currentTarget.style.borderColor = "transparent";
         }}
-        onClick={() => console.log("EXPLORE")}
       >
         <span className="flex items-center gap-2">
           Explore Events
@@ -42,7 +42,7 @@ const ExploreBtn = () => {
             />
           </svg>
         </span>
-      </button>
+      </Link>
 
       {/* Get Started Button - Shiny Button */}
       <ShinyButton
