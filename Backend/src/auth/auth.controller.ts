@@ -7,6 +7,7 @@ import { UserRole } from './enum/user-role.enum';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Roles } from './decorators/roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,5 +39,9 @@ export class AuthController {
   @Roles(UserRole.ADMIN)
   getAdminData() {
     return { message: 'Hello Admin' };
+  }
+  @Post('google')
+  googleLogin(@Body() dto: GoogleAuthDto) {
+    return this.authService.googleLogin(dto);
   }
 }

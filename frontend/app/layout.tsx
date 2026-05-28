@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import LightRays from "@/components/ui/LightRays";
 import { NavbarWrapper } from "@/components/NavbarWrapper";
 import { AuthProvider } from "@/lib/auth-context";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -37,26 +38,30 @@ export default function RootLayout({
       <body
         className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen antialiased`}
       >
-        <AuthProvider>
-          <NavbarWrapper />
-          {/* Background Rays - Hidden for Dashboard Routes */}
-          <div className="absolute inset-0 top-0 z-[-1] min-h-screen pointer-events-none">
-            <LightRays
-              raysOrigin="top-center-offset"
-              raysColor="#5dfeca"
-              raysSpeed={0.5}
-              lightSpread={0.9}
-              rayLength={1.4}
-              followMouse={true}
-              mouseInfluence={0.02}
-              noiseAmount={0.0}
-              distortion={0.01}
-              className="custom-rays"
-            />
-          </div>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <AuthProvider>
+            <NavbarWrapper />
+            {/* Background Rays - Hidden for Dashboard Routes */}
+            <div className="absolute inset-0 top-0 z-[-1] min-h-screen pointer-events-none">
+              <LightRays
+                raysOrigin="top-center-offset"
+                raysColor="#5dfeca"
+                raysSpeed={0.5}
+                lightSpread={0.9}
+                rayLength={1.4}
+                followMouse={true}
+                mouseInfluence={0.02}
+                noiseAmount={0.0}
+                distortion={0.01}
+                className="custom-rays"
+              />
+            </div>
 
-          <main>{children}</main>
-        </AuthProvider>
+            <main>{children}</main>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

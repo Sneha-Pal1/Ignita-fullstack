@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './enum/user-role.enum';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -118,6 +119,36 @@ export class AuthService {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
+      },
+    };
+  }
+
+  async googleLogin(dto: GoogleAuthDto) {
+    let user = await this.userRepo.findOne({
+      where: { email: dto.email },
+    });
+
+    // Create user if not exists
+    if (!user) {
+      user = this.userRepo.create({
+        email: dto.email,
+        name: dto.name,
+        password: '',
+        role: UserRole.USER,
+      });
+
+      user = await this.userRepo.save(user);
+    }
+
+    const tokens = this.generateTokens(user);
+
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
         role: user.role,
       },
     };
