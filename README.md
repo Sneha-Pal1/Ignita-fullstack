@@ -1,11 +1,11 @@
-# IGNITA 🚀
+# IGNITA 
 
 **IGNITA** is a modern event discovery and career growth platform designed for students, developers, and tech enthusiasts. It helps users discover hackathons, internships, coding contests, workshops, and other opportunities while providing personalized tracking, analytics, alerts, bookmarks, and LinkedIn post generation.
 
 
-## 🌟 Features
+##  Features
 
-### 🔐 Authentication & Authorization
+###  Authentication & Authorization
 
 * JWT-based Authentication
 * Google OAuth Login
@@ -16,7 +16,7 @@
 * Protected Routes
 * Secure Password Hashing using bcrypt
 
-### 🎯 Event Management
+###  Event Management
 
 * Browse upcoming events
 * Search and filter events
@@ -25,20 +25,20 @@
 * Admin-only event creation
 * Event categorization
 
-### 📌 Bookmark System
+###  Bookmark System
 
 * Save events for later
 * Personalized bookmark dashboard
 * Bookmark analytics
 
-### 🔔 Smart Alerts & Notifications
+###  Smart Alerts & Notifications
 
 * Create custom event alerts
 * Event deadline reminders
 * Notification center
 * Read/Unread notification tracking
 
-### 📊 Analytics Dashboard
+###  Analytics Dashboard
 
 * Activity Heatmap
 * Monthly Activity Trends
@@ -47,7 +47,7 @@
 * User Engagement Tracking
 * Growth Analytics
 
-### ✍️ LinkedIn Post Generator
+###  LinkedIn Post Generator
 
 Generate professional LinkedIn posts for:
 
@@ -57,14 +57,14 @@ Generate professional LinkedIn posts for:
 * Workshops and certifications
 * Personal milestones
 
-### 👤 User Profile
+###  User Profile
 
 * Profile Management
 * Personal Dashboard
 * Activity Tracking
 * Saved Opportunities
 
-### 🛠 Admin Dashboard
+###  Admin Dashboard
 
 * Platform Overview
 * User Management
@@ -74,7 +74,7 @@ Generate professional LinkedIn posts for:
 
 ---
 
-## 🏗 Tech Stack
+##  Tech Stack
 
 ### Frontend
 
@@ -109,7 +109,7 @@ Generate professional LinkedIn posts for:
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```bash
 IGNITA/
@@ -139,9 +139,9 @@ IGNITA/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
-### 1️⃣ Clone Repository
+### 1️ Clone Repository
 
 ```bash
 git clone https://github.com/yourusername/ignita.git
@@ -150,7 +150,7 @@ cd ignita
 
 ---
 
-### 2️⃣ Backend Setup
+### 2️ Backend Setup
 
 ```bash
 cd backend
@@ -188,7 +188,7 @@ http://localhost:3001
 
 ---
 
-### 3️⃣ Frontend Setup
+### 3️ Frontend Setup
 
 ```bash
 cd frontend
@@ -217,7 +217,7 @@ http://localhost:3000
 
 ---
 
-## 🔑 User Roles
+##  User Roles
 
 ### User
 
@@ -317,20 +317,18 @@ git push origin feature-name
 
 ---
 
-## 📜 License
+##  License
 
 This project is licensed under the MIT License.
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Sneha Pal**
-
-Built with ❤️ using **Next.js, NestJS, PostgreSQL, and TypeScript**.
 
 ---
 
 ### IGNITA Tagline
 
-> Discover opportunities. Track growth. Showcase your journey. 🚀
+> Discover opportunities. Track growth. Showcase your journey. 
