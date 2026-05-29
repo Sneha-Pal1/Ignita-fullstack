@@ -83,7 +83,13 @@ function alertToActivity(alert: AlertRecord): ActivityItem {
     id: `alert-${alert.id}`,
     action: alert.read ? "Reviewed Alert" : "Created Alert",
     description: alert.message,
-    icon: <HugeiconsIcon icon={BellDotIcon} size="16" className="text-emerald-300" />,
+    icon: (
+      <HugeiconsIcon
+        icon={BellDotIcon}
+        size="16"
+        className="text-emerald-300"
+      />
+    ),
     timestamp: toDate(alert.createdAt),
     category: "alert",
   };
@@ -280,7 +286,9 @@ export default function NotificationPage() {
                         {unreadCount} unread
                       </span>
                     </h1>
-                    <p className="text-sm text-gray-400">All your recent activity</p>
+                    <p className="text-sm text-gray-400">
+                      All your recent activity
+                    </p>
                   </div>
                 </div>
 
@@ -290,7 +298,11 @@ export default function NotificationPage() {
                     onClick={() => setIsCreateAlertOpen(true)}
                     className="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 transition-colors flex items-center gap-2"
                   >
-                    <HugeiconsIcon icon={BellDotIcon} size="16" className="text-amber-400" />
+                    <HugeiconsIcon
+                      icon={BellDotIcon}
+                      size="16"
+                      className="text-amber-400"
+                    />
                     <span>Create</span>
                   </button>
                   {unreadCount > 0 && (
@@ -328,7 +340,13 @@ export default function NotificationPage() {
                   >
                     {tab.label}
                     <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold bg-white/5 text-gray-200">
-                      {tab.id === "unread" ? unreadCount : tab.id === "alerts" ? alerts.length : tab.id === "activity" ? activityItems.length : notifications.length}
+                      {tab.id === "unread"
+                        ? unreadCount
+                        : tab.id === "alerts"
+                          ? alerts.length
+                          : tab.id === "activity"
+                            ? activityItems.length
+                            : notifications.length}
                     </span>
                   </button>
                 ))}
@@ -340,152 +358,184 @@ export default function NotificationPage() {
           <div className="container mx-auto px-4 sm:px-6 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 max-w-full">
-              {/* All Notifications Tab */}
-              {activeTab === "all" && (
-                <div>
-                  {filteredNotifications.length > 0 ? (
-                    <div className="space-y-3">
-                      {filteredNotifications.map((notification) => (
-                        <NotificationCard
-                          key={notification.id}
-                          notification={notification}
-                          onMarkAsRead={handleMarkAsRead}
-                          onDelete={handleDelete}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <EmptyState
-                      icon={<HugeiconsIcon icon={BellDotIcon} size="36" className="text-emerald-400" />}
-                      title="You're all caught up!"
-                      description="No notifications at the moment. Stay tuned for updates on your favorite events."
-                      actionText="Explore Events"
-                      onAction={() => (window.location.href = "/events")}
-                      variant="notifications"
-                    />
-                  )}
-                </div>
-              )}
+                {/* All Notifications Tab */}
+                {activeTab === "all" && (
+                  <div>
+                    {filteredNotifications.length > 0 ? (
+                      <div className="space-y-3">
+                        {filteredNotifications.map((notification) => (
+                          <NotificationCard
+                            key={notification.id}
+                            notification={notification}
+                            onMarkAsRead={handleMarkAsRead}
+                            onDelete={handleDelete}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <EmptyState
+                        icon={
+                          <HugeiconsIcon
+                            icon={BellDotIcon}
+                            size="36"
+                            className="text-emerald-400"
+                          />
+                        }
+                        title="You're all caught up!"
+                        description="No notifications at the moment. Stay tuned for updates on your favorite events."
+                        actionText="Explore Events"
+                        onAction={() => (window.location.href = "/events")}
+                        variant="notifications"
+                      />
+                    )}
+                  </div>
+                )}
 
-              {/* Unread Tab */}
-              {activeTab === "unread" && (
-                <div>
-                  {filteredNotifications.length > 0 ? (
-                    <div className="space-y-3">
-                      {filteredNotifications.map((notification) => (
-                        <NotificationCard
-                          key={notification.id}
-                          notification={notification}
-                          onMarkAsRead={handleMarkAsRead}
-                          onDelete={handleDelete}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <EmptyState
-                      icon={<HugeiconsIcon icon={BellDotIcon} size="36" className="text-emerald-400" />}
-                      title="All marked as read"
-                      description="Great job staying on top of things! Check back later for new notifications."
-                      variant="notifications"
-                    />
-                  )}
-                </div>
-              )}
+                {/* Unread Tab */}
+                {activeTab === "unread" && (
+                  <div>
+                    {filteredNotifications.length > 0 ? (
+                      <div className="space-y-3">
+                        {filteredNotifications.map((notification) => (
+                          <NotificationCard
+                            key={notification.id}
+                            notification={notification}
+                            onMarkAsRead={handleMarkAsRead}
+                            onDelete={handleDelete}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <EmptyState
+                        icon={
+                          <HugeiconsIcon
+                            icon={BellDotIcon}
+                            size="36"
+                            className="text-emerald-400"
+                          />
+                        }
+                        title="All marked as read"
+                        description="Great job staying on top of things! Check back later for new notifications."
+                        variant="notifications"
+                      />
+                    )}
+                  </div>
+                )}
 
-              {/* Alerts Tab */}
-              {activeTab === "alerts" && (
-                <div className="space-y-6">
-                  {alerts.length > 0 ? (
-                    <div className="space-y-4">
-                      {alerts.map((alert) => (
-                        <div
-                          key={alert.id}
-                          className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/8 transition-all group"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                                {alert.message.split(" - ")[0] || "Alert"}
-                              </h3>
-                              <div className="mt-3 flex flex-wrap gap-4 text-sm">
-                                <div>
-                                  <span className="text-gray-500">
-                                    Message:
-                                  </span>
-                                  <p className="text-white font-medium capitalize">
-                                    {alert.message}
-                                  </p>
-                                </div>
-                                <div>
-                                  <span className="text-gray-500">
-                                    Created:
-                                  </span>
-                                  <p className="text-white font-medium">
-                                    {toDate(alert.createdAt).toLocaleString()}
-                                  </p>
+                {/* Alerts Tab */}
+                {activeTab === "alerts" && (
+                  <div className="space-y-6">
+                    {alerts.length > 0 ? (
+                      <div className="space-y-4">
+                        {alerts.map((alert) => (
+                          <div
+                            key={alert.id}
+                            className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/8 transition-all group"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                                  {alert.message.split(" - ")[0] || "Alert"}
+                                </h3>
+                                <div className="mt-3 flex flex-wrap gap-4 text-sm">
+                                  <div>
+                                    <span className="text-gray-500">
+                                      Message:
+                                    </span>
+                                    <p className="text-white font-medium capitalize">
+                                      {alert.message}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <span className="text-gray-500">
+                                      Created:
+                                    </span>
+                                    <p className="text-white font-medium">
+                                      {toDate(alert.createdAt).toLocaleString()}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="flex flex-col gap-2 ml-4">
-                              <button
-                                onClick={() => handleDeleteAlert(alert.id)}
-                                className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm font-medium"
-                              >
-                                Delete
-                              </button>
+                              <div className="flex flex-col gap-2 ml-4">
+                                <button
+                                  onClick={() => handleDeleteAlert(alert.id)}
+                                  className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm font-medium"
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <EmptyState
-                      icon={<HugeiconsIcon icon={BellDotIcon} size="36" className="text-emerald-400" />}
-                      title="No custom alerts yet"
-                      description="Create your first alert to get notified about important events."
-                      actionText="Create Alert"
-                      onAction={() => setIsCreateAlertOpen(true)}
-                      variant="notifications"
-                    />
-                  )}
-                </div>
-              )}
+                        ))}
+                      </div>
+                    ) : (
+                      <EmptyState
+                        icon={
+                          <HugeiconsIcon
+                            icon={BellDotIcon}
+                            size="36"
+                            className="text-emerald-400"
+                          />
+                        }
+                        title="No custom alerts yet"
+                        description="Create your first alert to get notified about important events."
+                        actionText="Create Alert"
+                        onAction={() => setIsCreateAlertOpen(true)}
+                        variant="notifications"
+                      />
+                    )}
+                  </div>
+                )}
 
-              {/* Activity Tab */}
-              {activeTab === "activity" && (
-                <div>
-                  {activityItems.length > 0 ? (
-                    <ActivityTimeline activities={activityItems} />
-                  ) : (
-                    <EmptyState
-                      icon={<HugeiconsIcon icon={Calendar01Icon} size="36" className="text-emerald-400" />}
-                      title="No activity yet"
-                      description="Your activity will appear here as you interact with events."
-                      variant="notifications"
-                    />
-                  )}
-                </div>
-              )}
-            </div>
+                {/* Activity Tab */}
+                {activeTab === "activity" && (
+                  <div>
+                    {activityItems.length > 0 ? (
+                      <ActivityTimeline activities={activityItems} />
+                    ) : (
+                      <EmptyState
+                        icon={
+                          <HugeiconsIcon
+                            icon={Calendar01Icon}
+                            size="36"
+                            className="text-emerald-400"
+                          />
+                        }
+                        title="No activity yet"
+                        description="Your activity will appear here as you interact with events."
+                        variant="notifications"
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Right summary panel */}
               <aside className="hidden lg:block">
                 <div className="sticky top-24 p-4 rounded-md bg-white/3 border border-white/6">
-                  <h4 className="text-sm font-semibold text-white mb-3">Summary</h4>
+                  <h4 className="text-sm font-semibold text-white mb-3">
+                    Summary
+                  </h4>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-xs text-gray-400">Unread</p>
-                        <p className="text-lg font-bold text-white">{unreadCount}</p>
+                        <p className="text-lg font-bold text-white">
+                          {unreadCount}
+                        </p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-400">Active Alerts</p>
-                        <p className="text-lg font-bold text-white">{alerts.length}</p>
+                        <p className="text-lg font-bold text-white">
+                          {alerts.length}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-xs text-gray-400">Upcoming Deadlines</p>
+                      <p className="text-xs text-gray-400">
+                        Upcoming Deadlines
+                      </p>
                       <ul className="mt-2 space-y-2 max-h-36 overflow-auto">
                         {notifications
                           .filter((n) => n.type?.toLowerCase().includes("dead"))
@@ -494,7 +544,9 @@ export default function NotificationPage() {
                             <li key={n.id} className="text-sm text-gray-200">
                               <div className="flex items-center justify-between">
                                 <span className="truncate">{n.title}</span>
-                                <span className="text-xs text-gray-400 ml-2">{new Date(n.timestamp).toLocaleDateString()}</span>
+                                <span className="text-xs text-gray-400 ml-2">
+                                  {new Date(n.timestamp).toLocaleDateString()}
+                                </span>
                               </div>
                             </li>
                           ))}
@@ -505,10 +557,15 @@ export default function NotificationPage() {
                       <p className="text-xs text-gray-400">Recent Bookmarks</p>
                       <ul className="mt-2 space-y-2 max-h-36 overflow-auto">
                         {notifications
-                          .filter((n) => n.type === "bookmark" || !!n.eventTitle)
+                          .filter(
+                            (n) => n.type === "bookmark" || !!n.eventTitle,
+                          )
                           .slice(0, 4)
                           .map((n) => (
-                            <li key={n.id} className="text-sm text-gray-200 truncate">
+                            <li
+                              key={n.id}
+                              className="text-sm text-gray-200 truncate"
+                            >
                               {n.eventTitle || n.title}
                             </li>
                           ))}

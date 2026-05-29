@@ -14,7 +14,9 @@ interface EmptyStateProps {
 }
 
 export default function EmptyState({
-  icon = <HugeiconsIcon icon={Note01Icon} size="36" className="text-emerald-400" />,
+  icon = (
+    <HugeiconsIcon icon={Note01Icon} size="36" className="text-emerald-400" />
+  ),
   title,
   description,
   actionText,

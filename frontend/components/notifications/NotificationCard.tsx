@@ -72,19 +72,22 @@ export default function NotificationCard({
       onMouseLeave={() => setIsHovered(false)}
       className={`relative transition-colors duration-150 rounded-md border ${!notification.isRead ? "border-emerald-600/30" : "border-white/6"} bg-white/3 hover:bg-white/6 p-3 flex items-start gap-3`}
     >
-      <div className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-lg" style={{ background: notification.color || undefined }}>
+      <div
+        className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-lg"
+        style={{ background: notification.color || undefined }}
+      >
         {/* category icon */}
         <HugeiconsIcon
           icon={
             cat.accent === "amber"
               ? Clock01Icon
               : cat.accent === "blue"
-              ? Calendar01Icon
-              : cat.accent === "green"
-              ? BellDotIcon
-              : cat.accent === "purple"
-              ? Note01Icon
-              : Note01Icon
+                ? Calendar01Icon
+                : cat.accent === "green"
+                  ? BellDotIcon
+                  : cat.accent === "purple"
+                    ? Note01Icon
+                    : Note01Icon
           }
           size="18"
           className="text-white"
@@ -94,20 +97,24 @@ export default function NotificationCard({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-sm font-semibold text-white truncate">{notification.title}</span>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${accentBg} ml-1`}>
-              <span className="mr-1"> 
+            <span className="text-sm font-semibold text-white truncate">
+              {notification.title}
+            </span>
+            <span
+              className={`text-xs font-medium px-2 py-0.5 rounded-full ${accentBg} ml-1`}
+            >
+              <span className="mr-1">
                 <HugeiconsIcon
                   icon={
                     cat.accent === "amber"
                       ? Clock01Icon
                       : cat.accent === "blue"
-                      ? Calendar01Icon
-                      : cat.accent === "green"
-                      ? BellDotIcon
-                      : cat.accent === "purple"
-                      ? Note01Icon
-                      : Note01Icon
+                        ? Calendar01Icon
+                        : cat.accent === "green"
+                          ? BellDotIcon
+                          : cat.accent === "purple"
+                            ? Note01Icon
+                            : Note01Icon
                   }
                   size="14"
                   className="inline text-current"
@@ -116,20 +123,39 @@ export default function NotificationCard({
               {cat.label}
             </span>
           </div>
-          <div className="text-xs text-gray-400 whitespace-nowrap">{formatTime(timestamp)}</div>
+          <div className="text-xs text-gray-400 whitespace-nowrap">
+            {formatTime(timestamp)}
+          </div>
         </div>
 
-        <p className="text-xs text-gray-300 mt-1 truncate line-clamp-2">{notification.message}</p>
+        <p className="text-xs text-gray-300 mt-1 truncate line-clamp-2">
+          {notification.message}
+        </p>
 
         <div className="mt-2 flex items-center gap-2">
           {notification.actionUrl && (
-            <Link href={notification.actionUrl} className="text-xs text-emerald-300 bg-emerald-600/8 px-2 py-1 rounded-md hover:bg-emerald-600/12">View</Link>
+            <Link
+              href={notification.actionUrl}
+              className="text-xs text-emerald-300 bg-emerald-600/8 px-2 py-1 rounded-md hover:bg-emerald-600/12"
+            >
+              View
+            </Link>
           )}
           {!notification.isRead && onMarkAsRead && (
-            <button onClick={() => onMarkAsRead(notification.id)} className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-white/5">Mark read</button>
+            <button
+              onClick={() => onMarkAsRead(notification.id)}
+              className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-white/5"
+            >
+              Mark read
+            </button>
           )}
           {onDelete && (
-            <button onClick={() => onDelete(notification.id)} className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10">Dismiss</button>
+            <button
+              onClick={() => onDelete(notification.id)}
+              className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10"
+            >
+              Dismiss
+            </button>
           )}
         </div>
       </div>
