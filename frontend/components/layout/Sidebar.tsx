@@ -10,6 +10,7 @@ import {
   BellDotIcon,
   TrendingUpDownIcon,
   Share01Icon,
+  HomeIcon,
   UserIcon,
   Settings01Icon,
   Logout01Icon,
@@ -21,6 +22,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navItems = [
+  { label: "Home", icon: HomeIcon, href: "/", section: "main" },
   { label: "Dashboard", icon: GridIcon, href: "/Dashboard", section: "main" },
   { label: "Events", icon: Calendar01Icon, href: "/events", section: "main" },
   {
