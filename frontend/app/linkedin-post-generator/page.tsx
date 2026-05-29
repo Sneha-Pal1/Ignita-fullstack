@@ -13,6 +13,7 @@ import GeneratorForm from "@/components/linkedin/GeneratorForm";
 import PostPreview from "@/components/linkedin/PostPreview";
 import ActionButtons from "@/components/linkedin/ActionButtons";
 import { generateMockPost, GeneratedPost } from "@/lib/data/linkedinTemplates";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 interface FormData {
   achievementType: string;
@@ -92,102 +93,108 @@ export default function LinkedInGeneratorPage() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Briefcase className="w-8 h-8" />
-            <h1 className="text-3xl font-bold">LinkedIn Post Generator</h1>
-          </div>
-          <p className="text-zinc-400">
-            Transform your achievements into compelling LinkedIn posts with
-            AI-powered suggestions
-          </p>
-        </div>
-      </div>
+    <div className="flex min-h-screen bg-zinc-950 text-zinc-100">
+      <Sidebar />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Panel - Form */}
-          <div className="space-y-6">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-                <Clipboard className="w-5 h-5" /> Your Achievement
-              </h2>
-              <GeneratorForm
-                onSubmit={handleGeneratePost}
-                isLoading={isLoading}
-              />
-            </div>
-          </div>
-
-          {/* Right Panel - Preview & Actions */}
-          <div className="space-y-6">
-            {/* Post Preview */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-                <Eye className="w-5 h-5" /> Live Preview
-              </h2>
-              <PostPreview post={post} isLoading={isLoading} />
-            </div>
-
-            {/* Action Buttons */}
-            {post && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-                <h3 className="text-sm font-medium text-zinc-300 mb-3">
-                  Actions
-                </h3>
-                <ActionButtons
-                  isLoading={isLoading}
-                  isGenerated={!!post}
-                  onGenerate={() =>
-                    currentFormData && handleGeneratePost(currentFormData)
-                  }
-                  onRegenerate={handleRegenerate}
-                  onCopy={handleCopy}
-                  onClear={handleClear}
-                />
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
+        <main className="min-h-screen bg-zinc-950 text-zinc-100">
+          {/* Header */}
+          <div className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex items-center gap-3 mb-2">
+                <Briefcase className="w-8 h-8" />
+                <h1 className="text-3xl font-bold">LinkedIn Post Generator</h1>
               </div>
-            )}
+              <p className="text-zinc-400">
+                Transform your achievements into compelling LinkedIn posts with
+                AI-powered suggestions
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Tips Section */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-            <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
-              <Lightbulb className="w-4 h-4" />
-              Pro Tip
-            </h3>
-            <p className="text-sm text-zinc-400">
-              Be specific in your description—include challenges faced and
-              solutions implemented
-            </p>
+          {/* Main Content */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Panel - Form */}
+              <div className="space-y-6">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+                    <Clipboard className="w-5 h-5" /> Your Achievement
+                  </h2>
+                  <GeneratorForm
+                    onSubmit={handleGeneratePost}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </div>
+
+              {/* Right Panel - Preview & Actions */}
+              <div className="space-y-6">
+                {/* Post Preview */}
+                <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-zinc-100 mb-4 flex items-center gap-2">
+                    <Eye className="w-5 h-5" /> Live Preview
+                  </h2>
+                  <PostPreview post={post} isLoading={isLoading} />
+                </div>
+
+                {/* Action Buttons */}
+                {post && (
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+                    <h3 className="text-sm font-medium text-zinc-300 mb-3">
+                      Actions
+                    </h3>
+                    <ActionButtons
+                      isLoading={isLoading}
+                      isGenerated={!!post}
+                      onGenerate={() =>
+                        currentFormData && handleGeneratePost(currentFormData)
+                      }
+                      onRegenerate={handleRegenerate}
+                      onCopy={handleCopy}
+                      onClear={handleClear}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Tips Section */}
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4" />
+                  Pro Tip
+                </h3>
+                <p className="text-sm text-zinc-400">
+                  Be specific in your description—include challenges faced and
+                  solutions implemented
+                </p>
+              </div>
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
+                  <Target className="w-4 h-4" />
+                  Best Practice
+                </h3>
+                <p className="text-sm text-zinc-400">
+                  Use the appropriate tone for your audience. Technical tone
+                  works best for engineering communities
+                </p>
+              </div>
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
+                <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  Quick Start
+                </h3>
+                <p className="text-sm text-zinc-400">
+                  Try different tones and regenerate posts to find the perfect
+                  version for your audience
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-            <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              Best Practice
-            </h3>
-            <p className="text-sm text-zinc-400">
-              Use the appropriate tone for your audience. Technical tone works
-              best for engineering communities
-            </p>
-          </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-            <h3 className="font-medium text-emerald-400 mb-2 flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Quick Start
-            </h3>
-            <p className="text-sm text-zinc-400">
-              Try different tones and regenerate posts to find the perfect
-              version for your audience
-            </p>
-          </div>
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 }

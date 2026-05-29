@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useAuthContext } from "@/lib/auth-context";
 import { authStorage } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 interface Bookmark {
   id: string;
@@ -124,44 +125,50 @@ const BookmarksPage = () => {
     .filter((event) => event !== null && event !== undefined);
 
   return (
-    <main className="px-6 py-10 max-w-7xl mx-auto">
-      {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold">My Bookmarks</h1>
-        <p className="text-gray-400 mt-2">Events you've saved for later</p>
-      </div>
+    <div className="flex min-h-screen bg-zinc-950">
+      <Sidebar />
 
-      {/* CONTENT */}
-      {authLoading || isLoading ? (
-        <div className="text-gray-400 text-center py-12">Loading...</div>
-      ) : error ? (
-        <div className="text-red-400 text-center py-12">{error}</div>
-      ) : bookmarkedEvents.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {bookmarkedEvents.map((event) => (
-            <EventCard
-              key={event._bookmarkId}
-              {...event}
-              showDetailsButton={true}
-              isBookmarkCard={true}
-              onDelete={() =>
-                handleDeleteBookmark(event._bookmarkId, event.slug)
-              }
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-400 mb-4">No bookmarks yet</p>
-          <Link
-            href="/events"
-            className="inline-block px-6 py-2 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            Explore Events
-          </Link>
-        </div>
-      )}
-    </main>
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
+        <main className="px-6 py-10 max-w-7xl mx-auto">
+          {/* HEADER */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-semibold">My Bookmarks</h1>
+            <p className="text-gray-400 mt-2">Events you've saved for later</p>
+          </div>
+
+          {/* CONTENT */}
+          {authLoading || isLoading ? (
+            <div className="text-gray-400 text-center py-12">Loading...</div>
+          ) : error ? (
+            <div className="text-red-400 text-center py-12">{error}</div>
+          ) : bookmarkedEvents.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {bookmarkedEvents.map((event) => (
+                <EventCard
+                  key={event._bookmarkId}
+                  {...event}
+                  showDetailsButton={true}
+                  isBookmarkCard={true}
+                  onDelete={() =>
+                    handleDeleteBookmark(event._bookmarkId, event.slug)
+                  }
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-400 mb-4">No bookmarks yet</p>
+              <Link
+                href="/events"
+                className="inline-block px-6 py-2 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Explore Events
+              </Link>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
   );
 };
 
