@@ -1,92 +1,230 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowLeft01Icon,
+  BellDotIcon,
+  Calendar01Icon,
+  Clock01Icon,
+  Note01Icon,
+} from "@hugeicons/core-free-icons";
+import { useAuthContext } from "@/lib/auth-context";
+import {
+  alertsAPI,
+  notificationAPI,
+  type NotificationRecord,
+} from "@/lib/api-endpoints";
 import NotificationCard from "@/components/notifications/NotificationCard";
 import CreateAlertModal from "@/components/notifications/CreateAlertModal";
 import ActivityTimeline from "@/components/notifications/ActivityTimeline";
 import EmptyState from "@/components/notifications/EmptyState";
-import {
-  mockNotifications,
-  mockAlerts,
-  mockActivityLog,
-  type Notification,
-} from "@/lib/data/notifications-data";
-import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { BellDotIcon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 type TabType = "all" | "unread" | "alerts" | "activity";
 
+interface AlertRecord {
+  id: string;
+  message: string;
+  read: boolean;
+  createdAt?: string;
+}
+
+interface ActivityItem {
+  id: string;
+  action: string;
+  description: string;
+  icon: string;
+  timestamp: Date;
+  category: "bookmark" | "registration" | "alert" | "post" | "event";
+}
+
+function toDate(value?: string) {
+  if (!value) {
+    return new Date();
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
+function notificationToActivity(
+  notification: NotificationRecord,
+): ActivityItem {
+  return {
+    id: `notif-${notification.id}`,
+    action: notification.isRead ? "Reviewed Notification" : "New Notification",
+    description: notification.message,
+    icon: notification.icon || "🔔",
+    timestamp: toDate(notification.timestamp),
+    category: "alert",
+  };
+}
+
+function alertToActivity(alert: AlertRecord): ActivityItem {
+  return {
+    id: `alert-${alert.id}`,
+    action: alert.read ? "Reviewed Alert" : "Created Alert",
+    description: alert.message,
+    icon: "🔔",
+    timestamp: toDate(alert.createdAt),
+    category: "alert",
+  };
+}
+
 export default function NotificationPage() {
+  const { user, isLoading: authLoading } = useAuthContext();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("all");
-  const [notifications, setNotifications] = useState(mockNotifications);
-  const [alerts, setAlerts] = useState(mockAlerts);
+  const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+  const [alerts, setAlerts] = useState<AlertRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCreateAlertOpen, setIsCreateAlertOpen] = useState(false);
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [authLoading, router, user]);
 
-  // Filter notifications based on active tab
-  const getFilteredNotifications = () => {
+  useEffect(() => {
+    let mounted = true;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const [notificationData, alertData] = await Promise.all([
+          notificationAPI.getAll(),
+          alertsAPI.getAll(),
+        ]);
+
+        if (!mounted) {
+          return;
+        }
+
+        setNotifications(notificationData || []);
+        setAlerts(alertData || []);
+      } catch (error) {
+        console.error("Failed to load notification data:", error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (!authLoading && user) {
+      loadData();
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [authLoading, user]);
+
+  const unreadCount = useMemo(
+    () => notifications.filter((notification) => !notification.isRead).length,
+    [notifications],
+  );
+
+  const activityItems = useMemo(() => {
+    const notificationActivity = notifications.map(notificationToActivity);
+    const alertActivity = alerts.map(alertToActivity);
+
+    return [...notificationActivity, ...alertActivity].sort(
+      (left, right) => right.timestamp.getTime() - left.timestamp.getTime(),
+    );
+  }, [alerts, notifications]);
+
+  const filteredNotifications = useMemo(() => {
     switch (activeTab) {
       case "unread":
-        return notifications.filter((n) => !n.isRead);
+        return notifications.filter((notification) => !notification.isRead);
       case "alerts":
-        return alerts.length > 0
-          ? notifications.filter((n) =>
-              alerts.some((a) => a.eventTitle === n.eventTitle),
-            )
-          : [];
+        return notifications;
       case "all":
       default:
         return notifications;
     }
+  }, [activeTab, notifications]);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await notificationAPI.markAsRead(id);
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === id
+            ? { ...notification, isRead: true }
+            : notification,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
   };
 
-  const filteredNotifications = getFilteredNotifications();
-
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-    );
+  const handleDelete = async (id: string) => {
+    try {
+      await notificationAPI.delete(id);
+      setNotifications((prev) =>
+        prev.filter((notification) => notification.id !== id),
+      );
+    } catch (error) {
+      console.error("Failed to delete notification:", error);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const handleDeleteAlert = async (id: string) => {
+    try {
+      await alertsAPI.delete(id);
+      setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+    } catch (error) {
+      console.error("Failed to delete alert:", error);
+    }
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+  const handleMarkAllAsRead = async () => {
+    try {
+      await notificationAPI.markAllAsRead();
+      setNotifications((prev) =>
+        prev.map((notification) => ({ ...notification, isRead: true })),
+      );
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+    }
   };
 
-  const handleCreateAlert = (alertData: {
+  const handleCreateAlert = async (alertData: {
     eventTitle: string;
     reminderType: string;
     reminderTime: string;
   }) => {
-    const newAlert = {
-      id: `alert-${Date.now()}`,
-      ...alertData,
-      isActive: true,
-      createdAt: new Date(),
-      nextNotification: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    };
-    setAlerts((prev) => [newAlert, ...prev]);
-    setIsCreateAlertOpen(false);
+    const message = `${alertData.eventTitle} - ${alertData.reminderType.replace(/_/g, " ")} at ${alertData.reminderTime}`;
 
-    // Show success toast
-    alert("Alert created successfully!");
+    try {
+      await alertsAPI.create(message);
+      const [notificationData, alertDataResponse] = await Promise.all([
+        notificationAPI.getAll(),
+        alertsAPI.getAll(),
+      ]);
+      setNotifications(notificationData || []);
+      setAlerts(alertDataResponse || []);
+      setIsCreateAlertOpen(false);
+    } catch (error) {
+      console.error("Failed to create alert:", error);
+      alert("Failed to create alert");
+    }
   };
 
-  const handleToggleAlert = (id: string) => {
-    setAlerts((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, isActive: !a.isActive } : a)),
+  if (authLoading || isLoading) {
+    return (
+      <main className="min-h-screen bg-zinc-950 flex items-center justify-center text-gray-400">
+        Loading...
+      </main>
     );
-  };
-
-  const handleDeleteAlert = (id: string) => {
-    setAlerts((prev) => prev.filter((a) => a.id !== id));
-  };
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-950">
@@ -151,7 +289,7 @@ export default function NotificationPage() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => setIsCreateAlertOpen(true)}
-                    className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-500 hover:to-teal-500 transition-all duration-200 flex items-center gap-2"
+                    className="px-6 py-3 rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-500 hover:to-teal-500 transition-all duration-200 flex items-center gap-2"
                   >
                     <span>🔔</span>
                     <span>Create Alert</span>
@@ -192,7 +330,7 @@ export default function NotificationPage() {
                   {
                     id: "activity" as TabType,
                     label: "Activity",
-                    count: mockActivityLog.length,
+                    count: activityItems.length,
                   },
                 ].map((tab) => (
                   <button
@@ -279,49 +417,33 @@ export default function NotificationPage() {
                       {alerts.map((alert) => (
                         <div
                           key={alert.id}
-                          className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/[0.08] transition-all group"
+                          className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/8 transition-all group"
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                                {alert.eventTitle}
+                                {alert.message.split(" - ")[0] || "Alert"}
                               </h3>
                               <div className="mt-3 flex flex-wrap gap-4 text-sm">
                                 <div>
                                   <span className="text-gray-500">
-                                    Reminder Type:
+                                    Message:
                                   </span>
                                   <p className="text-white font-medium capitalize">
-                                    {alert.reminderType}
+                                    {alert.message}
                                   </p>
                                 </div>
                                 <div>
-                                  <span className="text-gray-500">Time:</span>
+                                  <span className="text-gray-500">
+                                    Created:
+                                  </span>
                                   <p className="text-white font-medium">
-                                    {alert.reminderTime}
-                                  </p>
-                                </div>
-                                <div>
-                                  <span className="text-gray-500">Next:</span>
-                                  <p className="text-white font-medium">
-                                    {new Date(
-                                      alert.nextNotification,
-                                    ).toLocaleDateString()}
+                                    {toDate(alert.createdAt).toLocaleString()}
                                   </p>
                                 </div>
                               </div>
                             </div>
                             <div className="flex flex-col gap-2 ml-4">
-                              <button
-                                onClick={() => handleToggleAlert(alert.id)}
-                                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                                  alert.isActive
-                                    ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                                    : "bg-red-500/20 text-red-400 hover:bg-red-500/30"
-                                }`}
-                              >
-                                {alert.isActive ? "Active" : "Inactive"}
-                              </button>
                               <button
                                 onClick={() => handleDeleteAlert(alert.id)}
                                 className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-sm font-medium"
@@ -349,8 +471,8 @@ export default function NotificationPage() {
               {/* Activity Tab */}
               {activeTab === "activity" && (
                 <div>
-                  {mockActivityLog.length > 0 ? (
-                    <ActivityTimeline activities={mockActivityLog} />
+                  {activityItems.length > 0 ? (
+                    <ActivityTimeline activities={activityItems} />
                   ) : (
                     <EmptyState
                       icon="📊"
@@ -369,7 +491,7 @@ export default function NotificationPage() {
             <CreateAlertModal
               isOpen={isCreateAlertOpen}
               onClose={() => setIsCreateAlertOpen(false)}
-              onSubmit={handleCreateAlert}
+              onSave={handleCreateAlert}
             />
           )}
         </main>

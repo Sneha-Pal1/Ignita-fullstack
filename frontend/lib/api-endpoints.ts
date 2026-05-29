@@ -123,11 +123,61 @@ export const bookmarkAPI = {
 
 export const notificationAPI = {
   getAll: async () => {
-    return apiClient.get("/notification");
+    return apiClient.get<NotificationRecord[]>("/notification");
   },
 
   markAsRead: async (id: string) => {
-    return apiClient.put(`/notification/${id}`, { read: true });
+    return apiClient.patch(`/notification/${id}/read`);
+  },
+
+  markAllAsRead: async () => {
+    return apiClient.patch("/notification/read-all");
+  },
+
+  getUnreadCount: async () => {
+    return apiClient.get<number>("/notification/unread-count");
+  },
+
+  delete: async (id: string) => {
+    return apiClient.delete(`/notification/${id}`);
+  },
+};
+
+export interface NotificationRecord {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  eventTitle?: string;
+  timestamp: string;
+  isRead: boolean;
+  icon: string;
+  color: string;
+  actionUrl?: string;
+}
+
+export const alertsAPI = {
+  getAll: async () => {
+    return apiClient.get<
+      Array<{
+        id: string;
+        message: string;
+        read: boolean;
+        createdAt?: string;
+      }>
+    >("/alerts");
+  },
+
+  create: async (message: string) => {
+    return apiClient.post("/alerts", { message });
+  },
+
+  markAsRead: async (id: string) => {
+    return apiClient.patch(`/alerts/${id}/read`);
+  },
+
+  delete: async (id: string) => {
+    return apiClient.delete(`/alerts/${id}`);
   },
 };
 

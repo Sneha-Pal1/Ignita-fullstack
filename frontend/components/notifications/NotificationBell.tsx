@@ -2,15 +2,42 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { mockNotifications } from "@/lib/data/notifications-data";
-import NotificationCard from "./NotificationCard";
+import { notificationAPI, type NotificationRecord } from "@/lib/api-endpoints";
+import { formatRelativeTime } from "@/lib/notifications-utils";
+import { useAuthContext } from "@/lib/auth-context";
 
 export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuthContext();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      return;
+    }
+
+    let mounted = true;
+    const loadNotifications = async () => {
+      try {
+        const data = await notificationAPI.getAll();
+        if (mounted) {
+          setNotifications(data || []);
+        }
+      } catch (error) {
+        console.error("Failed to load notifications:", error);
+      }
+    };
+
+    loadNotifications();
+
+    return () => {
+      mounted = false;
+    };
+  }, [user]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -27,18 +54,13 @@ export default function NotificationBell() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-    );
-  };
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-  };
-
-  const handleDelete = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const handleMarkAllAsRead = async () => {
+    try {
+      await notificationAPI.markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    } catch (error) {
+      console.error("Failed to mark notifications as read:", error);
+    }
   };
 
   const latestNotifications = notifications.slice(0, 3);
@@ -69,8 +91,8 @@ export default function NotificationBell() {
         {/* Unread Badge */}
         {unreadCount > 0 && (
           <div className="absolute -top-1 -right-1 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full blur animate-pulse" />
-            <div className="relative w-5 h-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute inset-0 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full blur animate-pulse" />
+            <div className="relative w-5 h-5 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
               {unreadCount > 9 ? "9+" : unreadCount}
             </div>
           </div>
@@ -116,10 +138,10 @@ export default function NotificationBell() {
                 {latestNotifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-200 cursor-pointer group"
+                    className="p-3 rounded-lg bg-white/2 hover:bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-200 cursor-pointer group"
                   >
                     <div className="flex gap-3">
-                      <div className="text-lg flex-shrink-0 mt-1">
+                      <div className="text-lg shrink-0 mt-1">
                         {notification.icon}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -130,14 +152,11 @@ export default function NotificationBell() {
                           {notification.message}
                         </p>
                         <span className="text-xs text-gray-500 mt-1 block">
-                          {new Date(notification.timestamp).toLocaleTimeString(
-                            [],
-                            { hour: "2-digit", minute: "2-digit" },
-                          )}
+                          {formatRelativeTime(new Date(notification.timestamp))}
                         </span>
                       </div>
                       {!notification.isRead && (
-                        <div className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-1" />
+                        <div className="shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-1" />
                       )}
                     </div>
                   </div>
@@ -154,7 +173,7 @@ export default function NotificationBell() {
           <div className="p-3 border-t border-white/10 flex gap-2">
             <Link
               href="/alerts"
-              className="flex-1 px-3 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 transition-all duration-200 text-center"
+              className="flex-1 px-3 py-2 text-xs font-medium rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 transition-all duration-200 text-center"
             >
               View All
             </Link>

@@ -26,10 +26,20 @@ export class AlertsService {
   }
 
   async markAsRead(alertId: string) {
-    return this.alertRepo.update(alertId, { read: true });
+    return this.alertRepo
+      .createQueryBuilder()
+      .update(Alert)
+      .set({ read: true })
+      .where('id = :alertId', { alertId })
+      .execute();
   }
 
   async delete(alertId: string) {
-    return this.alertRepo.delete(alertId);
+    return this.alertRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Alert)
+      .where('id = :alertId', { alertId })
+      .execute();
   }
 }

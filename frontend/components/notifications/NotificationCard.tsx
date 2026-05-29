@@ -1,11 +1,11 @@
 "use client";
 
-import { Notification } from "@/lib/data/notifications-data";
+import { NotificationRecord } from "@/lib/api-endpoints";
 import Link from "next/link";
 import { useState } from "react";
 
 interface NotificationCardProps {
-  notification: Notification;
+  notification: NotificationRecord & { timestamp: string | Date };
   onMarkAsRead?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
@@ -31,6 +31,11 @@ export default function NotificationCard({
     return date.toLocaleDateString();
   };
 
+  const timestamp =
+    notification.timestamp instanceof Date
+      ? notification.timestamp
+      : new Date(notification.timestamp);
+
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
@@ -43,8 +48,8 @@ export default function NotificationCard({
       <div
         className={`absolute inset-0 rounded-xl transition-all duration-300 ${
           !notification.isRead
-            ? "bg-gradient-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/30"
-            : "bg-white/[0.03] border border-white/10"
+            ? "bg-linear-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/30"
+            : "bg-white/3 border border-white/10"
         } ${isHovered ? "border-emerald-500/50 bg-emerald-500/10" : ""}`}
         style={{
           boxShadow: isHovered
@@ -55,13 +60,13 @@ export default function NotificationCard({
 
       {/* Unread indicator */}
       {!notification.isRead && (
-        <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full animate-pulse" />
+        <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-linear-to-b from-emerald-500 to-teal-500 rounded-full animate-pulse" />
       )}
 
       <div className="relative p-4 flex gap-4">
         {/* Icon */}
         <div
-          className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-xl transition-all duration-300 ${
+          className={`shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-xl transition-all duration-300 ${
             isHovered ? "scale-110" : "scale-100"
           }`}
           style={{
@@ -78,8 +83,8 @@ export default function NotificationCard({
             <h3 className="text-sm font-semibold text-white truncate">
               {notification.title}
             </h3>
-            <span className="text-xs text-gray-400 flex-shrink-0 whitespace-nowrap">
-              {formatTime(notification.timestamp)}
+            <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">
+              {formatTime(timestamp)}
             </span>
           </div>
 
@@ -98,7 +103,7 @@ export default function NotificationCard({
             {notification.actionUrl && (
               <Link
                 href={notification.actionUrl}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 transition-all duration-200"
+                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 transition-all duration-200"
               >
                 View Event
               </Link>
@@ -124,7 +129,7 @@ export default function NotificationCard({
 
         {/* Unread badge */}
         {!notification.isRead && (
-          <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 mt-1.5 animate-pulse" />
+          <div className="shrink-0 w-2 h-2 rounded-full bg-linear-to-r from-emerald-500 to-teal-500 mt-1.5 animate-pulse" />
         )}
       </div>
     </div>

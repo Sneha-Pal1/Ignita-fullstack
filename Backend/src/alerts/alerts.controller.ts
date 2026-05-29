@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -20,6 +21,12 @@ export class AlertsController {
   findAllForUser(@Req() req) {
     return this.alertService.findAllForUser(req.user.id);
   }
+
+  @Post()
+  createFromBody(@Body() body: { message: string }, @Req() req) {
+    return this.alertService.create(body.message, req.user.id);
+  }
+
   @Post(':message')
   create(@Param('message') message: string, @Req() req) {
     return this.alertService.create(message, req.user.id);
