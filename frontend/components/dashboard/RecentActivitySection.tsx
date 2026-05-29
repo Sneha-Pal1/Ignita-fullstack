@@ -1,66 +1,29 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Bookmark01Icon,
-  Calendar01Icon,
-  Note01Icon,
-  Clock01Icon,
-} from "@hugeicons/core-free-icons";
 
 interface ActivityItem {
   id: string;
-  type: "bookmark" | "event" | "post" | "alert";
+  type: "bookmark" | "alert";
   title: string;
   description: string;
   time: string;
   icon: any;
 }
 
-const recentActivities: ActivityItem[] = [
-  {
-    id: "1",
-    type: "event",
-    title: "TechCrunch Disrupt 2026",
-    description: "You registered for this event",
-    time: "2 hours ago",
-    icon: Calendar01Icon,
-  },
-  {
-    id: "2",
-    type: "bookmark",
-    title: "Web3 Development Bootcamp",
-    description: "Added to bookmarks",
-    time: "5 hours ago",
-    icon: Bookmark01Icon,
-  },
-  {
-    id: "3",
-    type: "post",
-    title: "LinkedIn Post Generated",
-    description: "Your AI post is ready to publish",
-    time: "1 day ago",
-    icon: Note01Icon,
-  },
-  {
-    id: "4",
-    type: "alert",
-    title: "Application Deadline Reminder",
-    description: "Y Combinator applications close in 3 days",
-    time: "1 day ago",
-    icon: Clock01Icon,
-  },
-];
-
 const typeColorMap: Record<string, string> = {
   bookmark: "text-teal-400 bg-teal-500/10",
-  event: "text-emerald-400 bg-emerald-500/10",
-  post: "text-cyan-400 bg-cyan-500/10",
   alert: "text-amber-400 bg-amber-500/10",
 };
 
-export const RecentActivitySection = () => {
-  if (recentActivities.length === 0) {
+interface RecentActivitySectionProps {
+  activities: ActivityItem[];
+}
+
+export const RecentActivitySection = ({
+  activities,
+}: RecentActivitySectionProps) => {
+  if (activities.length === 0) {
     return (
       <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
         <p className="text-zinc-400 text-sm">No recent activities yet</p>
@@ -80,7 +43,7 @@ export const RecentActivitySection = () => {
 
       {/* Activity List */}
       <div className="divide-y divide-zinc-800">
-        {recentActivities.map((activity, index) => (
+        {activities.map((activity) => (
           <div
             key={activity.id}
             className="p-4 flex gap-4 hover:bg-zinc-800/30 transition-colors last:rounded-b-xl"

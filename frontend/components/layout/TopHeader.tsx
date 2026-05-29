@@ -2,19 +2,23 @@
 
 import { useAuthContext } from "@/lib/auth-context";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, BellDotIcon } from "@hugeicons/core-free-icons";
-import { Zap } from "lucide-react";
+import {
+  Search01Icon,
+  BellDotIcon,
+  Bookmark01Icon,
+} from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useState } from "react";
 
-export const TopHeader = () => {
+interface TopHeaderProps {
+  savedCount: number;
+}
+
+export const TopHeader = ({ savedCount }: TopHeaderProps) => {
   const { user } = useAuthContext();
   const [searchFocused, setSearchFocused] = useState(false);
   const firstName = user?.name?.split(" ")[0] || "User";
   const isAdmin = user?.role === "ADMIN";
-
-  // Get current day info for streak badge
-  const streakDays = 7; // This should come from user data
 
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm">
@@ -31,11 +35,16 @@ export const TopHeader = () => {
             <div className="sm:hidden">
               <p className="text-sm font-semibold text-white">{firstName}</p>
             </div>
-            {/* Productivity Streak Badge - Hidden on small screens */}
+            {/* Live bookmark badge - Hidden on small screens */}
             <div className="ml-auto lg:ml-6 hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
-              <Zap className="w-4 h-4 text-emerald-400" strokeWidth={2} />
+              <HugeiconsIcon
+                icon={Bookmark01Icon}
+                size="16"
+                strokeWidth={2}
+                className="text-emerald-400"
+              />
               <span className="text-sm font-medium text-emerald-400 hidden sm:inline">
-                {streakDays} day streak
+                {savedCount} saved
               </span>
             </div>
           </div>

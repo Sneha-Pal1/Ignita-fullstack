@@ -1,95 +1,244 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuthContext } from "@/lib/auth-context";
+import { apiClient } from "@/lib/api-client";
 import NotificationCard from "@/components/notifications/NotificationCard";
 import CreateAlertModal from "@/components/notifications/CreateAlertModal";
 import ActivityTimeline from "@/components/notifications/ActivityTimeline";
 import EmptyState from "@/components/notifications/EmptyState";
+import { type Notification } from "@/lib/data/notifications-data";
 import {
-  mockNotifications,
-  mockAlerts,
-  mockActivityLog,
-  type Notification,
-} from "@/lib/data/notifications-data";
-import Link from "next/link";
+  Bookmark01Icon,
+  BellDotIcon,
+  Calendar01Icon,
+  Clock01Icon,
+  Note01Icon,
+} from "@hugeicons/core-free-icons";
 
 type TabType = "all" | "unread" | "alerts" | "activity";
 
+interface AlertRecord {
+  id: string;
+  message: string;
+  read: boolean;
+  createdAt?: string;
+}
+
+interface BookmarkRecord {
+  id: string;
+  event?: {
+    title: string;
+  };
+  createdAt?: string;
+}
+
+interface ActivityItem {
+  id: string;
+  action: string;
+  description: string;
+  icon: string;
+  timestamp: Date;
+  category: "bookmark" | "registration" | "alert" | "post" | "event";
+}
+
+function formatRelativeTime(dateValue?: string) {
+  if (!dateValue) {
+    return new Date();
+  }
+
+  const parsed = new Date(dateValue);
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date();
+  }
+
+  return parsed;
+}
+
+function toNotification(alert: AlertRecord): Notification {
+  return {
+    id: alert.id,
+    type: "event_deadline",
+    title: alert.read ? "Alert update" : "New alert",
+    message: alert.message,
+    eventTitle: alert.message,
+    timestamp: formatRelativeTime(alert.createdAt),
+    isRead: alert.read,
+    icon: "🔔",
+    color: "from-emerald-500 to-teal-500",
+    actionUrl: "/alerts",
+  };
+}
+
 export default function AlertsPage() {
+  const { user, isLoading: authLoading } = useAuthContext();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("all");
-  const [notifications, setNotifications] = useState(mockNotifications);
-  const [alerts, setAlerts] = useState(mockAlerts);
+  const [alerts, setAlerts] = useState<AlertRecord[]>([]);
+  const [bookmarks, setBookmarks] = useState<BookmarkRecord[]>([]);
   const [isCreateAlertOpen, setIsCreateAlertOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [authLoading, router, user]);
 
-  // Filter notifications based on active tab
-  const getFilteredNotifications = () => {
+  useEffect(() => {
+    let mounted = true;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const [alertData, bookmarkData] = await Promise.all([
+          apiClient.get<AlertRecord[]>("/alerts"),
+          apiClient.get<BookmarkRecord[]>("/bookmark"),
+        ]);
+
+        if (!mounted) {
+          return;
+        }
+
+        setAlerts(alertData || []);
+        setBookmarks(bookmarkData || []);
+      } catch (error) {
+        console.error("Failed to load alerts page data:", error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (!authLoading && user) {
+      loadData();
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [authLoading, user]);
+
+  const notifications = useMemo(
+    () => alerts.map((alert) => toNotification(alert)),
+    [alerts],
+  );
+
+  const unreadCount = notifications.filter(
+    (notification) => !notification.isRead,
+  ).length;
+
+  const activityItems: ActivityItem[] = useMemo(() => {
+    const bookmarkActivity = bookmarks.map((bookmark) => ({
+      id: `bookmark-${bookmark.id}`,
+      action: "Saved Event",
+      description: `Saved '${bookmark.event?.title || "an event"}' to bookmarks`,
+      icon: "🔖",
+      timestamp: new Date(bookmark.createdAt || Date.now()),
+      category: "bookmark" as const,
+    }));
+
+    const alertActivity = alerts.map((alert) => ({
+      id: `alert-${alert.id}`,
+      action: alert.read ? "Reviewed Alert" : "Created Alert",
+      description: alert.message,
+      icon: "🔔",
+      timestamp: new Date(alert.createdAt || Date.now()),
+      category: "alert" as const,
+    }));
+
+    return [...bookmarkActivity, ...alertActivity].sort(
+      (left, right) => right.timestamp.getTime() - left.timestamp.getTime(),
+    );
+  }, [alerts, bookmarks]);
+
+  const filteredNotifications = useMemo(() => {
     switch (activeTab) {
       case "unread":
-        return notifications.filter((n) => !n.isRead);
+        return notifications.filter((notification) => !notification.isRead);
       case "alerts":
-        return alerts.length > 0
-          ? notifications.filter((n) =>
-              alerts.some((a) => a.eventTitle === n.eventTitle),
-            )
-          : [];
+        return notifications;
       case "all":
       default:
         return notifications;
     }
+  }, [activeTab, notifications]);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await apiClient.patch(`/alerts/${id}/read`);
+      setAlerts((prev) =>
+        prev.map((alert) =>
+          alert.id === id ? { ...alert, read: true } : alert,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to mark alert as read:", error);
+    }
   };
 
-  const filteredNotifications = getFilteredNotifications();
-
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-    );
+  const handleDelete = async (id: string) => {
+    try {
+      await apiClient.delete(`/alerts/${id}`);
+      setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+    } catch (error) {
+      console.error("Failed to delete alert:", error);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  const handleMarkAllAsRead = async () => {
+    try {
+      await Promise.all(
+        alerts
+          .filter((alert) => !alert.read)
+          .map((alert) => apiClient.patch(`/alerts/${alert.id}/read`)),
+      );
+      setAlerts((prev) => prev.map((alert) => ({ ...alert, read: true })));
+    } catch (error) {
+      console.error("Failed to mark all alerts as read:", error);
+    }
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-  };
-
-  const handleCreateAlert = (alertData: {
+  const handleCreateAlert = async (alertData: {
     eventTitle: string;
     reminderType: string;
     reminderTime: string;
   }) => {
-    const newAlert = {
-      id: `alert-${Date.now()}`,
-      ...alertData,
-      isActive: true,
-      createdAt: new Date(),
-      nextNotification: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    };
-    setAlerts((prev) => [newAlert, ...prev]);
-    setIsCreateAlertOpen(false);
+    const message = `${alertData.eventTitle} - ${alertData.reminderType.replace(/_/g, " ")} at ${alertData.reminderTime}`;
 
-    // Show success toast
-    alert("Alert created successfully!");
+    try {
+      await apiClient.post(`/alerts/${encodeURIComponent(message)}`);
+      const createdAt = new Date().toISOString();
+      setAlerts((prev) => [
+        {
+          id: `alert-${Date.now()}`,
+          message,
+          read: false,
+          createdAt,
+        },
+        ...prev,
+      ]);
+      setIsCreateAlertOpen(false);
+    } catch (error) {
+      console.error("Failed to create alert:", error);
+      alert("Failed to create alert");
+    }
   };
 
-  const handleToggleAlert = (id: string) => {
-    setAlerts((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, isActive: !a.isActive } : a)),
+  if (authLoading || isLoading) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center text-gray-400">
+        Loading...
+      </main>
     );
-  };
-
-  const handleDeleteAlert = (id: string) => {
-    setAlerts((prev) => prev.filter((a) => a.id !== id));
-  };
+  }
 
   return (
     <main className="min-h-screen bg-background">
-      {/* Hero Section */}
       <div className="relative overflow-hidden py-12 border-b border-white/10">
-        {/* Animated background gradient */}
         <div
           className="absolute inset-0 opacity-30"
           style={{
@@ -100,14 +249,13 @@ export default function AlertsPage() {
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="max-w-4xl mx-auto">
-            {/* Header */}
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
                 <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
                   Notifications & Alerts
                 </h1>
                 <p className="text-gray-400 text-lg">
-                  Stay updated on events that matter to you
+                  Live alerts from your account activity
                 </p>
               </div>
               {unreadCount > 0 && (
@@ -120,7 +268,6 @@ export default function AlertsPage() {
               )}
             </div>
 
-            {/* Action buttons */}
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setIsCreateAlertOpen(true)}
@@ -142,7 +289,6 @@ export default function AlertsPage() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="border-b border-white/10 bg-background/50 sticky top-0 z-30 backdrop-blur-sm">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex gap-8 overflow-x-auto">
@@ -151,17 +297,25 @@ export default function AlertsPage() {
                 id: "all" as TabType,
                 label: "All Notifications",
                 count: notifications.length,
+                icon: BellDotIcon,
               },
-              { id: "unread" as TabType, label: "Unread", count: unreadCount },
+              {
+                id: "unread" as TabType,
+                label: "Unread",
+                count: unreadCount,
+                icon: Clock01Icon,
+              },
               {
                 id: "alerts" as TabType,
                 label: "My Alerts",
                 count: alerts.length,
+                icon: Calendar01Icon,
               },
               {
                 id: "activity" as TabType,
                 label: "Activity",
-                count: mockActivityLog.length,
+                count: activityItems.length,
+                icon: Note01Icon,
               },
             ].map((tab) => (
               <button
@@ -185,10 +339,8 @@ export default function AlertsPage() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 py-12">
         <div className="max-w-4xl mx-auto">
-          {/* All Notifications Tab */}
           {activeTab === "all" && (
             <div>
               {filteredNotifications.length > 0 ? (
@@ -206,7 +358,7 @@ export default function AlertsPage() {
                 <EmptyState
                   icon="📭"
                   title="You're all caught up!"
-                  description="No notifications at the moment. Stay tuned for updates on your favorite events."
+                  description="No live notifications at the moment. Stay tuned for updates on your events."
                   actionText="Explore Events"
                   onAction={() => (window.location.href = "/events")}
                   variant="notifications"
@@ -215,7 +367,6 @@ export default function AlertsPage() {
             </div>
           )}
 
-          {/* Unread Tab */}
           {activeTab === "unread" && (
             <div>
               {filteredNotifications.length > 0 ? (
@@ -233,14 +384,13 @@ export default function AlertsPage() {
                 <EmptyState
                   icon="✅"
                   title="All marked as read"
-                  description="Great job staying on top of things! Check back later for new notifications."
+                  description="Great job staying on top of things!"
                   variant="notifications"
                 />
               )}
             </div>
           )}
 
-          {/* Alerts Tab */}
           {activeTab === "alerts" && (
             <div className="space-y-6">
               {alerts.length > 0 ? (
@@ -257,56 +407,40 @@ export default function AlertsPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="text-lg font-semibold text-white">
-                              {alert.eventTitle}
+                              {alert.message}
                             </h3>
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                alert.isActive
-                                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                  : "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                                alert.read
+                                  ? "bg-gray-500/20 text-gray-400 border border-gray-500/30"
+                                  : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                               }`}
                             >
-                              {alert.isActive ? "Active" : "Inactive"}
+                              {alert.read ? "Read" : "Unread"}
                             </span>
                           </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                            <div>
-                              <p className="text-xs text-gray-500 mb-1">
-                                Reminder Type
-                              </p>
-                              <p className="text-sm text-gray-300">
-                                {alert.reminderType.replace(/_/g, " ")}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500 mb-1">
-                                Preferred Time
-                              </p>
-                              <p className="text-sm text-gray-300">
-                                {alert.reminderTime}
-                              </p>
-                            </div>
-                          </div>
+                          <p className="text-sm text-gray-400">
+                            Created{" "}
+                            {formatRelativeTime(
+                              alert.createdAt,
+                            ).toLocaleString()}
+                          </p>
                         </div>
 
-                        {/* Actions */}
                         <div className="flex gap-2 flex-shrink-0">
+                          {!alert.read && (
+                            <button
+                              onClick={() => handleMarkAsRead(alert.id)}
+                              className="px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-all duration-200 text-sm"
+                            >
+                              Mark Read
+                            </button>
+                          )}
                           <button
-                            onClick={() => handleToggleAlert(alert.id)}
-                            className={`p-2 rounded-lg transition-all duration-200 ${
-                              alert.isActive
-                                ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                                : "bg-white/5 text-gray-400 hover:bg-white/10"
-                            }`}
+                            onClick={() => handleDelete(alert.id)}
+                            className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-200 text-sm"
                           >
-                            {alert.isActive ? "✓" : "○"}
-                          </button>
-                          <button
-                            onClick={() => handleDeleteAlert(alert.id)}
-                            className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-200"
-                          >
-                            🗑
+                            Delete
                           </button>
                         </div>
                       </div>
@@ -317,7 +451,7 @@ export default function AlertsPage() {
                 <EmptyState
                   icon="🔔"
                   title="No alerts yet"
-                  description="Create an alert to get notified about your favorite events at the perfect time."
+                  description="Create an alert to get notified about your favorite events."
                   actionText="Create Alert"
                   onAction={() => setIsCreateAlertOpen(true)}
                   variant="alerts"
@@ -326,14 +460,12 @@ export default function AlertsPage() {
             </div>
           )}
 
-          {/* Activity Tab */}
           {activeTab === "activity" && (
-            <ActivityTimeline activities={mockActivityLog} />
+            <ActivityTimeline activities={activityItems} />
           )}
         </div>
       </div>
 
-      {/* Create Alert Modal */}
       <CreateAlertModal
         isOpen={isCreateAlertOpen}
         onClose={() => setIsCreateAlertOpen(false)}

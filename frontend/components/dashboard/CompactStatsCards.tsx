@@ -2,12 +2,6 @@
 
 import { useMotionPreference } from "@/hooks/useMotionPreference";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Calendar01Icon,
-  Bookmark01Icon,
-  BellDotIcon,
-  Upload01Icon,
-} from "@hugeicons/core-free-icons";
 
 interface StatCard {
   id: string;
@@ -17,37 +11,6 @@ interface StatCard {
   color: string;
 }
 
-const stats: StatCard[] = [
-  {
-    id: "events",
-    title: "Events Joined",
-    value: 12,
-    icon: Calendar01Icon,
-    color: "emerald",
-  },
-  {
-    id: "bookmarks",
-    title: "Bookmarks",
-    value: 24,
-    icon: Bookmark01Icon,
-    color: "teal",
-  },
-  {
-    id: "alerts",
-    title: "Alerts Active",
-    value: 5,
-    icon: BellDotIcon,
-    color: "amber",
-  },
-  {
-    id: "posts",
-    title: "Posts Generated",
-    value: 8,
-    icon: Upload01Icon,
-    color: "cyan",
-  },
-];
-
 const colorMap: Record<string, string> = {
   emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   teal: "text-teal-400 bg-teal-500/10 border-teal-500/20",
@@ -55,7 +18,11 @@ const colorMap: Record<string, string> = {
   cyan: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
 };
 
-export const CompactStatsCards = () => {
+interface CompactStatsCardsProps {
+  stats: StatCard[];
+}
+
+export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
   const prefersReducedMotion = useMotionPreference();
   const transitionClass = prefersReducedMotion
     ? ""

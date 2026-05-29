@@ -8,39 +8,16 @@ interface UpcomingEvent {
   title: string;
   date: string;
   location: string;
-  attendees: number;
+  attendees?: number | null;
   badge: string;
 }
 
-const upcomingEvents: UpcomingEvent[] = [
-  {
-    id: "1",
-    title: "TechCrunch Disrupt 2026",
-    date: "May 28, 2026",
-    location: "San Francisco, CA",
-    attendees: 2500,
-    badge: "Hackathon",
-  },
-  {
-    id: "2",
-    title: "React Advanced Workshop",
-    date: "June 5, 2026",
-    location: "Online",
-    attendees: 150,
-    badge: "Workshop",
-  },
-  {
-    id: "3",
-    title: "Web3 Developer Bootcamp",
-    date: "June 15, 2026",
-    location: "NYC, NY",
-    attendees: 80,
-    badge: "Bootcamp",
-  },
-];
+interface UpcomingEventsListProps {
+  events: UpcomingEvent[];
+}
 
-export const UpcomingEventsList = () => {
-  if (upcomingEvents.length === 0) {
+export const UpcomingEventsList = ({ events }: UpcomingEventsListProps) => {
+  if (events.length === 0) {
     return (
       <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
         <p className="text-zinc-400 text-sm">No upcoming events</p>
@@ -63,7 +40,7 @@ export const UpcomingEventsList = () => {
 
       {/* Events List */}
       <div className="divide-y divide-zinc-800">
-        {upcomingEvents.map((event, index) => (
+        {events.map((event) => (
           <Link
             key={event.id}
             href={`/events/${event.id}`}
@@ -94,7 +71,9 @@ export const UpcomingEventsList = () => {
                   </div>
                   <div className="flex items-center gap-2 text-xs text-zinc-400">
                     <Users className="w-3.5 h-3.5 text-zinc-600" />
-                    {event.attendees.toLocaleString()} attendees
+                    {typeof event.attendees === "number"
+                      ? `${event.attendees.toLocaleString()} attendees`
+                      : "Attendee count unavailable"}
                   </div>
                 </div>
               </div>

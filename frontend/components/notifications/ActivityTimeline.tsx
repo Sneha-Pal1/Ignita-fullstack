@@ -1,13 +1,13 @@
 "use client";
 
-import { ActivityLog, mockActivityLog } from "@/lib/data/notifications-data";
+import { ActivityLog } from "@/lib/data/notifications-data";
 
 interface ActivityTimelineProps {
-  activities?: ActivityLog[];
+  activities: ActivityLog[];
 }
 
 export default function ActivityTimeline({
-  activities = mockActivityLog,
+  activities,
 }: ActivityTimelineProps) {
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
