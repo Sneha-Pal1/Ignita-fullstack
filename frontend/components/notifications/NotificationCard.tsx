@@ -3,6 +3,13 @@
 import { NotificationRecord } from "@/lib/api-endpoints";
 import Link from "next/link";
 import { useState } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Clock01Icon,
+  Calendar01Icon,
+  Note01Icon,
+  BellDotIcon,
+} from "@hugeicons/core-free-icons";
 
 interface NotificationCardProps {
   notification: NotificationRecord & { timestamp: string | Date };
@@ -36,101 +43,95 @@ export default function NotificationCard({
       ? notification.timestamp
       : new Date(notification.timestamp);
 
+  const getCategory = (type?: string) => {
+    const t = (type || "").toLowerCase();
+    if (t.includes("dead") || t.includes("deadline"))
+      return { label: "Deadline Alert", accent: "amber", icon: "⏰" };
+    if (t.includes("remind") || t.includes("event"))
+      return { label: "Event Reminder", accent: "blue", icon: "📅" };
+    if (t.includes("opportun") || t.includes("new"))
+      return { label: "New Opportunity", accent: "green", icon: "🎯" };
+    if (t.includes("bookmark"))
+      return { label: "Bookmark Activity", accent: "purple", icon: "🔖" };
+    return { label: "System Notification", accent: "neutral", icon: "ℹ️" };
+  };
+
+  const cat = getCategory(notification.type);
+
+  const accentBg = {
+    amber: "bg-amber-500/10 text-amber-400 border-amber-400/20",
+    blue: "bg-sky-500/8 text-sky-300 border-sky-400/20",
+    green: "bg-emerald-500/10 text-emerald-300 border-emerald-400/20",
+    purple: "bg-violet-500/10 text-violet-300 border-violet-400/20",
+    neutral: "bg-white/3 text-gray-300 border-white/6",
+  }[cat.accent || "neutral"];
+
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative group transition-all duration-300 ${
-        !notification.isRead ? "border-emerald-500/50" : "border-white/10"
-      }`}
+      className={`relative transition-colors duration-150 rounded-md border ${!notification.isRead ? "border-emerald-600/30" : "border-white/6"} bg-white/3 hover:bg-white/6 p-3 flex items-start gap-3`}
     >
-      {/* Glass background with glow */}
-      <div
-        className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-          !notification.isRead
-            ? "bg-linear-to-r from-emerald-500/5 to-teal-500/5 border border-emerald-500/30"
-            : "bg-white/3 border border-white/10"
-        } ${isHovered ? "border-emerald-500/50 bg-emerald-500/10" : ""}`}
-        style={{
-          boxShadow: isHovered
-            ? "0 0 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-            : "inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-        }}
-      />
+      <div className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-lg" style={{ background: notification.color || undefined }}>
+        {/* category icon */}
+        <HugeiconsIcon
+          icon={
+            cat.accent === "amber"
+              ? Clock01Icon
+              : cat.accent === "blue"
+              ? Calendar01Icon
+              : cat.accent === "green"
+              ? BellDotIcon
+              : cat.accent === "purple"
+              ? Note01Icon
+              : Note01Icon
+          }
+          size="18"
+          className="text-white"
+        />
+      </div>
 
-      {/* Unread indicator */}
-      {!notification.isRead && (
-        <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-linear-to-b from-emerald-500 to-teal-500 rounded-full animate-pulse" />
-      )}
-
-      <div className="relative p-4 flex gap-4">
-        {/* Icon */}
-        <div
-          className={`shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-xl transition-all duration-300 ${
-            isHovered ? "scale-110" : "scale-100"
-          }`}
-          style={{
-            background: `linear-gradient(135deg, ${notification.color})`,
-            opacity: 0.8,
-          }}
-        >
-          {notification.icon}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <h3 className="text-sm font-semibold text-white truncate">
-              {notification.title}
-            </h3>
-            <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">
-              {formatTime(timestamp)}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm font-semibold text-white truncate">{notification.title}</span>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${accentBg} ml-1`}>
+              <span className="mr-1"> 
+                <HugeiconsIcon
+                  icon={
+                    cat.accent === "amber"
+                      ? Clock01Icon
+                      : cat.accent === "blue"
+                      ? Calendar01Icon
+                      : cat.accent === "green"
+                      ? BellDotIcon
+                      : cat.accent === "purple"
+                      ? Note01Icon
+                      : Note01Icon
+                  }
+                  size="14"
+                  className="inline text-current"
+                />
+              </span>
+              {cat.label}
             </span>
           </div>
-
-          <p className="text-xs text-gray-400 mb-3 line-clamp-2">
-            {notification.message}
-          </p>
-
-          {notification.eventTitle && (
-            <div className="text-xs text-emerald-400/80 mb-3">
-              📌 {notification.eventTitle}
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {notification.actionUrl && (
-              <Link
-                href={notification.actionUrl}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 transition-all duration-200"
-              >
-                View Event
-              </Link>
-            )}
-            {!notification.isRead && onMarkAsRead && (
-              <button
-                onClick={() => onMarkAsRead(notification.id)}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-white/5 text-gray-300 hover:bg-white/10 transition-all duration-200"
-              >
-                Mark Read
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={() => onDelete(notification.id)}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-200"
-              >
-                Dismiss
-              </button>
-            )}
-          </div>
+          <div className="text-xs text-gray-400 whitespace-nowrap">{formatTime(timestamp)}</div>
         </div>
 
-        {/* Unread badge */}
-        {!notification.isRead && (
-          <div className="shrink-0 w-2 h-2 rounded-full bg-linear-to-r from-emerald-500 to-teal-500 mt-1.5 animate-pulse" />
-        )}
+        <p className="text-xs text-gray-300 mt-1 truncate line-clamp-2">{notification.message}</p>
+
+        <div className="mt-2 flex items-center gap-2">
+          {notification.actionUrl && (
+            <Link href={notification.actionUrl} className="text-xs text-emerald-300 bg-emerald-600/8 px-2 py-1 rounded-md hover:bg-emerald-600/12">View</Link>
+          )}
+          {!notification.isRead && onMarkAsRead && (
+            <button onClick={() => onMarkAsRead(notification.id)} className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-white/5">Mark read</button>
+          )}
+          {onDelete && (
+            <button onClick={() => onDelete(notification.id)} className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10">Dismiss</button>
+          )}
+        </div>
       </div>
     </div>
   );
