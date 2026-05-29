@@ -236,31 +236,7 @@ http://localhost:3000
 
 ---
 
-## 📸 Screenshots
-
-### Landing Page
-
-*Add screenshot here*
-
-### Dashboard
-
-*Add screenshot here*
-
-### Analytics
-
-*Add screenshot here*
-
-### Admin Dashboard
-
-*Add screenshot here*
-
-### Event Page
-
-*Add screenshot here*
-
----
-
-## 🛣 Roadmap
+##  Roadmap
 
 ### Current Version
 
