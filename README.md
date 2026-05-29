@@ -1,7 +1,6 @@
 # IGNITA 
 
-**IGNITA** is a modern event discovery and career growth platform designed for students, developers, and tech enthusiasts. It helps users discover hackathons, internships, coding contests, workshops, and other opportunities while providing personalized tracking, analytics, alerts, bookmarks, and LinkedIn post generation.
-
+**IGNITA** is a full-stack event aggregator platform designed for college students to discover and explore tech events like hackathons, internships, coding fests, and workshops. It offers features like advanced filtering, personalized alerts, and LinkedIn-ready post generation, helping students stay updated and build their portfolios effortlessly.
 
 ##  Features
 
