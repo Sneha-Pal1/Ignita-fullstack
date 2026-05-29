@@ -8,9 +8,46 @@ import type {
   User,
 } from "./auth-types";
 
+type GoogleLoginPayload = {
+  email?: string;
+  name?: string;
+  picture?: string;
+};
+
 const TOKEN_KEY = "auth_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
 const USER_KEY = "auth_user";
+
+function persistAuthResponse(response: AuthResponse, fallbackUser?: User | null) {
+  const accessToken = response.accessToken || response.access_token;
+  const refreshToken = response.refreshToken || response.refresh_token;
+  const user = response.user || fallbackUser || null;
+
+  if (accessToken) {
+    authStorage.setToken(accessToken);
+    console.log("✅ Access token saved to localStorage");
+
+    if (refreshToken) {
+      authStorage.setRefreshToken(refreshToken);
+      console.log("✅ Refresh token saved to localStorage");
+    } else {
+      console.warn("⚠️ No refresh token in response!");
+    }
+
+    if (user) {
+      authStorage.setUser(user);
+      console.log("✅ User saved to localStorage");
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("auth-change"));
+    }
+  } else {
+    console.error("❌ No accessToken in response!");
+  }
+
+  return response;
+}
 
 export const authStorage = {
   setToken: (token: string) => {
@@ -101,32 +138,7 @@ export const authAPI = {
       user: response.user,
     });
 
-    const accessToken = response.accessToken || response.access_token;
-    const refreshToken = response.refreshToken || response.refresh_token;
-
-    if (accessToken) {
-      authStorage.setToken(accessToken);
-      console.log("✅ Access token saved to localStorage");
-
-      if (refreshToken) {
-        authStorage.setRefreshToken(refreshToken);
-        console.log("✅ Refresh token saved to localStorage");
-      } else {
-        console.warn("⚠️ No refresh token in response!");
-      }
-
-      if (response.user) {
-        authStorage.setUser(response.user);
-        console.log("✅ User saved to localStorage");
-      }
-      // Emit auth change event
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("auth-change"));
-      }
-    } else {
-      console.error("❌ No accessToken in response!");
-    }
-    return response;
+    return persistAuthResponse(response);
   },
 
   register: async (credentials: RegisterCredentials): Promise<AuthResponse> => {
@@ -135,28 +147,22 @@ export const authAPI = {
       credentials,
     );
 
-    const accessToken = response.accessToken || response.access_token;
-    const refreshToken = response.refreshToken || response.refresh_token;
+    return persistAuthResponse(response);
+  },
 
-    if (accessToken) {
-      authStorage.setToken(accessToken);
-      console.log("✅ Access token saved to localStorage");
+  googleLogin: async (payload: GoogleLoginPayload): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>("/auth/google", payload);
 
-      if (refreshToken) {
-        authStorage.setRefreshToken(refreshToken);
-        console.log("✅ Refresh token saved to localStorage");
-      }
+    const fallbackUser: User | null = payload.email
+      ? {
+          id: payload.email,
+          email: payload.email,
+          name: payload.name || payload.email.split("@")[0],
+          role: "USER",
+        }
+      : null;
 
-      if (response.user) {
-        authStorage.setUser(response.user);
-        console.log("✅ User saved to localStorage");
-      }
-      // Emit auth change event
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("auth-change"));
-      }
-    }
-    return response;
+    return persistAuthResponse(response, fallbackUser);
   },
 
   createAdmin: async (

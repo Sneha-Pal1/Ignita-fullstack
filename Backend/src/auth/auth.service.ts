@@ -134,6 +134,7 @@ export class AuthService {
       user = this.userRepo.create({
         email: dto.email,
         name: dto.name,
+        phone: null,
         password: '',
         role: UserRole.USER,
       });

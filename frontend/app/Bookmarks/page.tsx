@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api-client";
 import { events } from "@/lib/data/events";
 import Link from "next/link";
 import { useAuthContext } from "@/lib/auth-context";
+import { authStorage } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 interface Bookmark {
@@ -47,6 +48,14 @@ const BookmarksPage = () => {
       try {
         setIsLoading(true);
         console.log("📋 Fetching bookmarks...");
+
+        const accessToken = authStorage.getToken();
+        if (!accessToken) {
+          setError("Please sign in again to load your bookmarks.");
+          setBookmarks([]);
+          return;
+        }
+
         const data = await apiClient.get<Bookmark[]>("/bookmark");
         console.log("✅ Bookmarks loaded:", data);
         setBookmarks(data || []);

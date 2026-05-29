@@ -221,7 +221,13 @@ const EventDetailPage = () => {
         </div>
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Image src="/icons/pin.svg" alt="location" width={16} height={16} />
+            <Image
+              src="/icons/pin.svg"
+              alt="location"
+              width={16}
+              height={16}
+              style={{ width: "auto", height: "auto" }}
+            />
             <p className="text-gray-400 text-sm">Location</p>
           </div>
           <p className="text-white font-semibold">{event.location}</p>

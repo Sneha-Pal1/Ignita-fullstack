@@ -108,12 +108,6 @@ async function request<T>(
   let token: string | null = null;
   if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
     token = localStorage.getItem("auth_token");
-
-    // If no token found, try again after a brief moment (in case auth context is still syncing)
-    if (!token) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      token = localStorage.getItem("auth_token");
-    }
   }
 
   console.log("🌐 API Request:", {
@@ -134,8 +128,6 @@ async function request<T>(
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
     console.log("✅ Authorization header added");
-  } else {
-    console.warn("⚠️ No token found for request to", endpoint);
   }
 
   try {
@@ -153,7 +145,7 @@ async function request<T>(
     }
 
     // Handle 401 Unauthorized - try to refresh token
-    if (response.status === 401 && retryCount === 0) {
+    if (response.status === 401 && retryCount === 0 && token) {
       console.warn("⚠️ Received 401 Unauthorized. Attempting token refresh...");
       const newToken = await refreshAccessToken();
 
@@ -169,6 +161,7 @@ async function request<T>(
     }
 
     if (!response.ok) {
+      const responseData = data as Record<string, unknown> | null;
       console.error("❌ API Error:", {
         status: response.status,
         statusText: response.statusText,
@@ -178,8 +171,8 @@ async function request<T>(
       throw new APIError(
         response.status,
         data,
-        data && typeof data === "object" && "message" in data
-          ? (data as any).message
+        responseData && typeof responseData.message === "string"
+          ? responseData.message
           : "API request failed",
       );
     }

@@ -7,6 +7,8 @@ import { useAuthContext } from "@/lib/auth-context";
 import EventCard from "@/components/EventCard";
 import { events as mockEvents } from "@/lib/data/events";
 import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
+import { APIError } from "@/lib/api-client";
+import { authStorage } from "@/lib/auth";
 
 type EventCardData = {
   id: string;
@@ -94,6 +96,15 @@ const EventsPage = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      const accessToken = authStorage.getToken();
+
+      if (!accessToken) {
+        setEvents(mockEvents.map(mapMockEvent));
+        setError("Using local sample events until the backend is available.");
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         const data = await eventsAPI.getAll();
@@ -105,6 +116,12 @@ const EventsPage = () => {
         }
         setError(null);
       } catch (fetchError) {
+        if (fetchError instanceof APIError && fetchError.status === 401) {
+          setEvents(mockEvents.map(mapMockEvent));
+          setError("Using local sample events until the backend is available.");
+          return;
+        }
+
         console.error("Failed to fetch events:", fetchError);
         setError("Using local sample events until the backend is available.");
         setEvents(mockEvents.map(mapMockEvent));

@@ -1,13 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import type { CredentialResponse } from "@react-oauth/google";
+import type { JwtPayload } from "jwt-decode";
 import { jwtDecode } from "jwt-decode";
+import { authAPI } from "@/lib/auth";
+
+type GoogleCredentialPayload = JwtPayload & {
+  email?: string;
+  name?: string;
+  picture?: string;
+};
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -33,47 +41,38 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess = async (
-    credentialResponse: CredentialResponse,
-  ) => {
-    try {
-      if (!credentialResponse.credential) return;
+  const handleGoogleSuccess = useCallback(
+    async (credentialResponse: CredentialResponse) => {
+      try {
+        if (!credentialResponse.credential) return;
 
-      const decoded: any = jwtDecode(credentialResponse.credential);
+        const decoded = jwtDecode<GoogleCredentialPayload>(
+          credentialResponse.credential,
+        );
 
-      console.log(decoded);
+        console.log(decoded);
 
-      const response = await fetch("http://localhost:3001/auth/google", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        const response = await authAPI.googleLogin({
           email: decoded.email,
           name: decoded.name,
           picture: decoded.picture,
-        }),
-      });
+        });
 
-      const data = await response.json();
+        router.push(response.user?.role === "ADMIN" ? "/admin" : "/events");
+      } catch (error) {
+        console.error("Google login failed", error);
 
-      localStorage.setItem("accessToken", data.accessToken);
+        setGoogleAuthMessage("Google authentication failed.");
+      }
+    },
+    [router],
+  );
 
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      router.push(data.user?.role === "ADMIN" ? "/admin" : "/events");
-    } catch (error) {
-      console.error("Google login failed", error);
-
-      setGoogleAuthMessage("Google authentication failed.");
-    }
-  };
-
-  const handleGoogleError = () => {
+  const handleGoogleError = useCallback(() => {
     setGoogleAuthMessage(
       "Google sign-in was cancelled or failed. Please retry.",
     );
-  };
+  }, []);
 
   return (
     <div className="auth-container">
@@ -164,12 +163,12 @@ export default function LoginPage() {
               onError={handleGoogleError}
               text="continue_with"
               size="large"
-              width="100%"
+              width="320"
             />
           </div>
 
           <p className="auth-footer">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="auth-link">
               Sign up
             </Link>
