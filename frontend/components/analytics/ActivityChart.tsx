@@ -27,12 +27,16 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
   const data = monthlyData ?? [];
 
   const maxValue = Math.max(
-    ...(data.length > 0
-      ? data.flatMap((d) => [d.bookmarks, d.events])
-      : [1]),
+    ...(data.length > 0 ? data.flatMap((d) => [d.bookmarks, d.events]) : [1]),
   );
 
-  const axisMarks = [maxValue, Math.round(maxValue * 0.75), Math.round(maxValue * 0.5), Math.round(maxValue * 0.25), 0];
+  const axisMarks = [
+    maxValue,
+    Math.round(maxValue * 0.75),
+    Math.round(maxValue * 0.5),
+    Math.round(maxValue * 0.25),
+    0,
+  ];
 
   const calculatePath = (key: keyof Omit<DataPoint, "month">) => {
     const width = data.length > 1 ? 100 / (data.length - 1) : 100;
@@ -79,15 +83,43 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
             </div>
 
             <div>
-              <svg viewBox="0 0 100 100" className="h-64 w-full" preserveAspectRatio="none">
+              <svg
+                viewBox="0 0 100 100"
+                className="h-64 w-full"
+                preserveAspectRatio="none"
+              >
                 <defs>
-                  <pattern id="activity-grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#27272a" strokeWidth="0.4" />
+                  <pattern
+                    id="activity-grid"
+                    width="10"
+                    height="10"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M 10 0 L 0 0 0 10"
+                      fill="none"
+                      stroke="#27272a"
+                      strokeWidth="0.4"
+                    />
                   </pattern>
                 </defs>
                 <rect width="100" height="100" fill="url(#activity-grid)" />
-                <line x1="0" y1="92" x2="100" y2="92" stroke="#3f3f46" strokeWidth="0.6" />
-                <line x1="0" y1="8" x2="100" y2="8" stroke="#3f3f46" strokeWidth="0.3" />
+                <line
+                  x1="0"
+                  y1="92"
+                  x2="100"
+                  y2="92"
+                  stroke="#3f3f46"
+                  strokeWidth="0.6"
+                />
+                <line
+                  x1="0"
+                  y1="8"
+                  x2="100"
+                  y2="8"
+                  stroke="#3f3f46"
+                  strokeWidth="0.3"
+                />
 
                 {(["events", "bookmarks"] as const).map((key, index) => (
                   <path
@@ -102,7 +134,8 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
                 ))}
 
                 {data.map((point, idx) => {
-                  const x = data.length > 1 ? (100 / (data.length - 1)) * idx : 50;
+                  const x =
+                    data.length > 1 ? (100 / (data.length - 1)) * idx : 50;
                   return (["events", "bookmarks"] as const).map((key) => {
                     const value = point[key] ?? 0;
                     const y = 100 - (value / maxValue) * 82 - 8;
@@ -120,7 +153,8 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
                 })}
 
                 {data.map((point, idx) => {
-                  const x = data.length > 1 ? (100 / (data.length - 1)) * idx : 50;
+                  const x =
+                    data.length > 1 ? (100 / (data.length - 1)) * idx : 50;
                   return (
                     <text
                       key={point.month}
@@ -137,12 +171,17 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
               </svg>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-                {(Object.keys(chartColors) as (keyof typeof chartColors)[]).map((key) => (
-                  <div key={key} className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartColors[key] }} />
-                    <span>{chartLabels[key]}</span>
-                  </div>
-                ))}
+                {(Object.keys(chartColors) as (keyof typeof chartColors)[]).map(
+                  (key) => (
+                    <div key={key} className="flex items-center gap-2">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: chartColors[key] }}
+                      />
+                      <span>{chartLabels[key]}</span>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>

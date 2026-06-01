@@ -46,7 +46,9 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
 
                 <div className="flex items-start justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-white">{item.count} new users</p>
+                    <p className="text-sm font-medium text-white">
+                      {item.count} new users
+                    </p>
                     <p className="mt-1 text-xs text-zinc-500">{item.month}</p>
                   </div>
                   <span className="whitespace-nowrap text-xs text-zinc-500 tabular-nums">

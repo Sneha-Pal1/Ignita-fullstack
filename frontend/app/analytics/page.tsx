@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import type { ElementType } from "react";
-import { Bookmark01Icon, Calendar01Icon, Clock01Icon, UserIcon } from "@hugeicons/core-free-icons";
+import {
+  Bookmark01Icon,
+  Calendar01Icon,
+  Clock01Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 import { AnalyticsHeader } from "@/components/analytics/AnalyticsHeader";
 import { ActivityChart } from "@/components/analytics/ActivityChart";
 import { ActivityFeed } from "@/components/analytics/ActivityFeed";
@@ -66,7 +71,9 @@ function buildAnalyticsState(data: AdminAnalyticsResponse) {
 
   const monthlyData: MonthlyPoint[] = orderedMonths.map((month) => ({
     month,
-    events: Number(eventGrowth.find((entry) => entry.month === month)?.count ?? 0),
+    events: Number(
+      eventGrowth.find((entry) => entry.month === month)?.count ?? 0,
+    ),
     bookmarks: Number(
       bookmarkActivity.find((entry) => entry.month === month)?.count ?? 0,
     ),

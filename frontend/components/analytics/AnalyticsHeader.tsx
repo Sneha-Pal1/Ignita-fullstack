@@ -39,7 +39,8 @@ export function AnalyticsHeader({
                 Analytics
               </h1>
               <p className="mt-1 text-sm text-zinc-400">
-                Real bookmark, event, category, and user activity from the backend.
+                Real bookmark, event, category, and user activity from the
+                backend.
               </p>
             </div>
           </div>
