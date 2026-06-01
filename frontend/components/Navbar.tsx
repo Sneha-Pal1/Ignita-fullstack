@@ -69,24 +69,6 @@ const Navbar = () => {
             <>
               {user ? (
                 <div className="flex items-center gap-4">
-                  <Link
-                    href="/Bookmarks"
-                    className="text-white hover:text-gray-300"
-                  >
-                    Bookmarks
-                  </Link>
-                  <Link
-                    href="/linkedin-post-generator"
-                    className="text-white hover:text-gray-300"
-                  >
-                    LinkedIn
-                  </Link>
-                  <Link
-                    href="/analytics"
-                    className="text-white hover:text-gray-300"
-                  >
-                    Analytics
-                  </Link>
                   <NotificationBell />
                   <Link
                     href="/profile"

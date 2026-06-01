@@ -6,10 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   GridIcon,
   Calendar01Icon,
-  Bookmark01Icon,
   BellDotIcon,
-  TrendingUpDownIcon,
-  Share01Icon,
   HomeIcon,
   UserIcon,
   Settings01Icon,
@@ -26,27 +23,9 @@ const navItems = [
   { label: "Dashboard", icon: GridIcon, href: "/Dashboard", section: "main" },
   { label: "Events", icon: Calendar01Icon, href: "/events", section: "main" },
   {
-    label: "Bookmarks",
-    icon: Bookmark01Icon,
-    href: "/Bookmarks",
-    section: "main",
-  },
-  {
     label: "Notifications",
     icon: BellDotIcon,
     href: "/Notification",
-    section: "main",
-  },
-  {
-    label: "Analytics",
-    icon: TrendingUpDownIcon,
-    href: "/analytics",
-    section: "main",
-  },
-  {
-    label: "LinkedIn Generator",
-    icon: Share01Icon,
-    href: "/linkedin-post-generator",
     section: "main",
   },
   { label: "Profile", icon: UserIcon, href: "/profile", section: "user" },
@@ -167,7 +146,7 @@ export const Sidebar = () => {
                     icon={icon}
                     size="20"
                     strokeWidth={2}
-                    className="flex-shrink-0"
+                    className="shrink-0"
                   />
                   <span>{item.label}</span>
                 </Link>
@@ -202,7 +181,7 @@ export const Sidebar = () => {
                     icon={icon}
                     size="20"
                     strokeWidth={2}
-                    className="flex-shrink-0"
+                    className="shrink-0"
                   />
                   <span>{item.label}</span>
                 </Link>
@@ -217,7 +196,7 @@ export const Sidebar = () => {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors group relative"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
               <span className="font-semibold text-emerald-400 text-sm">
                 {user?.name?.charAt(0).toUpperCase() || "U"}
               </span>
@@ -234,7 +213,7 @@ export const Sidebar = () => {
               icon={ArrowDown01Icon}
               size="16"
               strokeWidth={2}
-              className="text-zinc-500 flex-shrink-0"
+              className="text-zinc-500 shrink-0"
             />
 
             {/* Dropdown Menu */}
