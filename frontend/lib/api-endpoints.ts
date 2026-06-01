@@ -58,6 +58,9 @@ export interface AdminOverviewResponse {
 }
 
 export interface AdminAnalyticsResponse {
+  totalEvents: number;
+  totalUsers: number;
+  totalBookmarks: number;
   eventGrowth: Array<{ month: string; count: string | number }>;
   bookmarkActivity: Array<{ month: string; count: string | number }>;
   categoryPopularity: Array<{ category: string; count: string | number }>;
