@@ -1,13 +1,16 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import type { ElementType } from "react";
 
 interface StatItem {
   label: string;
   value: string | number;
-  change?: string;
-  changePercent?: string;
-  icon?: React.ReactNode;
+  trendLabel: string;
+  trendDirection: "up" | "down" | "flat";
+  icon: ElementType;
+  accent: "emerald" | "cyan" | "violet" | "amber";
 }
 
 interface StatsOverviewProps {
@@ -17,33 +20,63 @@ interface StatsOverviewProps {
 export function StatsOverview({ stats }: StatsOverviewProps) {
   const items = stats ?? [];
 
+  const accentMap: Record<StatItem["accent"], string> = {
+    emerald: "border-emerald-500/20 bg-emerald-500/10 text-emerald-300",
+    cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-300",
+    violet: "border-violet-500/20 bg-violet-500/10 text-violet-300",
+    amber: "border-amber-500/20 bg-amber-500/10 text-amber-300",
+  };
+
+  const trendClassMap: Record<StatItem["trendDirection"], string> = {
+    up: "text-emerald-300 bg-emerald-500/10 border-emerald-500/20",
+    down: "text-rose-300 bg-rose-500/10 border-rose-500/20",
+    flat: "text-zinc-300 bg-zinc-800/80 border-zinc-700",
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {items.map((stat, index) => (
         <div
           key={index}
-          className="group p-6 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all duration-200 hover:bg-zinc-900/80"
+          className="group flex min-h-[148px] flex-col justify-between rounded-[24px] border border-zinc-800 bg-zinc-900/70 p-5 transition-colors hover:border-zinc-700 hover:bg-zinc-900"
         >
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between gap-4">
+            <div
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border ${accentMap[stat.accent]}`}
+            >
+              <HugeiconsIcon icon={stat.icon} size="18" strokeWidth={2} />
+            </div>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium ${trendClassMap[stat.trendDirection]}`}
+            >
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size="12"
+                strokeWidth={2}
+                className={
+                  stat.trendDirection === "down"
+                    ? "rotate-90"
+                    : stat.trendDirection === "up"
+                      ? "-rotate-45"
+                      : "rotate-0"
+                }
+              />
+              {stat.trendDirection === "flat"
+                ? "Stable"
+                : stat.trendDirection === "up"
+                  ? "Up"
+                  : "Down"}
+            </span>
+          </div>
+
+          <div className="space-y-2">
             <div>
-              <p className="text-sm font-medium text-zinc-400 mb-1">
-                {stat.label}
-              </p>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white">
+              <p className="text-sm font-medium text-zinc-400">{stat.label}</p>
+              <h3 className="mt-1 text-3xl font-semibold tracking-tight text-white tabular-nums">
                 {stat.value}
               </h3>
             </div>
-            <div className="text-2xl">{stat.icon}</div>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <div className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-md">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-medium text-emerald-300">
-                {stat.change}
-              </span>
-            </div>
-            <span className="text-zinc-500">{stat.changePercent}</span>
+            <p className="text-xs leading-5 text-zinc-500">{stat.trendLabel}</p>
           </div>
         </div>
       ))}

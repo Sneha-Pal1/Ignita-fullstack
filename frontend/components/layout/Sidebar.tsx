@@ -6,6 +6,9 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   GridIcon,
   Calendar01Icon,
+  FileChartColumnIncreasingIcon,
+  Bookmark01Icon,
+  Share01Icon,
   BellDotIcon,
   HomeIcon,
   UserIcon,
@@ -22,6 +25,24 @@ const navItems = [
   { label: "Home", icon: HomeIcon, href: "/", section: "main" },
   { label: "Dashboard", icon: GridIcon, href: "/Dashboard", section: "main" },
   { label: "Events", icon: Calendar01Icon, href: "/events", section: "main" },
+  {
+    label: "Analytics",
+    icon: FileChartColumnIncreasingIcon,
+    href: "/analytics",
+    section: "main",
+  },
+  {
+    label: "Bookmarks",
+    icon: Bookmark01Icon,
+    href: "/Bookmarks",
+    section: "main",
+  },
+  {
+    label: "LinkedIn Generator",
+    icon: Share01Icon,
+    href: "/linkedin-post-generator",
+    section: "main",
+  },
   {
     label: "Notifications",
     icon: BellDotIcon,

@@ -1,134 +1,170 @@
 "use client";
 
-import { Flame, Target } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Bookmark01Icon,
+  ArrowRight01Icon,
+  FileChartColumnIncreasingIcon,
+  Calendar01Icon,
+} from "@hugeicons/core-free-icons";
+import type { ElementType } from "react";
 
 interface GoalData {
   title: string;
   current: number;
   target: number;
-  unit: string;
   progress: number;
+  helper: string;
+  icon: ElementType;
+  tone?: "emerald" | "cyan" | "amber";
 }
 
 interface GoalsSectionProps {
   goals?: GoalData[];
-  currentStreak?: number;
-  streakRecord?: number;
-  engagementScore?: number;
 }
 
-export function GoalsSection({
-  goals,
-  currentStreak = 0,
-  streakRecord = 0,
-  engagementScore = 0,
-}: GoalsSectionProps) {
+export function GoalsSection({ goals }: GoalsSectionProps) {
   const localGoals = goals ?? [];
 
+  const toneMap: Record<NonNullable<GoalData["tone"]>, string> = {
+    emerald: "border-emerald-500/20 bg-emerald-500/10 text-emerald-300",
+    cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-300",
+    amber: "border-amber-500/20 bg-amber-500/10 text-amber-300",
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Streak Card */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-white">Streaks & Goals</h2>
-        <p className="text-sm text-zinc-400">
-          Key patterns and trends from your activity data.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Current Streak */}
-        <div className="p-6 bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/30 rounded-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="text-3xl">🔥</div>
-            <div>
-              <p className="text-xs font-medium text-amber-300">
-                Current Streak
-              </p>
-              <p className="text-2xl font-bold text-white">
-                {currentStreak} days
-              </p>
-            </div>
-          </div>
-          <p className="text-xs text-amber-200/80">
-            Keep it up! You're on fire.
+    <section className="rounded-[28px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+            Progress
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
+            Goals & progress
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+            Derived progress cards based entirely on current analytics values.
           </p>
         </div>
-
-        {/* Streak Record */}
-        <div className="p-6 bg-zinc-800/50 border border-zinc-700 rounded-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="text-3xl">🏆</div>
-            <div>
-              <p className="text-xs font-medium text-zinc-400">Personal Best</p>
-              <p className="text-2xl font-bold text-white">
-                {streakRecord} days
-              </p>
-            </div>
-          </div>
-          <p className="text-xs text-zinc-500">
-            {streakRecord - currentStreak} more days to tie your record!
-          </p>
-        </div>
-
-        {/* Engagement Score */}
-        <div className="p-6 bg-emerald-600/20 border border-emerald-500/30 rounded-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="text-3xl">⚡</div>
-            <div>
-              <p className="text-xs font-medium text-emerald-300">
-                Engagement Score
-              </p>
-              <p className="text-2xl font-bold text-white">
-                {engagementScore}/100
-              </p>
-            </div>
-          </div>
-          <p className="text-xs text-emerald-200/80">
-            You're a power user! Keep building.
-          </p>
+        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950/60 px-3 py-1.5 text-xs text-zinc-500">
+          <HugeiconsIcon
+            icon={ArrowRight01Icon}
+            size="12"
+            strokeWidth={2}
+            className="text-emerald-400"
+          />
+          No gamification, just metrics
         </div>
       </div>
 
-      {/* Goals */}
-      <div>
-        <h3 className="text-lg font-bold text-white mb-4">Monthly Goals</h3>
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        {localGoals.length > 0 ? (
+          localGoals.map((goal, index) => {
+            const tone =
+              goal.tone ??
+              (index === 0 ? "cyan" : index === 1 ? "emerald" : "amber");
+            const classes = toneMap[tone];
+            const Icon = goal.icon;
 
-        <div className="space-y-4">
-          {localGoals.map((goal) => (
-            <div
-              key={goal.title}
-              className="p-5 bg-zinc-900 border border-zinc-800 rounded-xl"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-sm font-medium text-white">{goal.title}</p>
-                  <p className="text-xs text-zinc-500 mt-1">
-                    {goal.current} of {goal.target} {goal.unit}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-emerald-400">
+            return (
+              <article
+                key={goal.title}
+                className="flex h-full flex-col rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border ${classes}`}
+                  >
+                    {Icon ? (
+                      <HugeiconsIcon icon={Icon} size="18" strokeWidth={2} />
+                    ) : (
+                      <HugeiconsIcon
+                        icon={FileChartColumnIncreasingIcon}
+                        size="18"
+                        strokeWidth={2}
+                      />
+                    )}
+                  </div>
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
                     {goal.progress}%
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  <h3 className="text-sm font-medium text-white">
+                    {goal.title}
+                  </h3>
+                  <p className="text-sm leading-6 text-zinc-400">
+                    {goal.helper}
                   </p>
                 </div>
-              </div>
 
-              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
-                  style={{ width: `${goal.progress}%` }}
-                />
-              </div>
-            </div>
-          ))}
+                <div className="mt-5 h-2 rounded-full bg-zinc-800">
+                  <div
+                    className={`h-2 rounded-full ${tone === "amber" ? "bg-amber-400" : tone === "cyan" ? "bg-cyan-400" : "bg-emerald-400"}`}
+                    style={{ width: `${Math.min(goal.progress, 100)}%` }}
+                  />
+                </div>
+
+                <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
+                  <span className="tabular-nums">
+                    {goal.current} / {goal.target}
+                  </span>
+                  <span>Live progress</span>
+                </div>
+              </article>
+            );
+          })
+        ) : (
+          <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-10 text-sm text-zinc-500 md:col-span-3">
+            No progress metrics available yet.
+          </div>
+        )}
+      </div>
+
+      <div className="mt-6 grid gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
+            <HugeiconsIcon icon={Calendar01Icon} size="16" strokeWidth={2} />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+              Activity window
+            </p>
+            <p className="mt-1 text-sm font-medium text-white">
+              Current month focus
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-300">
+            <HugeiconsIcon icon={Bookmark01Icon} size="16" strokeWidth={2} />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+              Bookmark share
+            </p>
+            <p className="mt-1 text-sm font-medium text-white">
+              Derived from live totals
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:col-span-2 xl:col-span-1">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-500/20 bg-violet-500/10 text-violet-300">
+            <HugeiconsIcon icon={ArrowRight01Icon} size="16" strokeWidth={2} />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+              Momentum
+            </p>
+            <p className="mt-1 text-sm font-medium text-white">
+              Month-over-month movement
+            </p>
+          </div>
         </div>
       </div>
-
-      <div className="p-5 bg-emerald-600/20 border border-emerald-500/30 rounded-xl text-center">
-        <p className="text-sm font-medium text-emerald-300">
-          🎉 You're crushing your goals! Keep up the momentum.
-        </p>
-      </div>
-    </div>
+    </section>
   );
 }

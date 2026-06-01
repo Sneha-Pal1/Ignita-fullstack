@@ -1,12 +1,19 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  FileChartColumnIncreasingIcon,
+  ArrowRight01Icon,
+} from "@hugeicons/core-free-icons";
+import type { ElementType } from "react";
 
 type ProductivityInsight = {
   id: string;
   title: string;
   value: string;
-  icon?: any;
+  detail: string;
+  icon?: ElementType;
+  tone?: "emerald" | "cyan" | "violet";
 };
 
 export function ProductivityInsights({
@@ -16,34 +23,86 @@ export function ProductivityInsights({
 }) {
   const items = insights ?? [];
 
+  const toneMap: Record<NonNullable<ProductivityInsight["tone"]>, string> = {
+    emerald: "border-emerald-500/20 bg-emerald-500/10 text-emerald-300",
+    cyan: "border-cyan-500/20 bg-cyan-500/10 text-cyan-300",
+    violet: "border-violet-500/20 bg-violet-500/10 text-violet-300",
+  };
+
   return (
-    <div className="p-6 bg-zinc-900 rounded-xl border border-zinc-800">
-      <h3 className="text-sm font-semibold text-zinc-200">Productivity</h3>
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((card) => (
-          <div
-            key={card.id}
-            className="p-4 rounded-xl border border-white/10 bg-white/5 hover:border-emerald-500/30 transition-all duration-200"
-          >
-            <div className="text-2xl mb-3">
-              {card.icon ? (
-                <card.icon className="h-5 w-5 text-emerald-400" />
-              ) : (
-                <Sparkles className="h-5 w-5 text-emerald-400" />
-              )}
-            </div>
-            <p className="text-xs font-medium text-zinc-400 mb-1">
-              {card.title}
-            </p>
-            <h3 className="text-lg font-bold text-white">{card.value}</h3>
-          </div>
-        ))}
-        {items.length === 0 && (
-          <div className="text-xs text-zinc-400">
+    <section className="rounded-[28px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+            Productivity
+          </p>
+          <h3 className="mt-2 text-xl font-semibold tracking-tight text-white">
+            Compact insights
+          </h3>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+            Derived metrics from the live analytics payload. No synthetic
+            values.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950/60 px-3 py-1.5 text-xs text-zinc-500">
+          <HugeiconsIcon
+            icon={ArrowRight01Icon}
+            size="12"
+            strokeWidth={2}
+            className="text-emerald-400"
+          />
+          Calculated from current response data
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        {items.length > 0 ? (
+          items.map((card, index) => {
+            const tone =
+              card.tone ??
+              (index === 0 ? "emerald" : index === 1 ? "cyan" : "violet");
+            const classes = toneMap[tone];
+            const Icon = card.icon;
+
+            return (
+              <article
+                key={card.id}
+                className="flex h-full flex-col rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl border ${classes}`}
+                  >
+                    {Icon ? (
+                      <HugeiconsIcon icon={Icon} size="18" strokeWidth={2} />
+                    ) : (
+                      <HugeiconsIcon
+                        icon={FileChartColumnIncreasingIcon}
+                        size="18"
+                        strokeWidth={2}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <p className="mt-4 text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                  {card.title}
+                </p>
+                <h4 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+                  {card.value}
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-zinc-400">
+                  {card.detail}
+                </p>
+              </article>
+            );
+          })
+        ) : (
+          <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-10 text-sm text-zinc-500 md:col-span-3">
             No productivity insights available.
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
