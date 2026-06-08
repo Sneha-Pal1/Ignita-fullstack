@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ignita-postgres-dev
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sneha
+      POSTGRES_DB: ignita
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.dev
+
+    container_name: ignita-backend-dev
+
+    env_file:
+      - ./Backend/.env.development
+
+    ports:
+      - "3001:3001"
+
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+
+    container_name: ignita-frontend-dev
+
+    env_file:
+      - ./frontend/.env.development
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data_dev:

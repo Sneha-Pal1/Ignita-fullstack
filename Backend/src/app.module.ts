@@ -19,7 +19,7 @@ import { Alert } from './alerts/entities/alert.entity';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: `.env.${process.env.NODE_ENV || `development`}`,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
