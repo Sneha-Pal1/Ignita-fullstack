@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ElementType } from "react";
+// import type { ElementType } from "react";
+// import type { IconSvgObject } from "@hugeicons/core-free-icons";
 import {
   Bookmark01Icon,
   Calendar01Icon,
@@ -27,7 +28,7 @@ type MonthlyPoint = {
 type StatItem = {
   label: string;
   value: string | number;
-  icon: ElementType;
+  icon: unknown;
   accent: "emerald" | "cyan" | "violet" | "amber";
 };
 

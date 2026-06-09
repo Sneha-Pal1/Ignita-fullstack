@@ -1,6 +1,7 @@
 "use client";
 
-import { NotificationRecord } from "@/lib/api-endpoints";
+// import { NotificationRecord } from "@/lib/api-endpoints";
+import { Notification } from "@/lib/data/notifications-data";
 import Link from "next/link";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -12,7 +13,7 @@ import {
 } from "@hugeicons/core-free-icons";
 
 interface NotificationCardProps {
-  notification: NotificationRecord & { timestamp: string | Date };
+  notification: Notification;
   onMarkAsRead?: (id: string) => void;
   onDelete?: (id: string) => void;
 }

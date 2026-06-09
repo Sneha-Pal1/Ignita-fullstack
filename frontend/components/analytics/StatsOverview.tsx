@@ -1,12 +1,12 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import type { ElementType } from "react";
+// import type { ElementType } from "react";
 
 interface StatItem {
   label: string;
   value: string | number;
-  icon: ElementType;
+  icon: unknown;
   accent: "emerald" | "cyan" | "violet" | "amber";
 }
 
@@ -35,7 +35,11 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
             <div
               className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl border ${accentMap[stat.accent]}`}
             >
-              <HugeiconsIcon icon={stat.icon} size="16" strokeWidth={2} />
+              <HugeiconsIcon
+                icon={stat.icon as any}
+                size={16}
+                strokeWidth={2}
+              />
             </div>
           </div>
 
