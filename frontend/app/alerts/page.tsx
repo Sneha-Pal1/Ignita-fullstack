@@ -9,7 +9,7 @@ import NotificationCard from "@/components/notifications/NotificationCard";
 import CreateAlertModal from "@/components/notifications/CreateAlertModal";
 import ActivityTimeline from "@/components/notifications/ActivityTimeline";
 import EmptyState from "@/components/notifications/EmptyState";
-import { type Notification } from "@/lib/data/notifications-data";
+import { type NotificationRecord } from "@/lib/api-endpoints";
 import {
   Bookmark01Icon,
   BellDotIcon,
@@ -57,14 +57,14 @@ function formatRelativeTime(dateValue?: string) {
   return parsed;
 }
 
-function toNotification(alert: AlertRecord): Notification {
+function toNotification(alert: AlertRecord): NotificationRecord {
   return {
     id: alert.id,
     type: "event_deadline",
     title: alert.read ? "Alert update" : "New alert",
     message: alert.message,
     eventTitle: alert.message,
-    timestamp: formatRelativeTime(alert.createdAt),
+    timestamp: alert.createdAt || new Date().toISOString(),
     isRead: alert.read,
     icon: "🔔",
     color: "from-emerald-500 to-teal-500",

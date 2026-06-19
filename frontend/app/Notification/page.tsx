@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -37,7 +37,7 @@ interface ActivityItem {
   id: string;
   action: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   timestamp: Date;
   category: "bookmark" | "registration" | "alert" | "post" | "event";
 }

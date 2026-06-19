@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { adminAPI, type Event } from "@/lib/api-endpoints";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
@@ -49,7 +49,7 @@ const modeOptions = [
   { label: "Hybrid", value: "HYBRID" },
 ];
 
-export default function AdminCreateEventPage() {
+function AdminCreateEventForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
@@ -521,3 +521,15 @@ function ChecklistItem({ label }: { label: string }) {
 
 const inputClass =
   "w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30";
+
+export default function AdminCreateEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen bg-zinc-950 text-white items-center justify-center">
+        <Loader2 className="animate-spin text-emerald-400" size={32} />
+      </div>
+    }>
+      <AdminCreateEventForm />
+    </Suspense>
+  );
+}

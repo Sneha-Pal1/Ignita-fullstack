@@ -1,4 +1,5 @@
 import { apiClient } from "./api-client";
+import type { User } from "./auth-types";
 
 export interface Event {
   id: string;

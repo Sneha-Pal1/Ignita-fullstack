@@ -54,7 +54,7 @@ export default function EmptyState({
       {/* Large icon with glow */}
       <div className="flex justify-center mb-6">
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center text-5xl bg-linear-to-r ${styles.bg} border border-white/20 shadow-lg animate-pulse`}
+          className={`w-24 h-24 rounded-full flex items-center justify-center text-5xl bg-gradient-to-r ${styles.bg} border border-white/20 shadow-lg animate-pulse`}
           style={{
             boxShadow: `0 0 40px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
           }}
@@ -73,7 +73,7 @@ export default function EmptyState({
       {actionText && onAction && (
         <button
           onClick={onAction}
-          className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-linear-to-r ${styles.gradientFrom} ${styles.gradientTo} text-white font-medium hover:shadow-lg transition-all duration-200 transform hover:scale-105`}
+          className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r ${styles.gradientFrom} ${styles.gradientTo} text-white font-medium hover:shadow-lg transition-all duration-200 transform hover:scale-105`}
         >
           <span>{actionText}</span>
           <svg

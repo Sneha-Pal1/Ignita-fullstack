@@ -23,7 +23,7 @@ export interface Notification {
 export interface Alert {
   id: string;
   eventTitle: string;
-  reminderType: "1_day" | "3_hours" | "1_week" | "custom";
+  reminderType: "1_day" | "3_hours" | "1_week" | "3_days" | "custom";
   reminderTime: string;
   isActive: boolean;
   createdAt: Date;

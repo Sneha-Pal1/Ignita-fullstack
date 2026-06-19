@@ -142,6 +142,7 @@ export const authAPI = {
   },
 
   register: async (credentials: RegisterCredentials): Promise<AuthResponse> => {
+    console.log("📝 Registering with payload:", JSON.stringify(credentials));
     const response = await apiClient.post<AuthResponse>(
       "/auth/register",
       credentials,
@@ -189,4 +190,21 @@ export const authAPI = {
   getCurrentUser: () => {
     return authStorage.getUser();
   },
+
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    return apiClient.post<{ message: string }>("/auth/forgot-password", {
+      email,
+    });
+  },
+
+  resetPassword: async (
+    token: string,
+    password: string,
+  ): Promise<{ message: string }> => {
+    return apiClient.post<{ message: string }>("/auth/reset-password", {
+      token,
+      password,
+    });
+  },
 };
+

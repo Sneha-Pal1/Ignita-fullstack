@@ -25,17 +25,28 @@ export default function RegisterPage() {
   const router = useRouter();
   const { register, loading, error } = useAuth();
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    const form = e.currentTarget;
+
+    // Read directly from DOM — captures browser autofill that bypasses React onChange
+    const emailVal = (form.elements.namedItem("email") as HTMLInputElement)?.value?.trim().toLowerCase() || email.trim().toLowerCase();
+    const nameVal = (form.elements.namedItem("name") as HTMLInputElement)?.value?.trim() || fullName.trim();
+    const phoneVal = (form.elements.namedItem("phone") as HTMLInputElement)?.value?.trim() || phone.trim();
+    const passwordVal = (form.elements.namedItem("password") as HTMLInputElement)?.value || password;
+    const confirmPasswordVal = (form.elements.namedItem("confirmPassword") as HTMLInputElement)?.value || confirmPassword;
+
+    console.log("📝 Form values on submit:", { emailVal, nameVal, phoneVal, role });
+
+    if (passwordVal !== confirmPasswordVal) {
       return;
     }
     try {
       const response = await register({
-        name: fullName,
-        email,
-        phone,
-        password,
+        name: nameVal,
+        email: emailVal,
+        phone: phoneVal,
+        password: passwordVal,
         role,
       });
       router.push(response.user?.role === "ADMIN" ? "/create" : "/events");
@@ -97,6 +108,7 @@ export default function RegisterPage() {
             </label>
             <input
               id="fullName"
+              name="name"
               type="text"
               placeholder="Enter your full name"
               value={fullName}
@@ -104,6 +116,7 @@ export default function RegisterPage() {
               className="form-input"
               disabled={loading}
               required
+              autoComplete="name"
             />
           </div>
 
@@ -113,6 +126,7 @@ export default function RegisterPage() {
             </label>
             <input
               id="email"
+              name="email"
               type="email"
               placeholder="Enter your email"
               value={email}
@@ -120,6 +134,7 @@ export default function RegisterPage() {
               className="form-input"
               disabled={loading}
               required
+              autoComplete="email"
             />
           </div>
 
@@ -129,6 +144,7 @@ export default function RegisterPage() {
             </label>
             <input
               id="phone"
+              name="phone"
               type="tel"
               placeholder="Enter your phone number"
               value={phone}
@@ -136,6 +152,7 @@ export default function RegisterPage() {
               className="form-input"
               disabled={loading}
               required
+              autoComplete="tel"
             />
           </div>
 
@@ -146,6 +163,7 @@ export default function RegisterPage() {
             <div className="password-input-wrapper">
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
                 value={password}
@@ -153,6 +171,7 @@ export default function RegisterPage() {
                 className="form-input"
                 disabled={loading}
                 required
+                autoComplete="new-password"
               />
               <button
                 type="button"
@@ -177,6 +196,7 @@ export default function RegisterPage() {
             <div className="password-input-wrapper">
               <input
                 id="confirmPassword"
+                name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm your password"
                 value={confirmPassword}
@@ -184,6 +204,7 @@ export default function RegisterPage() {
                 className="form-input"
                 disabled={loading}
                 required
+                autoComplete="new-password"
               />
               <button
                 type="button"

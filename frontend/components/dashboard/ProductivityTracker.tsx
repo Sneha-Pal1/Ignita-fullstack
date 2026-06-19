@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
 import { TrendingUp, Zap } from "lucide-react";
 

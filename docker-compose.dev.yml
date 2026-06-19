@@ -4,9 +4,9 @@ services:
     container_name: ignita-postgres-dev
 
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: sneha
-      POSTGRES_DB: ignita
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-ignita}
 
     ports:
       - "5432:5432"

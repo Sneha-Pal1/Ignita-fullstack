@@ -4,6 +4,8 @@ import { Bookmark } from './entities/bookmark.entity';
 import { Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
 import { Event } from '../events/entities/event.entity';
+import { EventCategory } from '../events/enums/event-category.enum';
+import { EventType } from '../events/enums/event-type.enum';
 @Injectable()
 export class BookmarkService {
   constructor(
@@ -39,8 +41,8 @@ export class BookmarkService {
     if (!event) {
       const newEvent = new Event();
       newEvent.title = eventTitle;
-      (newEvent as any).category = 'WORKSHOP';
-      (newEvent as any).type = 'ONLINE';
+      newEvent.category = EventCategory.WORKSHOP;
+      newEvent.mode = EventType.ONLINE;
       event = await this.eventRepo.save(newEvent);
     }
 

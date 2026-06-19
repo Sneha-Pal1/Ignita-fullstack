@@ -56,7 +56,7 @@ export default function PostPreview({ post, isLoading }: PostPreviewProps) {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex gap-3">
-          <div className="w-12 h-12 bg-linear-to-br from-emerald-400 to-emerald-600 rounded-full shrink-0" />
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full shrink-0" />
           <div>
             <div className="font-semibold text-zinc-100">Your Name</div>
             <div className="text-xs text-zinc-500 flex items-center gap-1">

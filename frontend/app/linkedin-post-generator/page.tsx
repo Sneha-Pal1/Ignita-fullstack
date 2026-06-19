@@ -70,9 +70,10 @@ export default function LinkedInGeneratorPage() {
   const handleCopy = () => {
     if (!post) return;
 
-    const textToCopy = post.includeHashtags
-      ? `${post.content}\n\n${post.hashtags.join(" ")}`
-      : post.content;
+    const textToCopy =
+      post.hashtags && post.hashtags.length > 0
+        ? `${post.content}\n\n${post.hashtags.join(" ")}`
+        : post.content;
 
     navigator.clipboard.writeText(textToCopy).then(() => {
       // Show brief feedback

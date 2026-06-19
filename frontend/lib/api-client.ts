@@ -168,13 +168,18 @@ async function request<T>(
         endpoint,
         data,
       });
-      throw new APIError(
-        response.status,
-        data,
-        responseData && typeof responseData.message === "string"
-          ? responseData.message
-          : "API request failed",
-      );
+
+      // NestJS ValidationPipe returns message as string[] — join them for display
+      let errorMessage = "API request failed";
+      if (responseData) {
+        if (typeof responseData.message === "string") {
+          errorMessage = responseData.message;
+        } else if (Array.isArray(responseData.message) && responseData.message.length > 0) {
+          errorMessage = (responseData.message as string[]).join(", ");
+        }
+      }
+
+      throw new APIError(response.status, data, errorMessage);
     }
 
     console.log("✅ API Success:", { endpoint, status: response.status });

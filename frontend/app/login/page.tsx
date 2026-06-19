@@ -117,9 +117,18 @@ export default function LoginPage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="password" className="form-label" style={{ margin: 0 }}>
+                Password
+              </label>
+              <a
+                href="/forgot-password"
+                className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                tabIndex={0}
+              >
+                Forgot password?
+              </a>
+            </div>
             <div className="password-input-wrapper">
               <input
                 id="password"

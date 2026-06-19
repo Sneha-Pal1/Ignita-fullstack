@@ -217,7 +217,7 @@ export const Sidebar = () => {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors group relative"
           >
-            <div className="w-10 h-10 rounded-full bg-linear-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
               <span className="font-semibold text-emerald-400 text-sm">
                 {user?.name?.charAt(0).toUpperCase() || "U"}
               </span>

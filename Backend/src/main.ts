@@ -15,8 +15,16 @@ async function bootstrap() {
   );
 
   // Enable CORS so frontend can call backend
+  const frontendUrl = process.env.FRONTEND_URL;
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+  if (frontendUrl) {
+    allowedOrigins.push(frontendUrl);
+    // Add variations (e.g. without trailing slash if present)
+    allowedOrigins.push(frontendUrl.replace(/\/$/, ''));
+  }
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'], // Next.js dev servers
+    origin: allowedOrigins,
     credentials: true,
   });
 

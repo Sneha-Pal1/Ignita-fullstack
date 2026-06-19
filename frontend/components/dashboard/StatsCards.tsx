@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { stats } from "@/lib/data/dashboard";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
 import { Calendar, Bookmark, Bell, Upload } from "lucide-react";

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Clock01Icon,
@@ -55,7 +56,7 @@ export const RightSidebar = ({
         <div className="divide-y divide-zinc-800">
           {notifications.length > 0 ? (
             notifications.map((notification) => {
-              const iconMap = {
+              const iconMap: Record<string, React.ReactNode> = {
                 alert: (
                   <HugeiconsIcon
                     icon={Alert01Icon}
@@ -71,9 +72,6 @@ export const RightSidebar = ({
                     strokeWidth={2}
                     className="text-cyan-400"
                   />
-                ),
-                streak: (
-                  <Zap className="w-5 h-5 text-emerald-400" strokeWidth={2} />
                 ),
               };
 

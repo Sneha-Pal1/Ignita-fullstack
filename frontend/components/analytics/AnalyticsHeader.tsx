@@ -1,3 +1,5 @@
+"use client";
+
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Download01Icon, Calendar01Icon } from "@hugeicons/core-free-icons";
 

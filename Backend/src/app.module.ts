@@ -14,6 +14,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { NotificationModule } from './notification/notification.module';
 import { AdminModule } from './admin/admin.module';
 import { Alert } from './alerts/entities/alert.entity';
+import { PasswordResetToken } from './auth/entities/password-reset-token.entity';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { Alert } from './alerts/entities/alert.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User, Bookmark, Event, Alert],
+      entities: [User, Bookmark, Event, Alert, PasswordResetToken],
       synchronize: true,
       logging: true,
     }),

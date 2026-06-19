@@ -32,7 +32,7 @@ export default function ActivityTimeline({
           <div key={activity.id} className="relative flex gap-4">
             {/* Timeline line */}
             {index !== activities.length - 1 && (
-              <div className="absolute left-5 top-12 w-0.5 h-8 bg-linear-to-b from-emerald-500/30 to-transparent" />
+              <div className="absolute left-5 top-12 w-0.5 h-8 bg-gradient-to-b from-emerald-500/30 to-transparent" />
             )}
 
             {/* Icon circle */}
@@ -117,7 +117,7 @@ export default function ActivityTimeline({
       </div>
 
       {/* Load more button */}
-      <button className="w-full mt-6 px-4 py-3 rounded-lg bg-linear-to-r from-emerald-600/20 to-teal-600/20 border border-emerald-500/30 text-emerald-400 hover:from-emerald-600/30 hover:to-teal-600/30 font-medium transition-all duration-200">
+      <button className="w-full mt-6 px-4 py-3 rounded-lg bg-gradient-to-r from-emerald-600/20 to-teal-600/20 border border-emerald-500/30 text-emerald-400 hover:from-emerald-600/30 hover:to-teal-600/30 font-medium transition-all duration-200">
         Load More Activity
       </button>
     </div>

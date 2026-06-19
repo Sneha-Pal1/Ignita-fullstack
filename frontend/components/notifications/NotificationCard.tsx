@@ -1,7 +1,6 @@
 "use client";
 
-// import { NotificationRecord } from "@/lib/api-endpoints";
-import { Notification } from "@/lib/data/notifications-data";
+import { type NotificationRecord } from "@/lib/api-endpoints";
 import Link from "next/link";
 import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -13,7 +12,7 @@ import {
 } from "@hugeicons/core-free-icons";
 
 interface NotificationCardProps {
-  notification: Notification;
+  notification: NotificationRecord;
   onMarkAsRead?: (id: string) => void;
   onDelete?: (id: string) => void;
 }
@@ -25,7 +24,8 @@ export default function NotificationCard({
 }: NotificationCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const formatTime = (date: Date) => {
+  const formatTime = (value: string) => {
+    const date = new Date(value);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
@@ -39,57 +39,52 @@ export default function NotificationCard({
     return date.toLocaleDateString();
   };
 
-  const timestamp =
-    notification.timestamp instanceof Date
-      ? notification.timestamp
-      : new Date(notification.timestamp);
-
   const getCategory = (type?: string) => {
     const t = (type || "").toLowerCase();
     if (t.includes("dead") || t.includes("deadline"))
-      return { label: "Deadline Alert", accent: "amber", icon: "⏰" };
+      return { label: "Deadline Alert", accent: "amber" };
     if (t.includes("remind") || t.includes("event"))
-      return { label: "Event Reminder", accent: "blue", icon: "📅" };
+      return { label: "Event Reminder", accent: "blue" };
     if (t.includes("opportun") || t.includes("new"))
-      return { label: "New Opportunity", accent: "green", icon: "🎯" };
+      return { label: "New Opportunity", accent: "green" };
     if (t.includes("bookmark"))
-      return { label: "Bookmark Activity", accent: "purple", icon: "🔖" };
-    return { label: "System Notification", accent: "neutral", icon: "ℹ️" };
+      return { label: "Bookmark Activity", accent: "purple" };
+    return { label: "System Notification", accent: "neutral" };
   };
 
   const cat = getCategory(notification.type);
 
-  const accentBg = {
+  const accentBg: Record<string, string> = {
     amber: "bg-amber-500/10 text-amber-400 border-amber-400/20",
-    blue: "bg-sky-500/8 text-sky-300 border-sky-400/20",
+    blue: "bg-sky-500/10 text-sky-300 border-sky-400/20",
     green: "bg-emerald-500/10 text-emerald-300 border-emerald-400/20",
     purple: "bg-violet-500/10 text-violet-300 border-violet-400/20",
-    neutral: "bg-white/3 text-gray-300 border-white/6",
-  }[cat.accent || "neutral"];
+    neutral: "bg-zinc-800 text-gray-300 border-zinc-700",
+  };
+
+  const badgeClass = accentBg[cat.accent] || accentBg.neutral;
+
+  const getIcon = () => {
+    if (cat.accent === "amber") return Clock01Icon;
+    if (cat.accent === "blue") return Calendar01Icon;
+    if (cat.accent === "green") return BellDotIcon;
+    if (cat.accent === "purple") return Note01Icon;
+    return Note01Icon;
+  };
 
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative transition-colors duration-150 rounded-md border ${!notification.isRead ? "border-emerald-600/30" : "border-white/6"} bg-white/3 hover:bg-white/6 p-3 flex items-start gap-3`}
+      className={`relative transition-colors duration-150 rounded-md border ${
+        !notification.isRead
+          ? "border-emerald-600/30"
+          : "border-zinc-700"
+      } bg-zinc-900/50 hover:bg-zinc-800/50 p-3 flex items-start gap-3`}
     >
-      <div
-        className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center text-lg"
-        style={{ background: notification.color || undefined }}
-      >
-        {/* category icon */}
+      <div className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center bg-zinc-800">
         <HugeiconsIcon
-          icon={
-            cat.accent === "amber"
-              ? Clock01Icon
-              : cat.accent === "blue"
-                ? Calendar01Icon
-                : cat.accent === "green"
-                  ? BellDotIcon
-                  : cat.accent === "purple"
-                    ? Note01Icon
-                    : Note01Icon
-          }
+          icon={getIcon()}
           size="18"
           className="text-white"
         />
@@ -102,34 +97,17 @@ export default function NotificationCard({
               {notification.title}
             </span>
             <span
-              className={`text-xs font-medium px-2 py-0.5 rounded-full ${accentBg} ml-1`}
+              className={`text-xs font-medium px-2 py-0.5 rounded-full border ${badgeClass} ml-1 whitespace-nowrap`}
             >
-              <span className="mr-1">
-                <HugeiconsIcon
-                  icon={
-                    cat.accent === "amber"
-                      ? Clock01Icon
-                      : cat.accent === "blue"
-                        ? Calendar01Icon
-                        : cat.accent === "green"
-                          ? BellDotIcon
-                          : cat.accent === "purple"
-                            ? Note01Icon
-                            : Note01Icon
-                  }
-                  size="14"
-                  className="inline text-current"
-                />
-              </span>
               {cat.label}
             </span>
           </div>
-          <div className="text-xs text-gray-400 whitespace-nowrap">
-            {formatTime(timestamp)}
+          <div className="text-xs text-gray-400 whitespace-nowrap shrink-0">
+            {formatTime(notification.timestamp)}
           </div>
         </div>
 
-        <p className="text-xs text-gray-300 mt-1 truncate line-clamp-2">
+        <p className="text-xs text-gray-300 mt-1 line-clamp-2">
           {notification.message}
         </p>
 
@@ -137,7 +115,7 @@ export default function NotificationCard({
           {notification.actionUrl && (
             <Link
               href={notification.actionUrl}
-              className="text-xs text-emerald-300 bg-emerald-600/8 px-2 py-1 rounded-md hover:bg-emerald-600/12"
+              className="text-xs text-emerald-300 bg-emerald-600/10 px-2 py-1 rounded-md hover:bg-emerald-600/20 transition-colors"
             >
               View
             </Link>
@@ -145,7 +123,7 @@ export default function NotificationCard({
           {!notification.isRead && onMarkAsRead && (
             <button
               onClick={() => onMarkAsRead(notification.id)}
-              className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-white/5"
+              className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-zinc-700 transition-colors"
             >
               Mark read
             </button>
@@ -153,13 +131,21 @@ export default function NotificationCard({
           {onDelete && (
             <button
               onClick={() => onDelete(notification.id)}
-              className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10"
+              className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10 transition-colors"
             >
               Dismiss
             </button>
           )}
         </div>
       </div>
+
+      {/* Unread indicator */}
+      {!notification.isRead && (
+        <span className="shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-1" />
+      )}
+
+      {/* suppress unused variable warning */}
+      {isHovered && null}
     </div>
   );
 }

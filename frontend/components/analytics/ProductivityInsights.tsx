@@ -12,7 +12,7 @@ type ProductivityInsight = {
   title: string;
   value: string;
   detail: string;
-  icon?: ElementType;
+  icon?: any;
   tone?: "emerald" | "cyan" | "violet";
 };
 

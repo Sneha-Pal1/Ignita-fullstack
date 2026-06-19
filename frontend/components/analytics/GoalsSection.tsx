@@ -15,7 +15,7 @@ interface GoalData {
   target: number;
   progress: number;
   helper: string;
-  icon: ElementType;
+  icon: any;
   tone?: "emerald" | "cyan" | "amber";
 }
 

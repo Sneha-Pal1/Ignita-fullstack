@@ -6,9 +6,11 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { UserRole } from '../enum/user-role.enum';
 
 export class RegisterDto {
+  @Transform(({ value }: { value: string }) => value?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please enter a valid email address' })
   email!: string;
 
@@ -31,3 +33,4 @@ export class RegisterDto {
   })
   role?: UserRole;
 }
+

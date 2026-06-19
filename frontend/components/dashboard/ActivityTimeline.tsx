@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { activities } from "@/lib/data/dashboard";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
 import { Bookmark, CheckCircle, FileText, Bell } from "lucide-react";

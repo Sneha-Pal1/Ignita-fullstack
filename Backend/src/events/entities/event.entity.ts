@@ -51,7 +51,7 @@ export class Event {
   @Column({ type: 'simple-json', nullable: true })
   tags?: string[];
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
   createdBy?: User;
 
   @CreateDateColumn()

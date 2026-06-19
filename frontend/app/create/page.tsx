@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/lib/auth-context";
 import { eventsAPI } from "@/lib/api-endpoints";
@@ -50,7 +50,7 @@ const modeOptions = [
   { label: "Hybrid", value: "HYBRID" },
 ];
 
-export default function CreateEventPage() {
+function CreateEventForm() {
   const { user, isLoading: authLoading } = useAuthContext();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -505,3 +505,15 @@ function toLocalDateTime(value?: string) {
 
 const inputClass =
   "w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-emerald-500/60 focus:bg-zinc-900";
+
+export default function CreateEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen bg-zinc-950 text-white items-center justify-center">
+        <Loader2 className="animate-spin text-emerald-400" size={32} />
+      </div>
+    }>
+      <CreateEventForm />
+    </Suspense>
+  );
+}

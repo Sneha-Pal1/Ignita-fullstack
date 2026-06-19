@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 interface TopHeaderProps {
-  savedCount: number;
+  savedCount?: number;
 }
 
 export const TopHeader = ({ savedCount }: TopHeaderProps) => {
@@ -43,7 +43,7 @@ export const TopHeader = ({ savedCount }: TopHeaderProps) => {
                 className="text-emerald-400"
               />
               <span className="text-sm font-medium text-emerald-400 hidden sm:inline">
-                {savedCount} saved
+                {savedCount ?? 0} saved
               </span>
             </div>
           </div>
