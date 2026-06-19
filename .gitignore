@@ -1,1 +1,18 @@
+# Local environment variables
 .env
+.env.local
+.env*.local
+.env.development
+.env.production
+
+# Dependency directories
+node_modules/
+dist/
+.next/
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
