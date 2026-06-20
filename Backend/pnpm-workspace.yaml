@@ -1,4 +1,4 @@
 allowBuilds:
-  - '@nestjs/core'
-  - bcrypt
-  - unrs-resolver
+  '@nestjs/core': true
+  bcrypt: true
+  unrs-resolver: true
