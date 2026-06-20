@@ -1,115 +1,203 @@
-# Ignita
+# 🚀 Ignita
 
-Ignita is a modern, high-performance platform designed to help developers **discover, track, and showcase their tech journey**. It provides a centralized hub for hackathons, internships, coding contests, and tech opportunities.
+Ignita is a full-stack platform that helps students discover, track, and manage opportunities such as hackathons, internships, coding contests, workshops, scholarships, and tech events — all in one place.
 
-Live Production URL: [https://ignita.in](https://ignita.in)
-
----
-
-## 🚀 Tech Stack
-
-### Frontend
-
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Component Library**: shadcn/ui, Radix UI
-
-### Backend
-
-- **Framework**: NestJS (Node.js)
-- **Database ORM**: TypeORM
-- **Database**: PostgreSQL (Supabase in Production)
-- **Security**: JWT tokens, bcrypt password hashing, Google OAuth
-- **Emails**: Nodemailer (Gmail SMTP)
-
----
-
-## 📁 Repository Structure
-
-```text
-├── Backend/                # NestJS Backend API code
-│   ├── src/                # Source code (auth, events, bookmarks, analytics, etc.)
-│   ├── Dockerfile.dev      # Development Docker configuration
-│   └── Dockerfile.prod     # Production Docker configuration
-├── frontend/               # Next.js Frontend code
-│   ├── app/                # App router pages (dashboard, login, events, etc.)
-│   ├── components/         # Reusable UI components
-│   ├── Dockerfile.dev      # Development Docker configuration
-│   └── Dockerfile.prod     # Production Docker configuration
-├── docker-compose.dev.yml  # Docker Compose for local development
-├── docker-compose.prod.yml # Docker Compose for production containers
-└── README.md               # Project documentation
-```
-
----
-
-## 🛠️ Local Development Setup
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- **Node.js** (v22 or higher)
-- **pnpm** (for Backend package management)
-- **npm** (for Frontend package management)
-- **Docker** & **Docker Compose**
-
-### Step-by-Step Setup
-
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/Sneha-Pal1/Ignita-fullstack.git
-   cd Ignita-fullstack
-   ```
-
-2. **Configure Environment Variables**:
-   - Create a root `.env` file for your local database credentials:
-     ```env
-     POSTGRES_USER=postgres
-     POSTGRES_PASSWORD=sneha
-     POSTGRES_DB=postgres
-     ```
-   - Create `/Backend/.env.development` (copy the template) and add your development JWT secrets and Google OAuth credentials.
-   - Create `/frontend/.env.development` and set:
-     ```env
-     NEXT_PUBLIC_API_URL=http://localhost:3001
-     NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
-     ```
-
-3. **Start the Development Environment (Docker Compose)**:
-   In the root directory, run:
-
-   ```bash
-   docker compose -f docker-compose.dev.yml up --build
-   ```
-
-   This will spin up:
-   - PostgreSQL database container on port `5432`
-   - NestJS API container on port `3001`
-   - Next.js Frontend container on port `3000`
-
-4. **Verify Locally**:
-   - Access the Web application: `http://localhost:3000`
-   - Access the Backend health: `http://localhost:3001`
-
----
-
-## 🚢 Production Deployment
-
-Ignita is optimized for cloud deployment using separated modern services:
-
-1. **Database**: Hosted on **Supabase** (Serverless PostgreSQL) using the **Supavisor Connection Pooler** (IPv4 compatible) to allow secure connections from IPv4-only hosting environments.
-2. **Backend**: Containerized and deployed on **Render** (or Koyeb) using `Dockerfile.prod`. On startup, TypeORM automatically synchronizes the database schema.
-3. **Frontend**: Hosted on **Vercel** with Next.js **standalone output** enabled to minimize container footprint and compile assets at build time.
+Built with a modern microservice-inspired architecture, Ignita provides personalized event discovery, bookmarking, notifications, analytics, and authentication for students looking to accelerate their tech journey.
 
 ---
 
 ## ✨ Features
 
-- **Event Tracker**: Discover, filter, and bookmark tech events, hackathons, and internships.
-- **Dynamic Dashboard**: View personalized statistics, upcoming deadlines, and event metrics.
-- **Secure Authentication**: Traditional credentials (email/password), password strength meter, secure password recovery system (Gmail SMTP), and Google OAuth sign-in.
-- **Admin Panel**: Manage user roles, create/update/delete events, and view system logs.
-- **LinkedIn Generator**: AI-assisted post generator to help developers share their event updates directly on social media.
+### 🎯 Event Discovery
+
+* Browse hackathons, internships, coding contests, and workshops.
+* Search and filter opportunities by category.
+* View detailed event information including deadlines, eligibility, and registration links.
+
+### 🔖 Bookmark Events
+
+* Save opportunities for later.
+* Maintain a personalized collection of events.
+
+### 🔐 Authentication & Authorization
+
+* JWT-based authentication.
+* Secure login and registration.
+* Role-based access control.
+
+### 🔔 Notifications
+
+* Stay updated with upcoming deadlines and opportunities.
+* Personalized alerts and reminders.
+
+### 📊 Analytics Dashboard
+
+* Track user engagement.
+* Monitor event interactions and trends.
+
+### 👨‍💼 Admin Controls
+
+* Create and manage events.
+* Update event information.
+* Monitor platform activity.
+
+---
+
+## 🏗️ Tech Stack
+
+### Frontend
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+
+### Backend
+
+* NestJS
+* TypeORM
+* PostgreSQL
+* JWT Authentication
+
+### DevOps & Deployment
+
+* Docker
+* Docker Compose
+* Vercel
+* Render
+
+---
+
+## 📂 Project Structure
+
+```bash
+Ignita/
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   ├── lib/
+│   └── public/
+│
+├── Backend/
+│   ├── src/
+│   │   ├── auth/
+│   │   ├── events/
+│   │   ├── notifications/
+│   │   ├── analytics/
+│   │   └── users/
+│   ├── Dockerfile.dev
+│   └── Dockerfile.prod
+│
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+└── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* Node.js 22+
+* PostgreSQL
+* Docker (Optional)
+
+### Clone Repository
+
+```bash
+git clone https://github.com/yourusername/ignita.git
+cd ignita
+```
+
+### Backend Setup
+
+```bash
+cd Backend
+
+npm install
+
+npm run start:dev
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+---
+
+## 🐳 Docker Setup
+
+Run the entire application locally:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Frontend:
+
+```bash
+http://localhost:3000
+```
+
+Backend:
+
+```bash
+http://localhost:3001
+```
+
+---
+
+## 🔒 Environment Variables
+
+Create environment files:
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+Never commit `.env` files to GitHub.
+
+---
+
+## 📈 Future Improvements
+
+* AI-powered opportunity recommendations
+* Smart deadline reminders
+* LinkedIn post generator
+* Resume-based opportunity matching
+* Event registration tracking
+* Community discussions
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome.
+
+Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+### Built with ❤️ for students, developers, and future innovators.
+
