@@ -87,9 +87,9 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <Button asChild className="auth-button-navbar">
+                <Button asChild className="bg-white hover:bg-neutral-200 text-black font-semibold rounded-md px-5 py-2 transition-all duration-200 cursor-pointer">
                   <Link href="/login">
-                    Sign In / Sign Up
+                    Login
                   </Link>
                 </Button>
               )}
