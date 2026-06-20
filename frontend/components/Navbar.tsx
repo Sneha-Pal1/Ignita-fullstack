@@ -7,6 +7,7 @@ import { useAuthContext } from "@/lib/auth-context";
 import { authStorage } from "@/lib/auth";
 import NotificationBell from "./notifications/NotificationBell";
 import type { User } from "@/lib/auth-types";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const { user: contextUser, isLoading, logout } = useAuthContext();
@@ -86,9 +87,11 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <Link href="/login" className="auth-button-navbar">
-                  Sign In / Sign Up
-                </Link>
+                <Button asChild className="auth-button-navbar">
+                  <Link href="/login">
+                    Sign In / Sign Up
+                  </Link>
+                </Button>
               )}
             </>
           )}

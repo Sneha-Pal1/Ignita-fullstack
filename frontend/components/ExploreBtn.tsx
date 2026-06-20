@@ -1,9 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/lib/auth-context";
 import { ShinyButton } from "@/components/ui/shiny-button";
 
 const ExploreBtn = () => {
+  const { user } = useAuthContext();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    if (user) {
+      router.push("/Dashboard");
+    } else {
+      router.push("/register");
+    }
+  };
+
   return (
     <div className="mt-12 flex gap-6 justify-center items-center flex-wrap">
       {/* Explore Events Button */}
@@ -46,7 +59,7 @@ const ExploreBtn = () => {
 
       {/* Get Started Button - Shiny Button */}
       <ShinyButton
-        onClick={() => console.log("GET_STARTED")}
+        onClick={handleGetStarted}
         className="bg-slate-800 border-slate-700 text-white"
         style={{ "--primary": "#5dfeca" } as React.CSSProperties}
       >
