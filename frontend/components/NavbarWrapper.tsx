@@ -17,6 +17,10 @@ export const NavbarWrapper = () => {
     "/profile",
     "/settings",
     "/alerts",
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
   ];
 
   const shouldHideNavbar = dashboardRoutes.some(

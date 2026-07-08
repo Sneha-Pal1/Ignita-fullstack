@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone } from "lucide-react";
+import AuthVisualPanel from "@/components/auth/AuthVisualPanel";
+import { Input } from "@/components/ui/input";
+import { motion } from "motion/react";
 
 const roleOptions = [
   { value: "STUDENT", label: "Student" },
@@ -56,221 +60,208 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1 className="auth-title">Ignita</h1>
-          <p className="auth-subtitle">
-            Join thousands of students discovering events
-          </p>
+    <div className="min-h-screen bg-zinc-950 flex flex-col lg:flex-row w-full overflow-hidden">
+      {/* Left Visual Banner Section */}
+      <AuthVisualPanel />
+
+      {/* Right Auth Form Section */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-10 md:p-16 relative min-h-screen bg-zinc-950">
+        
+        {/* Mobile Header Logo */}
+        <div className="lg:hidden absolute top-6 left-6">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <Image
+              src="/icons/iglogoremovebg.png"
+              alt="logo"
+              width={32}
+              height={32}
+            />
+            <span className="text-lg font-bold text-white font-schibsted-grotesk">IGNITA</span>
+          </Link>
         </div>
 
-        <form onSubmit={handleSignUp} className="auth-form">
-          <h2 className="form-heading">Create Account</h2>
-          <p className="form-description">
-            Get started with your free Ignita account
-          </p>
-
-          {error && (
-            <div className="p-3 bg-red-950/40 border border-red-900/50 rounded-lg mb-4">
-              <p className="text-sm text-red-300">{error}</p>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-md my-8 lg:my-0"
+        >
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
+            <div className="mb-6">
+              <h2 className="text-2xl font-extrabold text-white tracking-tight">Create Account</h2>
+              <p className="text-zinc-400 text-xs mt-1">
+                Get started with your free Ignita account
+              </p>
             </div>
-          )}
 
-          <div className="form-group">
-            <label htmlFor="role" className="form-label">
-              Role
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) =>
-                setRole(e.target.value as (typeof roleOptions)[number]["value"])
-              }
-              className="form-input"
-              disabled={loading}
-              required
-            >
-              {roleOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-400 mt-2">
-              Admin accounts are created separately.
-            </p>
-          </div>
+            <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+              {error && (
+                <div className="p-3.5 bg-red-950/40 border border-red-900/50 rounded-xl">
+                  <p className="text-xs text-red-300 font-medium">{error}</p>
+                </div>
+              )}
 
-          <div className="form-group">
-            <label htmlFor="fullName" className="form-label">
-              Full Name
-            </label>
-            <input
-              id="fullName"
-              name="name"
-              type="text"
-              placeholder="Enter your full name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="form-input"
-              disabled={loading}
-              required
-              autoComplete="name"
-            />
-          </div>
+              {/* Custom Role Dropdown */}
+              <div className="w-full flex flex-col gap-1.5">
+                <label htmlFor="role" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  I am a
+                </label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) =>
+                    setRole(e.target.value as (typeof roleOptions)[number]["value"])
+                  }
+                  className="w-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-100 rounded-xl py-3 px-4 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200 cursor-pointer"
+                  disabled={loading}
+                  required
+                >
+                  {roleOptions.map((option) => (
+                    <option key={option.value} value={option.value} className="bg-zinc-900 text-zinc-100">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-input"
-              disabled={loading}
-              required
-              autoComplete="email"
-            />
-          </div>
+              <Input
+                id="fullName"
+                name="name"
+                type="text"
+                label="Full Name"
+                placeholder="John Doe"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                disabled={loading}
+                required
+                autoComplete="name"
+                icon={<User className="w-4 h-4 text-zinc-500" />}
+              />
 
-          <div className="form-group">
-            <label htmlFor="phone" className="form-label">
-              Phone
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              placeholder="Enter your phone number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="form-input"
-              disabled={loading}
-              required
-              autoComplete="tel"
-            />
-          </div>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                label="Email address"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                required
+                autoComplete="email"
+                icon={<Mail className="w-4 h-4 text-zinc-500" />}
+              />
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <div className="password-input-wrapper">
-              <input
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                label="Phone Number"
+                placeholder="+1 (555) 000-0000"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={loading}
+                required
+                autoComplete="tel"
+                icon={<Phone className="w-4 h-4 text-zinc-500" />}
+              />
+
+              <Input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Create a password"
+                label="Password"
+                placeholder="Create a password (min 6 chars)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
                 disabled={loading}
                 required
                 autoComplete="new-password"
+                icon={<Lock className="w-4 h-4 text-zinc-500" />}
+                suffix={
+                  <button
+                    type="button"
+                    className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer flex items-center justify-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                }
               />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword" className="form-label">
-              Confirm Password
-            </label>
-            <div className="password-input-wrapper">
-              <input
+              <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
+                label="Confirm Password"
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="form-input"
                 disabled={loading}
                 required
                 autoComplete="new-password"
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={loading}
-                aria-label={
-                  showConfirmPassword ? "Hide password" : "Show password"
+                icon={<Lock className="w-4 h-4 text-zinc-500" />}
+                error={password !== confirmPassword && confirmPassword ? "Passwords do not match" : undefined}
+                suffix={
+                  <button
+                    type="button"
+                    className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer flex items-center justify-center"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={loading}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 }
+              />
+
+              {/* Custom styled checkbox */}
+              <div className="flex items-start gap-2.5 my-1">
+                <input
+                  id="terms"
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 rounded border-zinc-800 bg-zinc-950 text-emerald-500 focus:ring-emerald-500/20 focus:ring-offset-zinc-950 accent-emerald-500 cursor-pointer"
+                  disabled={loading}
+                  required
+                />
+                <label htmlFor="terms" className="text-xs text-zinc-400 leading-normal select-none">
+                  I agree to the{" "}
+                  <Link href="#" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="#" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-zinc-950 font-bold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/10 cursor-pointer mt-2 text-sm disabled:opacity-50 disabled:pointer-events-none"
+                disabled={loading || password !== confirmPassword || !agreedToTerms}
               >
-                {showConfirmPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
-            </div>
-            {password !== confirmPassword && confirmPassword && (
-              <p className="text-red-400 text-sm mt-1">
-                Passwords do not match
+
+              <p className="text-center text-zinc-400 text-xs mt-4">
+                Already have an account?{" "}
+                <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+                  Sign in
+                </Link>
               </p>
-            )}
+            </form>
           </div>
 
-          <div className="form-group checkbox-group">
-            <input
-              id="terms"
-              type="checkbox"
-              checked={agreedToTerms}
-              onChange={(e) => setAgreedToTerms(e.target.checked)}
-              className="checkbox-input"
-              disabled={loading}
-              required
-            />
-            <label htmlFor="terms" className="checkbox-label">
-              I agree to the{" "}
-              <Link href="#" className="auth-link">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link href="#" className="auth-link">
-                Privacy Policy
-              </Link>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="auth-button"
-            disabled={loading || password !== confirmPassword}
-          >
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
-
-          <p className="auth-footer">
-            Already have an account?{" "}
-            <Link href="/login" className="auth-link">
-              Sign in
+          <div className="mt-6 text-center">
+            <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 transition-colors text-xs font-semibold">
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to Home
             </Link>
-          </p>
-        </form>
-
-        <Link href="/" className="back-button flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

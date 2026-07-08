@@ -2,7 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { authAPI } from "@/lib/auth";
+import { Mail, ArrowLeft } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { motion } from "motion/react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -30,31 +34,39 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-      {/* Background decoration */}
-      <div
-        className="pointer-events-none fixed inset-0 opacity-20"
-        aria-hidden="true"
-      >
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-emerald-500 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-teal-600 rounded-full blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Decorative Dot Grid Pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(circle, #ffffff 1px, transparent 1px)`,
+          backgroundSize: "24px 24px"
+        }}
+      />
+      
+      {/* Subtle Radial Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/login" className="inline-flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-              <span className="text-white font-bold text-lg">I</span>
-            </div>
-            <span className="text-2xl font-bold text-white">Ignita</span>
+          <Link href="/" className="inline-flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+            <Image
+              src="/icons/iglogoremovebg.png"
+              alt="logo"
+              width={36}
+              height={36}
+            />
+            <span className="text-xl font-bold tracking-tight text-white font-schibsted-grotesk">IGNITA</span>
           </Link>
         </div>
 
         {/* Card */}
-        <div
-          className="rounded-2xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm p-8"
-          style={{ boxShadow: "0 0 40px rgba(16,185,129,0.08)" }}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-xl"
         >
           {submitted ? (
             /* Success state */
@@ -74,14 +86,14 @@ export default function ForgotPasswordPage() {
                   />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-3">
+              <h1 className="text-2xl font-bold text-white mb-3 tracking-tight">
                 Check your inbox
               </h1>
               <p className="text-zinc-400 text-sm leading-relaxed mb-6">
                 If an account exists for{" "}
-                <span className="text-white font-medium">{email}</span>, we've
+                <span className="text-white font-semibold">{email}</span>, we've
                 sent a password reset link. It expires in{" "}
-                <strong className="text-white">15 minutes</strong>.
+                <strong className="text-white font-semibold">15 minutes</strong>.
               </p>
               <p className="text-xs text-zinc-500 mb-6">
                 Don't see it? Check your spam folder or{" "}
@@ -90,7 +102,7 @@ export default function ForgotPasswordPage() {
                     setSubmitted(false);
                     setEmail("");
                   }}
-                  className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors"
+                  className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer font-medium"
                 >
                   try again
                 </button>
@@ -98,110 +110,66 @@ export default function ForgotPasswordPage() {
               </p>
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors font-medium"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                <ArrowLeft className="w-4 h-4" />
                 Back to login
               </Link>
             </div>
           ) : (
             /* Form state */
             <>
-              <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white mb-2">
-                  Forgot your password?
+              <div className="mb-6">
+                <h1 className="text-2xl font-extrabold text-white tracking-tight mb-2">
+                  Forgot Password
                 </h1>
-                <p className="text-zinc-400 text-sm">
-                  Enter your email and we'll send you a link to reset your
-                  password.
+                <p className="text-zinc-400 text-xs">
+                  Enter your email and we'll send you a link to reset your password.
                 </p>
               </div>
 
               {error && (
-                <div className="mb-5 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
+                <div className="mb-5 px-4 py-3 rounded-xl bg-red-950/40 border border-red-900/50 text-red-300 text-xs font-medium">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                <div>
-                  <label
-                    htmlFor="fp-email"
-                    className="block text-sm font-medium text-zinc-300 mb-2"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    id="fp-email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200 text-sm"
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                <Input
+                  id="fp-email"
+                  type="email"
+                  label="Email address"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  icon={<Mail className="w-4 h-4 text-zinc-500" />}
+                  disabled={isSubmitting}
+                />
 
                 <button
                   id="fp-submit"
                   type="submit"
                   disabled={isSubmitting || !email.trim()}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-zinc-950 font-bold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/10 cursor-pointer text-sm disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <svg
-                        className="w-4 h-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    "Send Reset Link"
-                  )}
+                  {isSubmitting ? "Sending..." : "Send Reset Link"}
                 </button>
               </form>
 
-              <p className="mt-6 text-center text-sm text-zinc-500">
+              <p className="mt-6 text-center text-xs text-zinc-400">
                 Remember your password?{" "}
                 <Link
                   href="/login"
-                  className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+                  className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
                 >
                   Sign in
                 </Link>
               </p>
             </>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
