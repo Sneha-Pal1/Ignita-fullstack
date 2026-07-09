@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useBookmark } from "@/lib/hooks/useBookmark";
+import { MapPin, Calendar, Users, Clock } from "lucide-react";
 
 interface Props {
   title: string;
@@ -14,12 +15,12 @@ interface Props {
   organizer?: string;
   participants?: string;
   showDetailsButton?: boolean;
-  eventData?: any; // Added for storing full event data
-  isBookmarkCard?: boolean; // Show delete button instead of save
-  onDelete?: () => void; // Callback for delete action
+  eventData?: any;
+  isBookmarkCard?: boolean;
+  onDelete?: () => void;
   onEdit?: () => void;
   showAdminActions?: boolean;
-  hideBookmarkButton?: boolean; // Hide save/delete button
+  hideBookmarkButton?: boolean;
 }
 
 const EventCard = ({
@@ -48,98 +49,97 @@ const EventCard = ({
   return (
     <div
       id="event-card"
-      className="bg-gray-900/50 border border-white/10 rounded-lg overflow-hidden hover:border-white/20 transition-all duration-300"
+      className="flex flex-col bg-[#161b22] border border-[#21262d] rounded-md overflow-hidden hover:border-[#30363d] transition-all duration-200"
     >
-      <Image
-        src={image || "/images/event1.png"}
-        alt={title || "Event"}
-        width={410}
-        height={250}
-        className="w-full h-48 object-cover"
-        style={{ width: "100%", height: "auto" }}
-        loading="eager"
-      />
+      {/* Thumbnail */}
+      <div className="relative overflow-hidden h-44 bg-[#0d1117]">
+        <Image
+          src={image || "/images/event1.png"}
+          alt={title || "Event"}
+          fill
+          className="object-cover"
+          loading="eager"
+        />
+      </div>
 
-      <div className="p-4 space-y-3">
-        <p className="text-xs text-gray-400">{organizer}</p>
+      {/* Content */}
+      <div className="flex flex-col gap-3 p-4 flex-1">
+        {organizer && (
+          <p className="text-xs text-[#7d8590]">{organizer}</p>
+        )}
 
-        <h3 className="text-lg font-semibold text-white line-clamp-2">
-          {title}
+        <h3 className="text-sm font-semibold text-[#e6edf3] leading-snug line-clamp-2 hover:text-[#3fb950] transition-colors">
+          <Link href={`/events/${slug}`}>{title}</Link>
         </h3>
 
-        <div className="space-y-2 text-sm text-gray-300">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/icons/pin.svg"
-              alt="location"
-              width={14}
-              height={14}
-              style={{ width: "auto", height: "auto" }}
-            />
-            <p>{location}</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Image
-              src="/icons/calendar.svg"
-              alt="date"
-              width={14}
-              height={14}
-              style={{ width: "auto", height: "auto" }}
-            />
-            <p>{date}</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Image
-              src="/icons/pin.svg"
-              alt="participants"
-              width={14}
-              height={14}
-              style={{ width: "auto", height: "auto" }}
-            />
-            <p>{participants}</p>
-          </div>
+        <div className="flex flex-col gap-1.5 text-xs text-[#7d8590] mt-1">
+          {location && (
+            <div className="flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5 shrink-0 text-[#7d8590]" />
+              <span className="truncate">{location}</span>
+            </div>
+          )}
+          {date && (
+            <div className="flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 shrink-0 text-[#7d8590]" />
+              <span className="truncate">{date}</span>
+            </div>
+          )}
+          {participants && (
+            <div className="flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 shrink-0 text-[#7d8590]" />
+              <span className="truncate">{participants}</span>
+            </div>
+          )}
+          {time && (
+            <div className="flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5 shrink-0 text-[#7d8590]" />
+              <span className="line-clamp-2 leading-relaxed">{time}</span>
+            </div>
+          )}
         </div>
 
-        <p className="text-sm text-gray-400 line-clamp-2">{time}</p>
+        {/* Spacer to push buttons to bottom */}
+        <div className="flex-1" />
 
-        {showAdminActions && (onEdit || onDelete) ? (
+        {/* Admin actions */}
+        {showAdminActions && (onEdit || onDelete) && (
           <div className="flex gap-2 pt-1">
-            {onEdit ? (
+            {onEdit && (
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onEdit();
                 }}
-                className="flex-1 px-4 py-2 border border-emerald-500/40 text-emerald-300 font-medium rounded-lg hover:border-emerald-400 hover:text-emerald-200 transition-colors"
+                className="flex-1 px-3 py-1.5 text-xs font-semibold text-[#3fb950] border border-[#238636]/50 hover:border-[#2ea043] rounded-md transition-colors cursor-pointer"
               >
                 Edit
               </button>
-            ) : null}
-            {onDelete ? (
+            )}
+            {onDelete && (
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="flex-1 px-4 py-2 border border-red-500/40 text-red-300 font-medium rounded-lg hover:border-red-400 hover:text-red-200 transition-colors"
+                className="flex-1 px-3 py-1.5 text-xs font-semibold text-[#f85149] border border-[#f85149]/30 hover:border-[#f85149]/60 rounded-md transition-colors cursor-pointer"
               >
                 Delete
               </button>
-            ) : null}
+            )}
           </div>
-        ) : null}
+        )}
 
-        <div className="flex gap-2 mt-4">
+        {/* Action buttons */}
+        <div className="flex gap-2 mt-2">
           {showDetailsButton && (
             <Link
               href={`/events/${slug}`}
-              className="flex-1 px-4 py-2 bg-white text-black font-medium rounded-lg text-center hover:bg-gray-200 transition-colors"
+              className="flex-1 px-3 py-1.5 text-xs font-semibold text-center text-white bg-[#2ea043] hover:bg-[#3fb950] rounded-md transition-colors"
             >
-              View Details
+              View details
             </Link>
           )}
           {!hideBookmarkButton &&
@@ -151,9 +151,9 @@ const EventCard = ({
                   onDelete?.();
                 }}
                 disabled={isLoading}
-                className="flex-1 px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="flex-1 px-3 py-1.5 text-xs font-semibold text-[#f85149] border border-[#f85149]/30 hover:border-[#f85149]/60 rounded-md transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {isLoading ? "..." : "Delete"}
+                {isLoading ? "..." : "Remove"}
               </button>
             ) : (
               <button
@@ -163,7 +163,11 @@ const EventCard = ({
                   toggleBookmark();
                 }}
                 disabled={isLoading}
-                className="flex-1 px-4 py-2 border border-white/20 text-white font-medium rounded-lg hover:border-white/40 transition-colors disabled:opacity-50"
+                className={`flex-1 px-3 py-1.5 text-xs font-semibold border rounded-md transition-colors disabled:opacity-50 cursor-pointer ${
+                  isBookmarked
+                    ? "text-[#3fb950] border-[#238636]/60 bg-[#2ea043]/10"
+                    : "text-[#7d8590] border-[#30363d] hover:border-[#484f58] hover:text-[#e6edf3]"
+                }`}
               >
                 {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Save"}
               </button>

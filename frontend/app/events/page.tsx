@@ -100,7 +100,7 @@ const EventsPage = () => {
 
       if (!accessToken) {
         setEvents(mockEvents.map(mapMockEvent));
-        setError("Using local sample events until the backend is available.");
+        setError(null); // No error for guest users, let them browse sample events silently
         setIsLoading(false);
         return;
       }
@@ -118,12 +118,12 @@ const EventsPage = () => {
       } catch (fetchError) {
         if (fetchError instanceof APIError && fetchError.status === 401) {
           setEvents(mockEvents.map(mapMockEvent));
-          setError("Using local sample events until the backend is available.");
+          setError(null); // Auth token expired or invalid, treat as guest silently
           return;
         }
 
         console.error("Failed to fetch events:", fetchError);
-        setError("Using local sample events until the backend is available.");
+        setError("Unable to connect to the live server. Showing offline sample events.");
         setEvents(mockEvents.map(mapMockEvent));
       } finally {
         setIsLoading(false);
