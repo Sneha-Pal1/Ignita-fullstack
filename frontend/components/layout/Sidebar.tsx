@@ -120,23 +120,23 @@ export const Sidebar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed left-0 top-0 h-screen w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col overflow-y-auto z-40
+          fixed left-0 top-0 h-screen w-64 bg-[#161b22] border-r border-[#21262d] flex flex-col overflow-y-auto z-40
           transition-transform duration-300 ease-out
           lg:translate-x-0
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         {/* Logo Section */}
-        <div className="h-20 px-6 flex items-center border-b border-zinc-800">
+        <div className="h-20 px-6 flex items-center border-b border-[#21262d]">
           <Link href="/Dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 rounded flex items-center justify-center">
               <img
                 src="/icons/iglogoremovebg.png"
                 alt="Ignita Logo"
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="font-bold text-xl text-white group-hover:text-emerald-400 transition-colors">
+            <span className="font-semibold text-lg text-[#e6edf3] group-hover:text-[#3fb950] transition-colors">
               Ignita
             </span>
           </Link>
@@ -154,18 +154,18 @@ export const Sidebar = () => {
                   key={item.href}
                   href={item.href}
                   className={`
-                  flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm
-                  transition-all duration-200 group
+                  flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm
+                  transition-all duration-200 group border
                   ${
                     active
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/50"
+                      ? "bg-[#2ea043]/10 text-[#3fb950] border-[#238636]/30"
+                      : "text-[#7d8590] border-transparent hover:text-[#e6edf3] hover:bg-[#21262d]"
                   }
                 `}
                 >
                   <HugeiconsIcon
                     icon={icon}
-                    size="20"
+                    size="18"
                     strokeWidth={2}
                     className="shrink-0"
                   />
@@ -176,7 +176,7 @@ export const Sidebar = () => {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-zinc-800 my-4" />
+          <div className="h-px bg-[#21262d] my-4" />
 
           {/* User Section Items */}
           <div className="space-y-1">
@@ -189,18 +189,18 @@ export const Sidebar = () => {
                   key={item.href}
                   href={item.href}
                   className={`
-                  flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm
-                  transition-all duration-200 group
+                  flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm
+                  transition-all duration-200 group border
                   ${
                     active
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/50"
+                      ? "bg-[#2ea043]/10 text-[#3fb950] border-[#238636]/30"
+                      : "text-[#7d8590] border-transparent hover:text-[#e6edf3] hover:bg-[#21262d]"
                   }
                 `}
                 >
                   <HugeiconsIcon
                     icon={icon}
-                    size="20"
+                    size="18"
                     strokeWidth={2}
                     className="shrink-0"
                   />
@@ -212,41 +212,41 @@ export const Sidebar = () => {
         </nav>
 
         {/* User Profile Section */}
-        <div className="p-4 border-t border-zinc-800">
+        <div className="p-4 border-t border-[#21262d]">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-zinc-900 transition-colors group relative"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#21262d] transition-colors group relative"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-              <span className="font-semibold text-emerald-400 text-sm">
+            <div className="w-8 h-8 rounded-full bg-[#2ea043]/10 border border-[#238636]/30 flex items-center justify-center shrink-0">
+              <span className="font-semibold text-[#3fb950] text-xs">
                 {user?.name?.charAt(0).toUpperCase() || "U"}
               </span>
             </div>
             <div className="flex-1 text-left min-w-0">
-              <p className="text-sm font-medium text-white truncate">
+              <p className="text-xs font-semibold text-[#e6edf3] truncate">
                 {user?.name || "User"}
               </p>
-              <p className="text-xs text-zinc-500 truncate">
+              <p className="text-[11px] text-[#7d8590] truncate">
                 {user?.email || "user@example.com"}
               </p>
             </div>
             <HugeiconsIcon
               icon={ArrowDown01Icon}
-              size="16"
+              size="14"
               strokeWidth={2}
-              className="text-zinc-500 shrink-0"
+              className="text-[#7d8590] shrink-0"
             />
 
             {/* Dropdown Menu */}
             {showUserMenu && (
-              <div className="absolute bottom-full left-4 right-4 mb-2 bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden shadow-xl">
+              <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#161b22] border border-[#21262d] rounded-md overflow-hidden shadow-xl">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-xs text-[#7d8590] hover:text-[#e6edf3] hover:bg-[#21262d] transition-colors text-left"
                 >
                   <HugeiconsIcon
                     icon={Logout01Icon}
-                    size="16"
+                    size="14"
                     strokeWidth={2}
                   />
                   Sign Out

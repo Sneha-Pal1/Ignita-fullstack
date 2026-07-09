@@ -46,31 +46,31 @@ export const RightSidebar = ({
   return (
     <aside className="hidden lg:flex flex-col gap-4 sm:gap-6">
       {/* Notifications Panel */}
-      <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+      <section className="rounded-md border border-[#21262d] bg-[#161b22] overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="text-lg font-semibold text-white">Notifications</h2>
+        <div className="p-4 border-b border-[#21262d]">
+          <h2 className="text-sm font-semibold text-[#e6edf3]">Notifications</h2>
         </div>
 
         {/* Content */}
-        <div className="divide-y divide-zinc-800">
+        <div className="divide-y divide-[#21262d]">
           {notifications.length > 0 ? (
             notifications.map((notification) => {
               const iconMap: Record<string, React.ReactNode> = {
                 alert: (
                   <HugeiconsIcon
                     icon={Alert01Icon}
-                    size="20"
+                    size="18"
                     strokeWidth={2}
-                    className="text-amber-400"
+                    className="text-[#3fb950]"
                   />
                 ),
                 reminder: (
                   <HugeiconsIcon
                     icon={Clock01Icon}
-                    size="20"
+                    size="18"
                     strokeWidth={2}
-                    className="text-cyan-400"
+                    className="text-[#3fb950]"
                   />
                 ),
               };
@@ -78,26 +78,26 @@ export const RightSidebar = ({
               return (
                 <div
                   key={notification.id}
-                  className="p-4 hover:bg-zinc-800/30 transition-colors last:rounded-b-xl"
+                  className="p-4 hover:bg-[#21262d]/30 transition-colors last:rounded-b-md"
                 >
                   <div className="flex gap-3">
                     {/* Icon */}
-                    <div className="flex-shrink-0 mt-1">
+                    <div className="flex-shrink-0 mt-0.5">
                       {iconMap[notification.type]}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-semibold text-[#e6edf3]">
                         {notification.title}
                       </p>
-                      <p className="text-xs text-zinc-400 mt-1 line-clamp-2">
+                      <p className="text-xs text-[#7d8590] mt-1 line-clamp-2 leading-relaxed">
                         {notification.description}
                       </p>
                       {notification.actionHref && (
                         <Link
                           href={notification.actionHref}
-                          className="text-xs text-emerald-400 hover:text-emerald-300 font-medium mt-2 inline-flex items-center gap-1 transition-colors"
+                          className="text-xs text-[#3fb950] hover:underline font-medium mt-2 inline-flex items-center gap-1 transition-colors"
                         >
                           {notification.action}
                           <HugeiconsIcon
@@ -113,7 +113,7 @@ export const RightSidebar = ({
               );
             })
           ) : (
-            <div className="p-4 text-sm text-zinc-400">
+            <div className="p-4 text-xs text-[#7d8590]">
               No live notifications yet.
             </div>
           )}
@@ -121,10 +121,10 @@ export const RightSidebar = ({
       </section>
 
       {/* Upcoming Deadlines */}
-      <section className="rounded-xl border border-zinc-800 bg-zinc-900/50">
+      <section className="rounded-md border border-[#21262d] bg-[#161b22]">
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800">
-          <h2 className="text-lg font-semibold text-white">
+        <div className="p-4 border-b border-[#21262d]">
+          <h2 className="text-sm font-semibold text-[#e6edf3]">
             Upcoming Deadlines
           </h2>
         </div>
@@ -136,27 +136,27 @@ export const RightSidebar = ({
               <Link
                 key={deadline.id}
                 href={deadline.href}
-                className="block p-3 rounded-lg bg-zinc-800/30 border border-zinc-700 hover:border-zinc-600 transition-colors"
+                className="block p-3 rounded-md bg-[#0d1117] border border-[#30363d] hover:border-[#484f58] transition-colors"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-semibold text-[#e6edf3]">
                       {deadline.title}
                     </p>
-                    <div className="flex items-center gap-1 mt-1">
+                    <div className="flex items-center gap-1 mt-1.5">
                       <HugeiconsIcon
                         icon={Calendar01Icon}
                         size="12"
                         strokeWidth={2}
-                        className="text-zinc-500"
+                        className="text-[#7d8590]"
                       />
-                      <p className="text-xs text-zinc-400">
+                      <p className="text-xs text-[#7d8590]">
                         {deadline.description}
                       </p>
                     </div>
                   </div>
-                  <div className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20">
-                    <p className="text-xs font-medium text-amber-400">
+                  <div className="px-2 py-0.5 rounded bg-[#2ea043]/10 border border-[#238636]/30 shrink-0">
+                    <p className="text-[10px] font-semibold text-[#3fb950]">
                       {deadline.urgency}
                     </p>
                   </div>
@@ -164,7 +164,7 @@ export const RightSidebar = ({
               </Link>
             ))
           ) : (
-            <div className="p-3 rounded-lg bg-zinc-800/30 border border-zinc-700 text-sm text-zinc-400">
+            <div className="p-3 rounded-md bg-[#0d1117] border border-[#30363d] text-xs text-[#7d8590]">
               No upcoming deadlines from the live event feed.
             </div>
           )}
@@ -172,34 +172,34 @@ export const RightSidebar = ({
       </section>
 
       {/* Recommendations */}
-      <section className="rounded-xl border border-zinc-800 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 border-emerald-500/20">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-white mb-3">
+      <section className="rounded-md border border-[#21262d] bg-[#161b22]">
+        <div className="p-4">
+          <h2 className="text-sm font-semibold text-[#e6edf3] mb-3">
             Recommendations
           </h2>
-          <div className="space-y-3 mb-4">
+          <div className="space-y-4">
             {recommendations.length > 0 ? (
               recommendations.map((item) => (
                 <div key={item.id} className="space-y-1">
-                  <p className="text-sm text-zinc-100 font-medium">
+                  <p className="text-sm text-[#e6edf3] font-semibold">
                     {item.title}
                   </p>
-                  <p className="text-sm text-zinc-400">{item.description}</p>
+                  <p className="text-xs text-[#7d8590] leading-relaxed">{item.description}</p>
                   <Link
                     href={item.href}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-[#3fb950] hover:underline transition-colors mt-1"
                   >
                     Explore Now
                     <HugeiconsIcon
                       icon={ArrowRight01Icon}
-                      size="16"
+                      size="14"
                       strokeWidth={2}
                     />
                   </Link>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-zinc-300">
+              <p className="text-xs text-[#7d8590]">
                 No recommendations available from the current live event list.
               </p>
             )}

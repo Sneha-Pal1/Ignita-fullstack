@@ -172,79 +172,83 @@ const EventsPage = () => {
     <>
       <style>{`
         select option {
-          background-color: #111827;
-          color: white;
-        }
-        select option:checked {
-          background: linear-gradient(#1a1a1a, #1a1a1a);
-          background-color: #1a1a1a;
-          color: white;
+          background-color: #161b22;
+          color: #e6edf3;
         }
       `}</style>
-      <main className="px-6 py-10 max-w-7xl mx-auto">
+      <main className="px-6 py-12 max-w-7xl mx-auto min-h-screen bg-[#0d1117]">
         {/* HEADER */}
-        <div className="mb-8">
+        <div className="mb-8 flex flex-col items-start gap-4">
           <Link
             href="/"
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-white/20 hover:bg-gray-800"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#7d8590] border border-[#30363d] hover:border-[#484f58] hover:text-[#e6edf3] bg-[#161b22] rounded-md transition-colors"
           >
             <span aria-hidden="true">←</span>
             Back to Home
           </Link>
-          <h1 className="text-3xl font-semibold">Explore Events</h1>
-          <p className="text-gray-400 mt-2">
-            Find hackathons, internships, and more opportunities
-          </p>
+          <div>
+            <h1 className="text-2xl font-bold text-[#e6edf3] tracking-tight">Explore Events</h1>
+            <p className="text-sm text-[#7d8590] mt-1.5">
+              Find hackathons, internships, and more opportunities
+            </p>
+          </div>
         </div>
+
+        {/* INFO/ERROR BANNER */}
+        {error && (
+          <div className="mb-6 px-4 py-3 rounded-md border border-[#3fb950]/30 bg-[#2ea043]/5 text-sm text-[#3fb950]">
+            {error}
+          </div>
+        )}
+
         {/* SEARCH + FILTER */}
-        <div className="mb-10 flex flex-col md:flex-row gap-4">
+        <div className="mb-10 flex flex-col md:flex-row gap-3">
           {/* Search */}
           <input
             type="text"
             placeholder="Search events..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full md:flex-1 px-4 py-2 rounded-lg bg-gray-900 border border-white/10 text-white placeholder-gray-400 focus:outline-none"
+            className="w-full md:flex-1 px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors"
           />
 
           {/* Event Type Filter */}
-          <select className="px-4 py-2 rounded-lg bg-gray-900 border border-white/10 text-white hover:bg-gray-800">
-            <option className="bg-gray-900 text-white">All Types</option>
-            <option className="bg-gray-900 text-white">Hackathon</option>
-            <option className="bg-gray-900 text-white">Internship</option>
-            <option className="bg-gray-900 text-white">Workshop</option>
+          <select className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer">
+            <option className="bg-[#161b22] text-[#e6edf3]">All Types</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Hackathon</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Internship</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Workshop</option>
           </select>
 
           {/* Date Range Filter */}
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="px-4 py-2 rounded-lg bg-gray-900 border border-white/10 text-white hover:bg-gray-800"
+            className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer"
           >
-            <option className="bg-gray-900 text-white">Date Range</option>
-            <option className="bg-gray-900 text-white">This Week</option>
-            <option className="bg-gray-900 text-white">This Month</option>
-            <option className="bg-gray-900 text-white">Next Month</option>
-            <option className="bg-gray-900 text-white">This Quarter</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Date Range</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">This Week</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">This Month</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Next Month</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">This Quarter</option>
           </select>
 
           {/* Mode Filter */}
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value)}
-            className="px-4 py-2 rounded-lg bg-gray-900 border border-white/10 text-white hover:bg-gray-800"
+            className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer"
           >
-            <option className="bg-gray-900 text-white">Mode</option>
-            <option className="bg-gray-900 text-white">Online</option>
-            <option className="bg-gray-900 text-white">In Person</option>
-            <option className="bg-gray-900 text-white">Hybrid</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Mode</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Online</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">In Person</option>
+            <option className="bg-[#161b22] text-[#e6edf3]">Hybrid</option>
           </select>
         </div>
+
         {/* EVENTS GRID */}
         {isLoading ? (
-          <p className="text-gray-400">Loading events...</p>
-        ) : error ? (
-          <p className="mb-4 text-sm text-emerald-400">{error}</p>
+          <p className="text-sm text-[#7d8590]">Loading events...</p>
         ) : filteredEvents.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredEvents.map((event) => (
@@ -264,7 +268,7 @@ const EventsPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-400">No events found</p>
+          <p className="text-sm text-[#7d8590]">No events found</p>
         )}
       </main>
     </>

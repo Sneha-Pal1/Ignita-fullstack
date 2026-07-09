@@ -272,7 +272,7 @@ export default function DashboardPage() {
   }));
 
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-[#0d1117]">
       {/* Sidebar */}
       <Sidebar />
 

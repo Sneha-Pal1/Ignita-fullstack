@@ -20,29 +20,29 @@ export const TopHeader = ({ savedCount }: TopHeaderProps) => {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 border-b border-[#21262d] bg-[#0d1117]/95 backdrop-blur-sm">
       <div className="h-16 sm:h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Left: Welcome & Streak */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:block">
-              <p className="text-xs sm:text-sm text-zinc-500">Welcome back,</p>
-              <p className="text-base sm:text-lg font-semibold text-white">
+              <p className="text-xs text-[#7d8590]">Welcome back,</p>
+              <p className="text-base font-semibold text-[#e6edf3]">
                 {firstName}
               </p>
             </div>
             <div className="sm:hidden">
-              <p className="text-sm font-semibold text-white">{firstName}</p>
+              <p className="text-sm font-semibold text-[#e6edf3]">{firstName}</p>
             </div>
             {/* Live bookmark badge - Hidden on small screens */}
-            <div className="ml-auto lg:ml-6 hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 whitespace-nowrap">
+            <div className="ml-auto lg:ml-6 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#2ea043]/10 border border-[#238636]/30 whitespace-nowrap">
               <HugeiconsIcon
                 icon={Bookmark01Icon}
-                size="16"
+                size="14"
                 strokeWidth={2}
-                className="text-emerald-400"
+                className="text-[#3fb950]"
               />
-              <span className="text-sm font-medium text-emerald-400 hidden sm:inline">
+              <span className="text-xs font-semibold text-[#3fb950] hidden sm:inline">
                 {savedCount ?? 0} saved
               </span>
             </div>
@@ -54,30 +54,30 @@ export const TopHeader = ({ savedCount }: TopHeaderProps) => {
           {isAdmin && (
             <Link
               href="/create"
-              className="hidden sm:inline-flex items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400"
+              className="hidden sm:inline-flex items-center justify-center rounded-md bg-[#2ea043] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#3fb950] transition-colors"
             >
               Create Event
             </Link>
           )}
 
-          {/* Quick Search - Hidden on mobile */}
+          {/* Quick Search - Hidden on shadow */}
           <div
-            className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 ${
+            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border transition-all duration-200 ${
               searchFocused
-                ? "border-emerald-500/50 bg-zinc-900"
-                : "border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900"
+                ? "border-[#2ea043] bg-[#0d1117] ring-1 ring-[#2ea043]/30"
+                : "border-[#30363d] bg-[#161b22] hover:bg-[#21262d]"
             }`}
           >
             <HugeiconsIcon
               icon={Search01Icon}
-              size="16"
+              size="14"
               strokeWidth={2}
-              className="text-zinc-500"
+              className="text-[#7d8590]"
             />
             <input
               type="text"
               placeholder="Search events, bookmarks..."
-              className="bg-transparent text-sm text-white placeholder-zinc-600 outline-none w-40 md:w-48"
+              className="bg-transparent text-xs text-[#e6edf3] placeholder-[#484f58] outline-none w-40 md:w-48"
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
             />
@@ -86,24 +86,24 @@ export const TopHeader = ({ savedCount }: TopHeaderProps) => {
           {/* Notifications Button */}
           <Link
             href="/Notification"
-            className="relative p-2 hover:bg-zinc-900 rounded-lg transition-colors group"
+            className="relative p-2 hover:bg-[#21262d] rounded-md transition-colors group"
           >
             <HugeiconsIcon
               icon={BellDotIcon}
-              size="20"
+              size="18"
               strokeWidth={2}
-              className="text-zinc-400 group-hover:text-zinc-100 transition-colors"
+              className="text-[#7d8590] group-hover:text-[#e6edf3] transition-colors"
             />
             {/* Notification Badge */}
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#2ea043]" />
           </Link>
 
           {/* User Avatar */}
           <Link
             href="/profile"
-            className="ml-2 w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center hover:border-emerald-500/50 transition-colors"
+            className="ml-2 w-8 h-8 rounded-full bg-[#2ea043]/10 border border-[#238636]/30 flex items-center justify-center hover:border-[#2ea043] transition-colors"
           >
-            <span className="font-semibold text-emerald-400 text-sm">
+            <span className="font-semibold text-[#3fb950] text-xs">
               {user?.name?.charAt(0).toUpperCase() || "U"}
             </span>
           </Link>

@@ -5,10 +5,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import AuthVisualPanel from "@/components/auth/AuthVisualPanel";
-import { Input } from "@/components/ui/input";
-import { motion } from "motion/react";
 
 const roleOptions = [
   { value: "STUDENT", label: "Student" },
@@ -33,18 +31,22 @@ export default function RegisterPage() {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Read directly from DOM — captures browser autofill that bypasses React onChange
-    const emailVal = (form.elements.namedItem("email") as HTMLInputElement)?.value?.trim().toLowerCase() || email.trim().toLowerCase();
-    const nameVal = (form.elements.namedItem("name") as HTMLInputElement)?.value?.trim() || fullName.trim();
-    const phoneVal = (form.elements.namedItem("phone") as HTMLInputElement)?.value?.trim() || phone.trim();
-    const passwordVal = (form.elements.namedItem("password") as HTMLInputElement)?.value || password;
-    const confirmPasswordVal = (form.elements.namedItem("confirmPassword") as HTMLInputElement)?.value || confirmPassword;
-
-    console.log("📝 Form values on submit:", { emailVal, nameVal, phoneVal, role });
+    const emailVal =
+      (form.elements.namedItem("email") as HTMLInputElement)?.value?.trim().toLowerCase() ||
+      email.trim().toLowerCase();
+    const nameVal =
+      (form.elements.namedItem("name") as HTMLInputElement)?.value?.trim() || fullName.trim();
+    const phoneVal =
+      (form.elements.namedItem("phone") as HTMLInputElement)?.value?.trim() || phone.trim();
+    const passwordVal =
+      (form.elements.namedItem("password") as HTMLInputElement)?.value || password;
+    const confirmPasswordVal =
+      (form.elements.namedItem("confirmPassword") as HTMLInputElement)?.value || confirmPassword;
 
     if (passwordVal !== confirmPasswordVal) {
       return;
     }
+
     try {
       const response = await register({
         name: nameVal,
@@ -60,208 +62,267 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col lg:flex-row w-full overflow-hidden">
+    <div className="min-h-screen flex flex-col lg:flex-row w-full bg-[#0d1117]">
       {/* Left Visual Banner Section */}
       <AuthVisualPanel />
 
       {/* Right Auth Form Section */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-10 md:p-16 relative min-h-screen bg-zinc-950">
-        
+      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-12 min-h-screen">
         {/* Mobile Header Logo */}
-        <div className="lg:hidden absolute top-6 left-6">
+        <div className="lg:hidden w-full max-w-sm mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image
               src="/icons/iglogoremovebg.png"
               alt="logo"
-              width={32}
-              height={32}
+              width={24}
+              height={24}
             />
-            <span className="text-lg font-bold text-white font-schibsted-grotesk">IGNITA</span>
+            <span className="text-sm font-semibold text-[#e6edf3]">Ignita</span>
           </Link>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="w-full max-w-md my-8 lg:my-0"
-        >
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
-            <div className="mb-6">
-              <h2 className="text-2xl font-extrabold text-white tracking-tight">Create Account</h2>
-              <p className="text-zinc-400 text-xs mt-1">
-                Get started with your free Ignita account
-              </p>
+        <div className="w-full max-w-sm">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-xl font-semibold text-[#e6edf3] tracking-tight">
+              Create an account
+            </h1>
+            <p className="mt-1 text-sm text-[#7d8590]">
+              Already have an account?{" "}
+              <Link href="/login" className="text-[#3fb950] hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+            {error && (
+              <div className="px-4 py-3 rounded-md border border-[#f85149]/30 bg-[#f85149]/5 text-sm text-[#f85149]">
+                {error}
+              </div>
+            )}
+
+            {/* Role Dropdown */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="role"
+                className="text-sm font-medium text-[#e6edf3]"
+              >
+                I am a
+              </label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) =>
+                  setRole(e.target.value as (typeof roleOptions)[number]["value"])
+                }
+                className="w-full px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer"
+                disabled={loading}
+                required
+              >
+                {roleOptions.map((option) => (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    className="bg-[#161b22] text-[#e6edf3]"
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <form onSubmit={handleSignUp} className="flex flex-col gap-4">
-              {error && (
-                <div className="p-3.5 bg-red-950/40 border border-red-900/50 rounded-xl">
-                  <p className="text-xs text-red-300 font-medium">{error}</p>
-                </div>
-              )}
-
-              {/* Custom Role Dropdown */}
-              <div className="w-full flex flex-col gap-1.5">
-                <label htmlFor="role" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                  I am a
-                </label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) =>
-                    setRole(e.target.value as (typeof roleOptions)[number]["value"])
-                  }
-                  className="w-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-100 rounded-xl py-3 px-4 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/10 transition-all duration-200 cursor-pointer"
-                  disabled={loading}
-                  required
-                >
-                  {roleOptions.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-zinc-900 text-zinc-100">
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <Input
+            {/* Full Name */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="fullName"
+                className="text-sm font-medium text-[#e6edf3]"
+              >
+                Full Name
+              </label>
+              <input
                 id="fullName"
                 name="name"
                 type="text"
-                label="Full Name"
                 placeholder="John Doe"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={loading}
                 required
                 autoComplete="name"
-                icon={<User className="w-4 h-4 text-zinc-500" />}
+                className="w-full px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
               />
+            </div>
 
-              <Input
+            {/* Email Address */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-[#e6edf3]"
+              >
+                Email address
+              </label>
+              <input
                 id="email"
                 name="email"
                 type="email"
-                label="Email address"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
                 required
                 autoComplete="email"
-                icon={<Mail className="w-4 h-4 text-zinc-500" />}
+                className="w-full px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
               />
+            </div>
 
-              <Input
+            {/* Phone Number */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="phone"
+                className="text-sm font-medium text-[#e6edf3]"
+              >
+                Phone Number
+              </label>
+              <input
                 id="phone"
                 name="phone"
                 type="tel"
-                label="Phone Number"
                 placeholder="+1 (555) 000-0000"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 disabled={loading}
                 required
                 autoComplete="tel"
-                icon={<Phone className="w-4 h-4 text-zinc-500" />}
+                className="w-full px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
               />
+            </div>
 
-              <Input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                label="Password"
-                placeholder="Create a password (min 6 chars)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                required
-                autoComplete="new-password"
-                icon={<Lock className="w-4 h-4 text-zinc-500" />}
-                suffix={
-                  <button
-                    type="button"
-                    className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer flex items-center justify-center"
-                    onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                }
-              />
-
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={loading}
-                required
-                autoComplete="new-password"
-                icon={<Lock className="w-4 h-4 text-zinc-500" />}
-                error={password !== confirmPassword && confirmPassword ? "Passwords do not match" : undefined}
-                suffix={
-                  <button
-                    type="button"
-                    className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer flex items-center justify-center"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    disabled={loading}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                }
-              />
-
-              {/* Custom styled checkbox */}
-              <div className="flex items-start gap-2.5 my-1">
+            {/* Password */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-[#e6edf3]"
+              >
+                Password
+              </label>
+              <div className="relative">
                 <input
-                  id="terms"
-                  type="checkbox"
-                  checked={agreedToTerms}
-                  onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="w-4 h-4 mt-0.5 rounded border-zinc-800 bg-zinc-950 text-emerald-500 focus:ring-emerald-500/20 focus:ring-offset-zinc-950 accent-emerald-500 cursor-pointer"
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password (min 6 chars)"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
                   required
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2 pr-10 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
                 />
-                <label htmlFor="terms" className="text-xs text-zinc-400 leading-normal select-none">
-                  I agree to the{" "}
-                  <Link href="#" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="#" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
-                    Privacy Policy
-                  </Link>
-                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#484f58] hover:text-[#7d8590] transition-colors cursor-pointer"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
+            </div>
 
-              <button
-                type="submit"
-                className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-zinc-950 font-bold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/10 cursor-pointer mt-2 text-sm disabled:opacity-50 disabled:pointer-events-none"
-                disabled={loading || password !== confirmPassword || !agreedToTerms}
+            {/* Confirm Password */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-[#e6edf3]"
               >
-                {loading ? "Creating Account..." : "Create Account"}
-              </button>
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2 pr-10 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={loading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#484f58] hover:text-[#7d8590] transition-colors cursor-pointer"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+              {password !== confirmPassword && confirmPassword && (
+                <span className="text-xs text-[#f85149] font-medium mt-0.5">
+                  Passwords do not match
+                </span>
+              )}
+            </div>
 
-              <p className="text-center text-zinc-400 text-xs mt-4">
-                Already have an account?{" "}
-                <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
-                  Sign in
+            {/* Checkbox */}
+            <div className="flex items-start gap-2.5 my-1">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="w-4 h-4 mt-0.5 rounded border-[#30363d] bg-[#0d1117] text-[#2ea043] focus:ring-[#2ea043]/20 focus:ring-offset-[#0d1117] accent-[#2ea043] cursor-pointer"
+                disabled={loading}
+                required
+              />
+              <label
+                htmlFor="terms"
+                className="text-xs text-[#7d8590] leading-normal select-none"
+              >
+                I agree to the{" "}
+                <Link href="#" className="text-[#3fb950] hover:underline font-medium">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href="#" className="text-[#3fb950] hover:underline font-medium">
+                  Privacy Policy
                 </Link>
-              </p>
-            </form>
-          </div>
+              </label>
+            </div>
 
-          <div className="mt-6 text-center">
-            <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 transition-colors text-xs font-semibold">
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-2 text-sm font-medium text-white bg-[#2ea043] hover:bg-[#3fb950] rounded-md transition-colors disabled:opacity-50 cursor-pointer mt-1"
+              disabled={loading || password !== confirmPassword || !agreedToTerms}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          {/* Back to Home */}
+          <div className="mt-8 pt-6 border-t border-[#21262d]">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs text-[#7d8590] hover:text-[#e6edf3] transition-colors"
+            >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Home
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

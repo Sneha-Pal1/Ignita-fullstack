@@ -12,10 +12,10 @@ interface StatCard {
 }
 
 const colorMap: Record<string, string> = {
-  emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-  teal: "text-teal-400 bg-teal-500/10 border-teal-500/20",
-  amber: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-  cyan: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  emerald: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
+  teal: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
+  amber: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
+  cyan: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
 };
 
 interface CompactStatsCardsProps {
@@ -26,7 +26,7 @@ export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
   const prefersReducedMotion = useMotionPreference();
   const transitionClass = prefersReducedMotion
     ? ""
-    : "transition-all duration-300";
+    : "transition-all duration-200";
 
   return (
     <section
@@ -38,8 +38,8 @@ export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
         <article
           key={stat.id}
           className={`
-            relative group rounded-xl p-4 border border-zinc-800 bg-zinc-900/50
-            hover:border-zinc-700 hover:bg-zinc-900 
+            relative group rounded-md p-4 border border-[#21262d] bg-[#161b22]
+            hover:border-[#30363d]
             ${transitionClass}
           `}
           role="region"
@@ -47,18 +47,18 @@ export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
         >
           {/* Icon */}
           <div
-            className={`inline-flex items-center justify-center w-9 h-9 rounded-lg mb-3 ${colorMap[stat.color]} border`}
+            className={`inline-flex items-center justify-center w-8 h-8 rounded-md mb-3 ${colorMap[stat.color]} border`}
           >
-            <HugeiconsIcon icon={stat.icon} size="20" strokeWidth={2} />
+            <HugeiconsIcon icon={stat.icon} size="16" strokeWidth={2} />
           </div>
 
           {/* Value */}
-          <p className="text-2xl font-bold text-white mb-1 tabular-nums">
+          <p className="text-xl font-bold text-[#e6edf3] mb-1 tabular-nums">
             {stat.value}
           </p>
 
           {/* Label */}
-          <p className="text-xs text-zinc-400 font-medium">{stat.title}</p>
+          <p className="text-xs text-[#7d8590] font-medium">{stat.title}</p>
         </article>
       ))}
     </section>

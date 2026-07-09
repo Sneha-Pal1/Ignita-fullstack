@@ -7,23 +7,23 @@
  */
 export const DashboardSkeleton = () => {
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-[#0d1117]">
       {/* Sidebar Skeleton */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-zinc-950 border-r border-zinc-800 animate-pulse">
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#161b22] border-r border-[#21262d] animate-pulse">
         {/* Logo */}
-        <div className="h-20 px-6 flex items-center border-b border-zinc-800">
+        <div className="h-20 px-6 flex items-center border-b border-[#21262d]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-zinc-800" />
-            <div className="h-6 w-24 bg-zinc-800 rounded" />
+            <div className="w-8 h-8 rounded bg-[#21262d]" />
+            <div className="h-5 w-24 bg-[#21262d] rounded" />
           </div>
         </div>
 
         {/* Nav Items */}
         <div className="p-6 space-y-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 px-4 py-3">
-              <div className="w-5 h-5 bg-zinc-800 rounded" />
-              <div className="h-4 w-24 bg-zinc-800 rounded" />
+            <div key={i} className="flex items-center gap-3 px-4 py-2">
+              <div className="w-5 h-5 bg-[#21262d] rounded" />
+              <div className="h-4 w-24 bg-[#21262d] rounded" />
             </div>
           ))}
         </div>
@@ -32,14 +32,14 @@ export const DashboardSkeleton = () => {
       {/* Main Content */}
       <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         {/* Top Header Skeleton */}
-        <header className="h-20 border-b border-zinc-800 bg-zinc-950 animate-pulse px-8 flex items-center justify-between">
+        <header className="h-20 border-b border-[#21262d] bg-[#0d1117] animate-pulse px-8 flex items-center justify-between">
           <div className="flex items-center gap-4 flex-1">
-            <div className="h-5 w-32 bg-zinc-800 rounded" />
+            <div className="h-5 w-32 bg-[#21262d] rounded" />
           </div>
           <div className="flex items-center gap-4">
-            <div className="h-10 w-48 bg-zinc-800 rounded" />
-            <div className="h-10 w-10 bg-zinc-800 rounded" />
-            <div className="h-10 w-10 bg-zinc-800 rounded-full" />
+            <div className="h-10 w-48 bg-[#21262d] rounded" />
+            <div className="h-10 w-10 bg-[#21262d] rounded" />
+            <div className="h-10 w-10 bg-[#21262d] rounded-full" />
           </div>
         </header>
 
@@ -53,27 +53,27 @@ export const DashboardSkeleton = () => {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className="rounded-xl p-4 border border-zinc-800 bg-zinc-900/50 animate-pulse"
+                    className="rounded-md p-4 border border-[#21262d] bg-[#161b22] animate-pulse"
                   >
-                    <div className="w-9 h-9 bg-zinc-800 rounded-lg mb-3" />
-                    <div className="h-6 w-12 bg-zinc-800 rounded mb-1" />
-                    <div className="h-3 w-20 bg-zinc-800 rounded" />
+                    <div className="w-8 h-8 bg-[#21262d] rounded-md mb-3" />
+                    <div className="h-6 w-12 bg-[#21262d] rounded mb-1" />
+                    <div className="h-3 w-20 bg-[#21262d] rounded" />
                   </div>
                 ))}
               </div>
 
               {/* Recent Activity */}
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 animate-pulse">
-                <div className="p-6 border-b border-zinc-800">
-                  <div className="h-5 w-32 bg-zinc-800 rounded" />
+              <div className="rounded-md border border-[#21262d] bg-[#161b22] animate-pulse">
+                <div className="p-6 border-b border-[#21262d]">
+                  <div className="h-5 w-32 bg-[#21262d] rounded" />
                 </div>
-                <div className="divide-y divide-zinc-800">
+                <div className="divide-y divide-[#21262d]">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="p-4 flex gap-4">
-                      <div className="w-10 h-10 bg-zinc-800 rounded-lg flex-shrink-0" />
+                      <div className="w-8 h-8 bg-[#21262d] rounded-md flex-shrink-0" />
                       <div className="flex-1 space-y-2">
-                        <div className="h-4 w-32 bg-zinc-800 rounded" />
-                        <div className="h-3 w-24 bg-zinc-800 rounded" />
+                        <div className="h-4 w-32 bg-[#21262d] rounded" />
+                        <div className="h-3 w-24 bg-[#21262d] rounded" />
                       </div>
                     </div>
                   ))}
@@ -81,17 +81,17 @@ export const DashboardSkeleton = () => {
               </div>
 
               {/* Upcoming Events */}
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 animate-pulse">
-                <div className="p-6 border-b border-zinc-800">
-                  <div className="h-5 w-32 bg-zinc-800 rounded" />
+              <div className="rounded-md border border-[#21262d] bg-[#161b22] animate-pulse">
+                <div className="p-6 border-b border-[#21262d]">
+                  <div className="h-5 w-32 bg-[#21262d] rounded" />
                 </div>
-                <div className="divide-y divide-zinc-800">
+                <div className="divide-y divide-[#21262d]">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="p-5">
                       <div className="space-y-2">
-                        <div className="h-4 w-40 bg-zinc-800 rounded" />
-                        <div className="h-3 w-48 bg-zinc-800 rounded" />
-                        <div className="h-3 w-32 bg-zinc-800 rounded" />
+                        <div className="h-4 w-40 bg-[#21262d] rounded" />
+                        <div className="h-3 w-48 bg-[#21262d] rounded" />
+                        <div className="h-3 w-32 bg-[#21262d] rounded" />
                       </div>
                     </div>
                   ))}
@@ -102,33 +102,33 @@ export const DashboardSkeleton = () => {
             {/* Right Column */}
             <div className="space-y-6">
               {/* Notifications */}
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 animate-pulse">
-                <div className="p-6 border-b border-zinc-800">
-                  <div className="h-5 w-32 bg-zinc-800 rounded" />
+              <div className="rounded-md border border-[#21262d] bg-[#161b22] animate-pulse">
+                <div className="p-6 border-b border-[#21262d]">
+                  <div className="h-5 w-32 bg-[#21262d] rounded" />
                 </div>
-                <div className="divide-y divide-zinc-800">
+                <div className="divide-y divide-[#21262d]">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="p-4 space-y-2">
-                      <div className="h-4 w-24 bg-zinc-800 rounded" />
-                      <div className="h-3 w-32 bg-zinc-800 rounded" />
+                      <div className="h-4 w-24 bg-[#21262d] rounded" />
+                      <div className="h-3 w-32 bg-[#21262d] rounded" />
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Deadlines */}
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 animate-pulse">
-                <div className="p-6 border-b border-zinc-800">
-                  <div className="h-5 w-40 bg-zinc-800 rounded" />
+              <div className="rounded-md border border-[#21262d] bg-[#161b22] animate-pulse">
+                <div className="p-6 border-b border-[#21262d]">
+                  <div className="h-5 w-40 bg-[#21262d] rounded" />
                 </div>
                 <div className="p-4 space-y-3">
                   {Array.from({ length: 2 }).map((_, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg bg-zinc-800/30 space-y-2"
+                      className="p-3 rounded-md bg-[#0d1117] space-y-2"
                     >
-                      <div className="h-4 w-32 bg-zinc-800 rounded" />
-                      <div className="h-3 w-24 bg-zinc-800 rounded" />
+                      <div className="h-4 w-32 bg-[#21262d] rounded" />
+                      <div className="h-3 w-24 bg-[#21262d] rounded" />
                     </div>
                   ))}
                 </div>

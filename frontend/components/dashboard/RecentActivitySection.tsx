@@ -12,8 +12,8 @@ interface ActivityItem {
 }
 
 const typeColorMap: Record<string, string> = {
-  bookmark: "text-teal-400 bg-teal-500/10",
-  alert: "text-amber-400 bg-amber-500/10",
+  bookmark: "text-[#3fb950] bg-[#2ea043]/10 border border-[#238636]/30",
+  alert: "text-[#3fb950] bg-[#2ea043]/10 border border-[#238636]/30",
 };
 
 interface RecentActivitySectionProps {
@@ -25,47 +25,47 @@ export const RecentActivitySection = ({
 }: RecentActivitySectionProps) => {
   if (activities.length === 0) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
-        <p className="text-zinc-400 text-sm">No recent activities yet</p>
+      <div className="rounded-md border border-[#21262d] bg-[#161b22] p-6 text-center">
+        <p className="text-[#7d8590] text-sm">No recent activities yet</p>
       </div>
     );
   }
 
   return (
     <section
-      className="rounded-xl border border-zinc-800 bg-zinc-900/50"
+      className="rounded-md border border-[#21262d] bg-[#161b22]"
       aria-label="Recent activity"
     >
       {/* Header */}
-      <div className="p-6 border-b border-zinc-800">
-        <h2 className="text-lg font-semibold text-white">Recent Activity</h2>
+      <div className="p-4 border-b border-[#21262d]">
+        <h2 className="text-sm font-semibold text-[#e6edf3]">Recent Activity</h2>
       </div>
 
       {/* Activity List */}
-      <div className="divide-y divide-zinc-800">
+      <div className="divide-y divide-[#21262d]">
         {activities.map((activity) => (
           <div
             key={activity.id}
-            className="p-4 flex gap-4 hover:bg-zinc-800/30 transition-colors last:rounded-b-xl"
+            className="p-4 flex gap-4 hover:bg-[#21262d]/30 transition-colors last:rounded-b-md"
           >
             {/* Icon */}
             <div
-              className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${typeColorMap[activity.type]}`}
+              className={`flex-shrink-0 w-8 h-8 rounded-md flex items-center justify-center ${typeColorMap[activity.type]}`}
             >
-              <HugeiconsIcon icon={activity.icon} size="20" strokeWidth={2} />
+              <HugeiconsIcon icon={activity.icon} size="16" strokeWidth={2} />
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white">{activity.title}</p>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-sm font-medium text-[#e6edf3]">{activity.title}</p>
+              <p className="text-xs text-[#7d8590] mt-0.5">
                 {activity.description}
               </p>
             </div>
 
             {/* Time */}
             <div className="flex-shrink-0">
-              <p className="text-xs text-zinc-500 text-right">
+              <p className="text-xs text-[#484f58] text-right">
                 {activity.time}
               </p>
             </div>
