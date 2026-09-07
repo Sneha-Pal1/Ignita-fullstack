@@ -11,6 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       '🔐 JWT Strategy initialized with secret:',
       secret.substring(0, 10) + '...',
     );
+    // Configure Passport to extract Bearer token from the 'Authorization' header
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -18,6 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  // Passport automatically decodes the verified JWT and passes the payload here.
+  // The returned object is attached to 'req.user' for all downstream handlers & guards.
   async validate(payload: any) {
     console.log('🔍 JWT Validation - Payload:', payload);
     const user = {
@@ -29,3 +32,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return user;
   }
 }
+

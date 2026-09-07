@@ -10,6 +10,7 @@ import {
 import type { User } from "./auth-types";
 import { authStorage } from "./auth";
 
+// Auth context state interface exposed across the entire client application
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -23,28 +24,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Synchronizes state with latest user profile in localStorage
   const refreshUser = () => {
     const storedUser = authStorage.getUser();
     setUser(storedUser);
   };
 
+  // Logout handler: Clears JWT tokens from storage and dispatches change event
   const logout = () => {
     authStorage.removeToken();
     authStorage.removeUser();
     setUser(null);
-    // Emit auth change event
+    // Emit auth change event to notify components in the current tab
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("auth-change"));
     }
   };
 
   useEffect(() => {
-    // Check user on mount
+    // 1. Check existing session on initial application mount
     const storedUser = authStorage.getUser();
     setUser(storedUser);
     setIsLoading(false);
 
-    // Listen for storage changes (login from another tab)
+    // 2. Cross-tab synchronization: Updates state if user logs in/out from another tab
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "auth_user" || e.key === "auth_token") {
         const updatedUser = authStorage.getUser();
@@ -52,13 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    // Custom event for same-tab changes
+    // 3. Same-tab event listener for seamless UI reactivity on login/logout
     const handleAuthChange = () => {
       const updatedUser = authStorage.getUser();
       setUser(updatedUser);
     };
 
-    // Add small delay to ensure localStorage is updated
+    // Small delay to ensure localStorage write finishes before state read
     const timer = setTimeout(() => {
       const storedUser = authStorage.getUser();
       if (storedUser) {
@@ -86,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Custom hook to consume authentication state anywhere in React components
 export function useAuthContext() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -93,3 +97,4 @@ export function useAuthContext() {
   }
   return context;
 }
+

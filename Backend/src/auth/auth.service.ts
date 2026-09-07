@@ -33,6 +33,7 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
+  // 1. User Registration: Checks for existing email, hashes password with Bcrypt, persists user, and returns JWT tokens
   async register(dto: RegisterDto) {
     const exits = await this.userRepo.findOneBy({
       email: dto.email,
@@ -61,6 +62,7 @@ export class AuthService {
     };
   }
 
+  // 2. Admin Creation: Explicitly assigns UserRole.ADMIN to newly registered admin accounts
   async createAdmin(dto: CreateAdminDto) {
     const exits = await this.userRepo.findOneBy({
       email: dto.email,
@@ -89,6 +91,8 @@ export class AuthService {
       },
     };
   }
+
+  // 3. User Login: Validates credentials by comparing input password against the Bcrypt hash
   async login(dto: LoginDto) {
     console.log('🔐 Login attempt for email:', dto.email);
 
@@ -133,6 +137,7 @@ export class AuthService {
     };
   }
 
+  // 4. Google OAuth: Finds existing user by email or automatically provisions a new account
   async googleLogin(dto: GoogleAuthDto) {
     let user = await this.userRepo.findOne({
       where: { email: dto.email },
@@ -164,6 +169,7 @@ export class AuthService {
     };
   }
 
+  // 5. Refresh Access Token: Verifies refresh token signature and issues a new access token
   async refreshAccessToken(refreshToken: string) {
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token required');
@@ -191,6 +197,8 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
+
+  // 6. Forgot Password: Generates a cryptographically secure 15-minute token and sends email
   async forgotPassword(dto: ForgotPasswordDto): Promise<{ message: string }> {
     const user = await this.userRepo.findOneBy({ email: dto.email });
 
@@ -224,6 +232,7 @@ export class AuthService {
     return { message: 'If an account with that email exists, a reset link has been sent.' };
   }
 
+  // 7. Reset Password: Validates single-use token hash and updates user password with new hash
   async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
     // Hash the incoming raw token to compare with stored hash
     const tokenHash = crypto
@@ -245,7 +254,7 @@ export class AuthService {
       throw new BadRequestException('Password reset token has expired. Please request a new one.');
     }
 
-    // Update the user's password
+    // Update the user's password with new Bcrypt hash
     const newHash = await this.hashPassword(dto.password);
     await this.userRepo.update(resetToken.user.id, { password: newHash });
 
@@ -255,15 +264,20 @@ export class AuthService {
     return { message: 'Password has been reset successfully.' };
   }
 
+  // --- Helper Security Methods ---
+
+  // Bcrypt Password Hashing with 10 salt rounds
   private async hashPassword(pw: string): Promise<string> {
     const saltRounds = 10;
     return bcrypt.hash(pw, saltRounds);
   }
 
+  // Bcrypt Hash Comparison
   private async verifyPassword(raw: string, hash: string): Promise<boolean> {
     return bcrypt.compare(raw, hash);
   }
 
+  // Generates dual token pair (Access + Refresh)
   private generateTokens(user: User) {
     return {
       accessToken: this.generateAccessToken(user),
@@ -271,6 +285,7 @@ export class AuthService {
     };
   }
 
+  // Short-lived Access Token (contains user identity and role for RBAC)
   private generateAccessToken(user: User): string {
     const payload = {
       sub: user.id,
@@ -282,6 +297,8 @@ export class AuthService {
       expiresIn: this.configService.get('JWT_EXPIRY') || '15m',
     });
   }
+
+  // Long-lived Refresh Token (used exclusively for rotating access tokens)
   private generateRefreshToken(user: User): string {
     const payload = { sub: user.id };
     return this.jwtService.sign(payload, {
