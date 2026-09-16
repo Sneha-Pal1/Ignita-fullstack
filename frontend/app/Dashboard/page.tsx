@@ -272,7 +272,7 @@ export default function DashboardPage() {
   }));
 
   return (
-    <div className="flex min-h-screen bg-[#0d1117]">
+    <div className="flex min-h-screen bg-[#0e0e0d] text-[#f4f4f0]">
       {/* Sidebar */}
       <Sidebar />
 
@@ -283,12 +283,12 @@ export default function DashboardPage() {
 
         {/* Dashboard Content */}
         <main
-          className="flex-1"
+          className="flex-1 min-h-screen bg-[#0e0e0d]"
           id="main-content"
           role="main"
           aria-label="Dashboard content"
         >
-          <div className="p-4 sm:p-6 lg:p-8">
+          <div className="p-4 sm:p-6 lg:p-8 bg-[#0e0e0d]">
             {/* Main Grid Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Left Column - Main Content */}
@@ -329,3 +329,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

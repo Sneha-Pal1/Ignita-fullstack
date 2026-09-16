@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { events } from "@/lib/data/events";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Bookmark, Gift, CheckCircle } from "lucide-react";
+import { ArrowLeft, Bookmark, Gift, CheckCircle, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useBookmark } from "@/lib/hooks/useBookmark";
 import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
 
@@ -54,7 +54,7 @@ function mapBackendEvent(event: BackendEvent): DetailData {
     requirements: event.registrationLink
       ? "Registration available"
       : "Check event details",
-    about: event.description || "Event details will be shared by the admin.",
+    about: event.description || "Event details will be shared by the organizer.",
     registrationLink: event.registrationLink,
   };
 }
@@ -114,170 +114,174 @@ const EventDetailPage = () => {
 
   if (isLoadingEvent) {
     return (
-      <main className="px-6 py-10 max-w-4xl mx-auto">
-        <p className="text-gray-400">Loading event...</p>
+      <main className="px-6 py-20 max-w-4xl mx-auto font-mono text-[#8a8a86]">
+        <p>LOADING EVENT DETAILS...</p>
       </main>
     );
   }
 
   if (!event) {
     return (
-      <main className="px-6 py-10 max-w-4xl mx-auto">
-        <p className="text-gray-400">Event not found</p>
+      <main className="px-6 py-20 max-w-4xl mx-auto font-mono text-[#8a8a86]">
+        <p>EVENT NOT FOUND.</p>
       </main>
     );
   }
 
   return (
-    <main className="px-6 py-10 max-w-4xl mx-auto">
+    <main className="min-h-screen bg-[#0e0e0d] text-[#f4f4f0] px-6 py-12 max-w-5xl mx-auto font-mono">
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-primary hover:text-primary/80 mb-6 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-xs text-[#8a8a86] border border-white/10 hover:border-white/40 hover:text-white bg-[#141413] transition-colors mb-8 cursor-pointer"
       >
-        <ArrowLeft size={20} /> Back to Events
+        <ArrowLeft size={16} />
+        <span>BACK TO EVENTS</span>
       </button>
 
-      {/* Event Tags */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {event.tags?.map((tag) => (
-          <span
-            key={tag}
-            className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm border border-primary/30"
-          >
-            {tag}
-          </span>
-        ))}
+      {/* 01 Overview Section Header */}
+      <div className="mb-8">
+        <div className="levo-eyebrow mb-3">
+          <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+          <span>01 / EVENT SPECIFICATION</span>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {event.tags?.map((tag) => (
+            <span
+              key={tag}
+              className="px-2.5 py-1 bg-[#141413] border border-white/10 text-[#FFB100] text-[10px] uppercase font-bold tracking-wider"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight leading-tight font-sans mb-3">
+          {event.title}
+        </h1>
+        <p className="text-xs text-[#8a8a86] uppercase">{event.organizer}</p>
       </div>
 
-      {/* Event Title */}
-      <h1 className="text-4xl font-bold text-white mb-2">{event.title}</h1>
-      <p className="text-gray-400 mb-6">{event.organizer}</p>
-
       {/* Action Buttons */}
-      <div className="flex gap-4 mb-8">
+      <div className="flex flex-wrap gap-4 mb-10">
         {event.registrationLink ? (
           <a
             href={event.registrationLink}
             target="_blank"
             rel="noreferrer"
-            className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            className="px-8 py-3.5 bg-[#FFB100] text-black font-semibold text-xs tracking-widest uppercase hover:bg-[#ffbe25] transition-colors"
           >
-            Apply Now
+            APPLY NOW →
           </a>
         ) : (
-          <button className="px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-            Apply Now
+          <button className="px-8 py-3.5 bg-[#FFB100] text-black font-semibold text-xs tracking-widest uppercase hover:bg-[#ffbe25] transition-colors cursor-pointer">
+            APPLY NOW →
           </button>
         )}
         <button
           onClick={toggleBookmark}
           disabled={isLoading}
-          className="px-6 py-2 border border-white/20 text-white font-semibold rounded-lg hover:border-white/40 transition-colors flex items-center gap-2 disabled:opacity-50"
+          className="px-8 py-3.5 border border-white/20 text-white font-semibold text-xs tracking-widest uppercase hover:border-[#FFB100] hover:text-[#FFB100] transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
         >
-          <Bookmark size={18} fill={isBookmarked ? "currentColor" : "none"} />
-          {isLoading ? "..." : isBookmarked ? "Saved ✓" : "Bookmark Event"}
+          <Bookmark size={16} fill={isBookmarked ? "#FFB100" : "none"} className={isBookmarked ? "text-[#FFB100]" : ""} />
+          <span>{isLoading ? "..." : isBookmarked ? "SAVED ✓" : "SAVE BOOKMARK"}</span>
         </button>
       </div>
 
-      {/* Event Header Image */}
-      <div className="mb-8 rounded-lg overflow-hidden">
+      {/* Header Image */}
+      <div className="mb-12 border border-white/10 overflow-hidden bg-[#141413]">
         <Image
           src={event.image}
           alt={event.title}
-          width={800}
-          height={400}
-          className="w-full h-96 object-cover"
+          width={900}
+          height={450}
+          className="w-full h-80 sm:h-96 object-cover"
         />
       </div>
 
-      {/* Event Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border border-white/10 rounded-lg p-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Image
-              src="/icons/calendar.svg"
-              alt="date"
-              width={16}
-              height={16}
-            />
-            <p className="text-gray-400 text-sm">Date</p>
-          </div>
-          <p className="text-white font-semibold">{event.date}</p>
+      {/* 02 Key Specifications Grid */}
+      <div className="mb-12 border border-white/10 bg-[#141413] p-6 sm:p-8">
+        <div className="levo-eyebrow mb-6">
+          <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+          <span>02 / KEY PARAMETERS</span>
         </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Image
-              src="/icons/clock.svg"
-              alt="deadline"
-              width={16}
-              height={16}
-            />
-            <p className="text-gray-400 text-sm">Application Deadline</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <Calendar size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">DATE</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.date}</p>
           </div>
-          <p className="text-white font-semibold">
-            {event.applicationDeadline}
-          </p>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Image
-              src="/icons/pin.svg"
-              alt="location"
-              width={16}
-              height={16}
-              style={{ width: "auto", height: "auto" }}
-            />
-            <p className="text-gray-400 text-sm">Location</p>
+
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <Clock size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">DEADLINE</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.applicationDeadline}</p>
           </div>
-          <p className="text-white font-semibold">{event.location}</p>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Gift size={16} className="text-gray-400" />
-            <p className="text-gray-400 text-sm">Prizes</p>
+
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <MapPin size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">LOCATION</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.location}</p>
           </div>
-          <p className="text-white font-semibold">{event.prizes}</p>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Image
-              src="/icons/audience.svg"
-              alt="participants"
-              width={16}
-              height={16}
-            />
-            <p className="text-gray-400 text-sm">Participants</p>
+
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <Gift size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">PRIZES / MODE</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.prizes}</p>
           </div>
-          <p className="text-white font-semibold">{event.participants}</p>
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle size={16} className="text-gray-400" />
-            <p className="text-gray-400 text-sm">Requirements</p>
+
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <Users size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">ELIGIBILITY</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.participants}</p>
           </div>
-          <p className="text-white font-semibold">{event.requirements}</p>
+
+          <div className="p-4 border border-white/10 bg-[#1c1c1a]">
+            <div className="flex items-center gap-2 mb-2 text-[#FFB100]">
+              <CheckCircle size={14} />
+              <span className="text-[10px] uppercase text-[#8a8a86]">REQUIREMENTS</span>
+            </div>
+            <p className="text-sm font-bold text-white uppercase">{event.requirements}</p>
+          </div>
         </div>
       </div>
 
-      {/* About This Event */}
-      <div className="mb-8 border border-white/10 rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">About This Event</h2>
-        <p className="text-gray-300 leading-relaxed">{event.about}</p>
+      {/* About Section */}
+      <div className="mb-12 border border-white/10 bg-[#141413] p-6 sm:p-8">
+        <div className="levo-eyebrow mb-4">
+          <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+          <span>03 / ABOUT THIS EVENT</span>
+        </div>
+        <p className="text-sm text-[#8a8a86] leading-relaxed font-sans font-normal">{event.about}</p>
       </div>
 
-      {/* Event Schedule */}
-
+      {/* Schedule */}
       {event.schedule && event.schedule.length > 0 && (
-        <div className="border border-white/10 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Event Schedule</h2>
-          <div className="space-y-3">
+        <div className="border border-white/10 bg-[#141413] p-6 sm:p-8">
+          <div className="levo-eyebrow mb-6">
+            <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+            <span>04 / SCHEDULE & AGENDA</span>
+          </div>
+          <div className="space-y-4">
             {event.schedule.map((item, index) => (
-              <div key={index} className="flex gap-4">
-                <p className="text-primary font-semibold min-w-fit">
+              <div key={index} className="flex flex-col sm:flex-row gap-2 sm:gap-6 p-3 border-b border-white/10 last:border-0">
+                <span className="text-xs font-bold text-[#FFB100] min-w-[120px]">
                   {item.time}
-                </p>
-                <p className="text-gray-300">{item.activity}</p>
+                </span>
+                <span className="text-xs text-white">{item.activity}</span>
               </div>
             ))}
           </div>

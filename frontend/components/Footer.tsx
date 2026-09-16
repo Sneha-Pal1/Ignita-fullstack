@@ -2,35 +2,41 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="mt-24 border-t border-white/10 px-6 py-10">
-      {" "}
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer className="w-full border-t border-white/10 bg-[#0e0e0d] py-12">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs text-[#8a8a86]">
+        
         {/* Left */}
-        <div className="text-center md:text-left">
-          <h3 className="text-xl font-semibold">Ignita</h3>
-          <p className="text-gray-400 text-sm mt-2">
-            Discover and track tech opportunities
-          </p>
+        <div className="flex items-center gap-3">
+          <span className="h-2 w-2 bg-[#FFB100]" />
+          <span className="text-white font-bold tracking-widest uppercase">IGNITA</span>
+          <span>·</span>
+          <span>EVENT ENGINE FOR DEVELOPERS</span>
         </div>
-        {/* Links */}
-        <div className="flex gap-6 text-sm text-gray-400">
-          <Link href="/events" className="hover:text-white transition">
-            Events
+
+        {/* Center Links */}
+        <div className="flex flex-wrap items-center gap-6 uppercase tracking-wider">
+          <Link href="/events" className="hover:text-white transition-colors">
+            EVENTS
           </Link>
-          <Link href="/dashboard" className="hover:text-white transition">
-            Dashboard
+          <Link href="/Dashboard" className="hover:text-white transition-colors">
+            DASHBOARD
           </Link>
-          <Link href="/bookmarks" className="hover:text-white transition">
-            Bookmarks
+          <Link href="/Bookmarks" className="hover:text-white transition-colors">
+            BOOKMARKS
           </Link>
-          <Link href="/profile" className="hover:text-white transition">
-            Profile
+          <Link href="/alerts" className="hover:text-white transition-colors">
+            ALERTS
+          </Link>
+          <Link href="/analytics" className="hover:text-white transition-colors">
+            ANALYTICS
           </Link>
         </div>
+
         {/* Right */}
-        <div className="text-gray-500 text-sm text-center md:text-right">
-          © {new Date().getFullYear()} Ignita. All rights reserved.
+        <div>
+          © {new Date().getFullYear()} IGNITA · ALL RIGHTS RESERVED
         </div>
+
       </div>
     </footer>
   );

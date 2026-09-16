@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-[#0e0e0d] text-[#f4f4f0]">
       {/* Sidebar */}
       <Sidebar />
 
@@ -17,7 +17,7 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
         {/* Main Content Area */}
         <main
-          className="flex-1"
+          className="flex-1 min-h-screen bg-[#0e0e0d]"
           id="main-content"
           role="main"
           aria-label="Dashboard content"
@@ -28,3 +28,4 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
+

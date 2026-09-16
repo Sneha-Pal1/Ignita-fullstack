@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, MapPin, Users, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 interface UpcomingEvent {
@@ -19,64 +19,59 @@ interface UpcomingEventsListProps {
 export const UpcomingEventsList = ({ events }: UpcomingEventsListProps) => {
   if (events.length === 0) {
     return (
-      <section className="rounded-md border border-[#21262d] bg-[#161b22] p-6 text-center">
-        <p className="text-[#7d8590] text-sm">No upcoming events</p>
+      <section className="border border-white/10 bg-[#141413] p-6 text-center font-mono text-xs text-[#8a8a86]">
+        NO UPCOMING EVENTS SCHEDULED.
       </section>
     );
   }
 
   return (
-    <section className="rounded-md border border-[#21262d] bg-[#161b22]">
+    <section className="border border-white/10 bg-[#141413] font-mono">
       {/* Header */}
-      <div className="p-4 border-b border-[#21262d] flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-[#e6edf3]">Upcoming Events</h2>
+      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+          <h2 className="text-xs font-bold uppercase tracking-widest text-white">UPCOMING EVENTS</h2>
+        </div>
         <Link
           href="/events"
-          className="text-xs text-[#3fb950] hover:underline font-medium transition-colors"
+          className="text-xs text-[#FFB100] hover:underline tracking-widest uppercase font-semibold transition-colors"
         >
-          View All
+          VIEW ALL →
         </Link>
       </div>
 
       {/* Events List */}
-      <div className="divide-y divide-[#21262d]">
+      <div className="divide-y divide-white/10">
         {events.map((event) => (
           <Link
             key={event.id}
             href={`/events/${event.id}`}
-            className="p-4 flex flex-col hover:bg-[#21262d]/30 transition-colors group last:rounded-b-md"
+            className="p-5 flex items-center justify-between hover:bg-white/5 transition-colors group"
           >
-            <div className="flex items-start justify-between gap-4">
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                {/* Title + Badge */}
-                <div className="flex items-start gap-2.5 mb-2">
-                  <h3 className="text-sm font-semibold text-[#e6edf3] group-hover:text-[#3fb950] transition-colors line-clamp-1">
-                    {event.title}
-                  </h3>
-                  <span className="flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#2ea043]/10 border border-[#238636]/30 text-[#3fb950] whitespace-nowrap">
-                    {event.badge}
-                  </span>
-                </div>
-
-                {/* Meta Info */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-xs text-[#7d8590]">
-                    <Calendar className="w-3.5 h-3.5 text-[#7d8590] shrink-0" />
-                    {event.date}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-[#7d8590]">
-                    <MapPin className="w-3.5 h-3.5 text-[#7d8590] shrink-0" />
-                    {event.location}
-                  </div>
-                </div>
+            <div className="flex-1 min-w-0 pr-4">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="px-2 py-0.5 text-[9px] font-bold uppercase bg-[#FFB100]/10 border border-[#FFB100]/40 text-[#FFB100]">
+                  {event.badge}
+                </span>
+                <h3 className="text-sm font-bold text-white group-hover:text-[#FFB100] transition-colors truncate font-sans">
+                  {event.title}
+                </h3>
               </div>
 
-              {/* Arrow */}
-              <div className="flex-shrink-0 self-center flex items-center text-[#7d8590] group-hover:text-[#3fb950] transition-colors">
-                <ArrowRight className="w-4 h-4" />
+              <div className="flex flex-wrap items-center gap-4 text-xs text-[#8a8a86]">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-[#FFB100]" />
+                  <span>{event.date}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#8a8a86]" />
+                  <span>{event.location}</span>
+                </div>
               </div>
             </div>
+
+            <ArrowUpRight className="w-4 h-4 text-[#8a8a86] group-hover:text-[#FFB100] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
           </Link>
         ))}
       </div>

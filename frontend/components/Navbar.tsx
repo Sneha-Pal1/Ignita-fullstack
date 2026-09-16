@@ -7,18 +7,15 @@ import { useAuthContext } from "@/lib/auth-context";
 import { authStorage } from "@/lib/auth";
 import NotificationBell from "./notifications/NotificationBell";
 import type { User } from "@/lib/auth-types";
-import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const { user: contextUser, isLoading, logout } = useAuthContext();
   const [user, setUser] = useState<User | null>(null);
 
-  // Sync with context
   useEffect(() => {
     setUser(contextUser);
   }, [contextUser]);
 
-  // Also listen to auth changes directly
   useEffect(() => {
     const handleAuthChange = () => {
       const storedUser = authStorage.getUser();
@@ -35,37 +32,47 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header>
-      <nav>
-        <Link href="/" className="logo">
-          <Image
-            src="/icons/iglogoremovebg.png"
-            alt="logo"
-            width={40}
-            height={40}
-            style={{ width: "auto", height: "auto" }}
-          />
-
-          <p>IGNITA</p>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0e0e0d]/90 backdrop-blur-md border-b border-white/10">
+      <nav className="mx-auto max-w-7xl px-6 sm:px-10 h-16 flex items-center justify-between">
+        
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <span className="h-2.5 w-2.5 bg-[#FFB100] group-hover:scale-125 transition-transform" />
+          <span className="font-mono text-base font-bold tracking-widest text-white uppercase">
+            IGNITA
+          </span>
         </Link>
 
-        <ul>
-          <Link href="/">Home</Link>
-
-          <Link href="/events">Events</Link>
-
-          {user?.role === "ADMIN" && <Link href="/admin">Admin Dashboard</Link>}
-
+        {/* Links */}
+        <ul className="flex items-center gap-8 font-mono text-xs uppercase tracking-wider text-[#8a8a86] list-none">
+          <li>
+            <Link href="/" className="hover:text-white transition-colors">
+              HOME
+            </Link>
+          </li>
+          <li>
+            <Link href="/events" className="hover:text-white transition-colors">
+              EVENTS
+            </Link>
+          </li>
           {user?.role === "ADMIN" && (
-            <Link href="/admin/create-event">Create Event</Link>
+            <li>
+              <Link href="/admin" className="text-[#FFB100] hover:text-[#ffbe25] transition-colors">
+                ADMIN
+              </Link>
+            </li>
           )}
-
-          {user?.role === "ADMIN" && (
-            <Link href="/admin/create">Create Admin</Link>
+          {user && (
+            <li>
+              <Link href="/Dashboard" className="hover:text-white transition-colors">
+                DASHBOARD
+              </Link>
+            </li>
           )}
+        </ul>
 
-          {user && <Link href="/Dashboard">Dashboard</Link>}
-
+        {/* Auth status */}
+        <div className="flex items-center gap-4">
           {!isLoading && (
             <>
               {user ? (
@@ -73,29 +80,32 @@ const Navbar = () => {
                   <NotificationBell />
                   <Link
                     href="/profile"
-                    className="flex items-center gap-2 text-white hover:text-gray-300"
+                    className="flex items-center gap-2 font-mono text-xs text-white hover:text-[#FFB100] transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-full bg-linear-to-r from-cyan-400 to-blue-500 flex items-center justify-center text-xs font-bold">
+                    <div className="w-7 h-7 bg-[#1c1c1a] border border-[#FFB100] flex items-center justify-center text-[11px] font-mono text-[#FFB100]">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
+                    <span className="hidden sm:inline">{user.name}</span>
                   </Link>
                   <button
                     onClick={logout}
-                    className="px-4 py-2 text-white border border-white/20 rounded-lg hover:border-white/40 transition-colors"
+                    className="font-mono text-xs text-[#8a8a86] hover:text-white uppercase transition-colors"
                   >
-                    Logout
+                    SIGNOUT
                   </button>
                 </div>
               ) : (
-                <Button asChild className="bg-white hover:bg-neutral-200 text-black font-semibold rounded-md px-5 py-2 transition-all duration-200 cursor-pointer">
-                  <Link href="/login">
-                    Login
-                  </Link>
-                </Button>
+                <Link
+                  href="/login"
+                  className="font-mono text-xs uppercase tracking-widest text-[#FFB100] border border-[#FFB100]/40 px-4 py-2 hover:bg-[#FFB100] hover:text-black transition-all duration-200"
+                >
+                  SIGN IN →
+                </Link>
               )}
             </>
           )}
-        </ul>
+        </div>
+
       </nav>
     </header>
   );

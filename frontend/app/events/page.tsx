@@ -100,7 +100,7 @@ const EventsPage = () => {
 
       if (!accessToken) {
         setEvents(mockEvents.map(mapMockEvent));
-        setError(null); // No error for guest users, let them browse sample events silently
+        setError(null);
         setIsLoading(false);
         return;
       }
@@ -118,12 +118,12 @@ const EventsPage = () => {
       } catch (fetchError) {
         if (fetchError instanceof APIError && fetchError.status === 401) {
           setEvents(mockEvents.map(mapMockEvent));
-          setError(null); // Auth token expired or invalid, treat as guest silently
+          setError(null);
           return;
         }
 
         console.error("Failed to fetch events:", fetchError);
-        setError("Unable to connect to the live server. Showing offline sample events.");
+        setError("Unable to connect to live server. Displaying cached offline catalog.");
         setEvents(mockEvents.map(mapMockEvent));
       } finally {
         setIsLoading(false);
@@ -162,116 +162,103 @@ const EventsPage = () => {
 
   if (authLoading) {
     return (
-      <main className="px-6 py-10 max-w-7xl mx-auto">
-        <p className="text-gray-400">Loading...</p>
+      <main className="px-6 py-20 max-w-7xl mx-auto font-mono text-[#8a8a86]">
+        <p>LOADING EVENTS...</p>
       </main>
     );
   }
 
   return (
-    <>
-      <style>{`
-        select option {
-          background-color: #161b22;
-          color: #e6edf3;
-        }
-      `}</style>
-      <main className="px-6 py-12 max-w-7xl mx-auto min-h-screen bg-[#0d1117]">
-        {/* HEADER */}
-        <div className="mb-8 flex flex-col items-start gap-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#7d8590] border border-[#30363d] hover:border-[#484f58] hover:text-[#e6edf3] bg-[#161b22] rounded-md transition-colors"
-          >
-            <span aria-hidden="true">←</span>
-            Back to Home
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-[#e6edf3] tracking-tight">Explore Events</h1>
-            <p className="text-sm text-[#7d8590] mt-1.5">
-              Find hackathons, internships, and more opportunities
-            </p>
-          </div>
+    <main className="min-h-screen bg-[#0e0e0d] text-[#f4f4f0] px-6 py-12 sm:px-10 max-w-7xl mx-auto">
+      {/* HEADER */}
+      <div className="mb-10 flex flex-col items-start gap-4">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-xs text-[#8a8a86] border border-white/10 hover:border-white/40 hover:text-white bg-[#141413] transition-colors"
+        >
+          <span>← BACK TO HOME</span>
+        </Link>
+
+        <div className="levo-eyebrow">
+          <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+          <span>EVENTS CATALOG</span>
         </div>
 
-        {/* INFO/ERROR BANNER */}
-        {error && (
-          <div className="mb-6 px-4 py-3 rounded-md border border-[#3fb950]/30 bg-[#2ea043]/5 text-sm text-[#3fb950]">
-            {error}
-          </div>
-        )}
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+          EXPLORE OPPORTUNITIES
+        </h1>
+        <p className="font-mono text-xs text-[#8a8a86]">
+          INDEXING HACKATHONS, INTERNSHIPS, CODING CONTESTS & WORKSHOPS REAL-TIME.
+        </p>
+      </div>
 
-        {/* SEARCH + FILTER */}
-        <div className="mb-10 flex flex-col md:flex-row gap-3">
-          {/* Search */}
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full md:flex-1 px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors"
-          />
-
-          {/* Event Type Filter */}
-          <select className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer">
-            <option className="bg-[#161b22] text-[#e6edf3]">All Types</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Hackathon</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Internship</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Workshop</option>
-          </select>
-
-          {/* Date Range Filter */}
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer"
-          >
-            <option className="bg-[#161b22] text-[#e6edf3]">Date Range</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">This Week</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">This Month</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Next Month</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">This Quarter</option>
-          </select>
-
-          {/* Mode Filter */}
-          <select
-            value={mode}
-            onChange={(e) => setMode(e.target.value)}
-            className="px-3 py-2 text-sm text-[#e6edf3] bg-[#161b22] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] hover:border-[#484f58] transition-colors cursor-pointer"
-          >
-            <option className="bg-[#161b22] text-[#e6edf3]">Mode</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Online</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">In Person</option>
-            <option className="bg-[#161b22] text-[#e6edf3]">Hybrid</option>
-          </select>
+      {/* ERROR / OFFLINE BANNER */}
+      {error && (
+        <div className="mb-8 p-4 border border-[#FFB100]/30 bg-[#FFB100]/5 font-mono text-xs text-[#FFB100]">
+          {error}
         </div>
+      )}
 
-        {/* EVENTS GRID */}
-        {isLoading ? (
-          <p className="text-sm text-[#7d8590]">Loading events...</p>
-        ) : filteredEvents.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredEvents.map((event) => (
-              <EventCard
-                key={event.slug}
-                {...event}
-                showAdminActions={isAdmin}
-                onEdit={
-                  isAdmin
-                    ? () => router.push(`/create?edit=${event.id}`)
-                    : undefined
-                }
-                onDelete={
-                  isAdmin ? () => handleDeleteEvent(event.id) : undefined
-                }
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-[#7d8590]">No events found</p>
-        )}
-      </main>
-    </>
+      {/* SEARCH & FILTERS */}
+      <div className="mb-12 flex flex-col md:flex-row gap-3 font-mono">
+        <input
+          type="text"
+          placeholder="SEARCH BY TITLE OR KEYWORD..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full md:flex-1 px-4 py-3 text-xs text-white placeholder-[#555] bg-[#141413] border border-white/10 focus:outline-none focus:border-[#FFB100] transition-colors"
+        />
+
+        <select
+          value={mode}
+          onChange={(e) => setMode(e.target.value)}
+          className="px-4 py-3 text-xs text-white bg-[#141413] border border-white/10 focus:outline-none focus:border-[#FFB100] transition-colors cursor-pointer"
+        >
+          <option value="" className="bg-[#141413]">ALL MODES</option>
+          <option value="online" className="bg-[#141413]">ONLINE / REMOTE</option>
+          <option value="person" className="bg-[#141413]">IN PERSON</option>
+          <option value="hybrid" className="bg-[#141413]">HYBRID</option>
+        </select>
+
+        <select
+          value={dateRange}
+          onChange={(e) => setDateRange(e.target.value)}
+          className="px-4 py-3 text-xs text-white bg-[#141413] border border-white/10 focus:outline-none focus:border-[#FFB100] transition-colors cursor-pointer"
+        >
+          <option value="" className="bg-[#141413]">DATE RANGE</option>
+          <option value="week" className="bg-[#141413]">THIS WEEK</option>
+          <option value="month" className="bg-[#141413]">THIS MONTH</option>
+          <option value="quarter" className="bg-[#141413]">THIS QUARTER</option>
+        </select>
+      </div>
+
+      {/* EVENTS GRID */}
+      {isLoading ? (
+        <p className="font-mono text-xs text-[#8a8a86]">LOADING CATALOG...</p>
+      ) : filteredEvents.length > 0 ? (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredEvents.map((event) => (
+            <EventCard
+              key={event.slug}
+              {...event}
+              showAdminActions={isAdmin}
+              onEdit={
+                isAdmin
+                  ? () => router.push(`/create?edit=${event.id}`)
+                  : undefined
+              }
+              onDelete={
+                isAdmin ? () => handleDeleteEvent(event.id) : undefined
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="p-12 border border-white/10 bg-[#141413] text-center font-mono text-xs text-[#8a8a86]">
+          NO EVENTS MATCHED YOUR SEARCH CRITERIA.
+        </div>
+      )}
+    </main>
   );
 };
 

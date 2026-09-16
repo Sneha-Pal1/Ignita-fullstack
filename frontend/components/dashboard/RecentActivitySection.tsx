@@ -11,11 +11,6 @@ interface ActivityItem {
   icon: any;
 }
 
-const typeColorMap: Record<string, string> = {
-  bookmark: "text-[#3fb950] bg-[#2ea043]/10 border border-[#238636]/30",
-  alert: "text-[#3fb950] bg-[#2ea043]/10 border border-[#238636]/30",
-};
-
 interface RecentActivitySectionProps {
   activities: ActivityItem[];
 }
@@ -25,47 +20,46 @@ export const RecentActivitySection = ({
 }: RecentActivitySectionProps) => {
   if (activities.length === 0) {
     return (
-      <div className="rounded-md border border-[#21262d] bg-[#161b22] p-6 text-center">
-        <p className="text-[#7d8590] text-sm">No recent activities yet</p>
+      <div className="border border-white/10 bg-[#141413] p-6 text-center font-mono text-xs text-[#8a8a86]">
+        NO RECENT ACTIVITY RECORDED.
       </div>
     );
   }
 
   return (
     <section
-      className="rounded-md border border-[#21262d] bg-[#161b22]"
+      className="border border-white/10 bg-[#141413] font-mono"
       aria-label="Recent activity"
     >
       {/* Header */}
-      <div className="p-4 border-b border-[#21262d]">
-        <h2 className="text-sm font-semibold text-[#e6edf3]">Recent Activity</h2>
+      <div className="p-4 border-b border-white/10 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+        <h2 className="text-xs font-bold uppercase tracking-widest text-white">RECENT ACTIVITY</h2>
       </div>
 
       {/* Activity List */}
-      <div className="divide-y divide-[#21262d]">
+      <div className="divide-y divide-white/10">
         {activities.map((activity) => (
           <div
             key={activity.id}
-            className="p-4 flex gap-4 hover:bg-[#21262d]/30 transition-colors last:rounded-b-md"
+            className="p-4 flex items-center gap-4 hover:bg-white/5 transition-colors"
           >
             {/* Icon */}
-            <div
-              className={`flex-shrink-0 w-8 h-8 rounded-md flex items-center justify-center ${typeColorMap[activity.type]}`}
-            >
-              <HugeiconsIcon icon={activity.icon} size="16" strokeWidth={2} />
+            <div className="flex-shrink-0 w-8 h-8 bg-[#1c1c1a] border border-[#FFB100] text-[#FFB100] flex items-center justify-center">
+              <HugeiconsIcon icon={activity.icon} size="14" strokeWidth={2} />
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#e6edf3]">{activity.title}</p>
-              <p className="text-xs text-[#7d8590] mt-0.5">
+              <p className="text-xs font-bold text-white uppercase truncate">{activity.title}</p>
+              <p className="text-[11px] text-[#8a8a86] mt-0.5 truncate">
                 {activity.description}
               </p>
             </div>
 
             {/* Time */}
-            <div className="flex-shrink-0">
-              <p className="text-xs text-[#484f58] text-right">
+            <div className="flex-shrink-0 text-right">
+              <p className="text-[10px] text-[#FFB100]">
                 {activity.time}
               </p>
             </div>

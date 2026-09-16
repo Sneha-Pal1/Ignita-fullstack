@@ -1,32 +1,24 @@
 import type { Metadata } from "next";
-import { Schibsted_Grotesk, Martian_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import LightRays from "@/components/ui/LightRays";
 import { NavbarWrapper } from "@/components/NavbarWrapper";
 import { AuthProvider } from "@/lib/auth-context";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GrainTexture } from "@/components/levo/GrainTexture";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-
-const SchibstedGrotesk = Schibsted_Grotesk({
-  variable: "--font-schibsted_grotesk",
-  subsets: ["latin"],
-});
-
-const MartianMono = Martian_Mono({
-  variable: "--font-martian-mono",
-  subsets: ["latin"],
-});
+const geistSans = { variable: "font-geist-sans" };
+const geistMono = { variable: "font-geist-mono" };
+const martianMono = { variable: "font-martian-mono" };
 
 export const metadata: Metadata = {
-  title: "IGNITA",
+  title: "IGNITA — Event Aggregator for Tech Enthusiasts",
   description:
-    "an event aggregator for students and developers to discover hackathons, internships, coding contests, and tech events",
+    "Discover hackathons, internships, coding contests, and workshops all in one unified, real-time platform.",
   icons: {
-    icon: "/icons/iglogoremovebg.png",
+    icon: "/favicon.svg",
   },
 };
+
 
 export default function RootLayout({
   children,
@@ -34,36 +26,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn("font-sans dark", geistSans.variable, geistMono.variable, martianMono.variable)}
+      suppressHydrationWarning
+    >
       <body
-        className={`${SchibstedGrotesk.variable} ${MartianMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${martianMono.variable} min-h-screen bg-[#0e0e0d] text-[#f4f4f0] antialiased selection:bg-[#FFB100] selection:text-black`}
         suppressHydrationWarning
       >
         <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
         >
           <AuthProvider>
+            <GrainTexture />
             <NavbarWrapper />
-            {/* Background Rays - Hidden for Dashboard Routes */}
-            <div className="absolute inset-0 top-0 z-[-1] min-h-screen pointer-events-none">
-              <LightRays
-                raysOrigin="top-center-offset"
-                raysColor="#5dfeca"
-                raysSpeed={0.5}
-                lightSpread={0.9}
-                rayLength={1.4}
-                followMouse={true}
-                mouseInfluence={0.02}
-                noiseAmount={0.0}
-                distortion={0.01}
-                className="custom-rays"
-              />
-            </div>
-
-            <main>{children}</main>
+            <main className="min-h-screen w-full">{children}</main>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>
     </html>
   );
 }
+
+

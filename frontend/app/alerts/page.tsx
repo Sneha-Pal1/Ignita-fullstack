@@ -230,90 +230,81 @@ export default function AlertsPage() {
 
   if (authLoading || isLoading) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center text-gray-400">
-        Loading...
+      <main className="min-h-screen bg-[#0e0e0d] text-[#8a8a86] flex items-center justify-center font-mono text-xs">
+        LOADING ALERTS...
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="relative overflow-hidden py-12 border-b border-white/10">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background:
-              "radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(45, 212, 191, 0.2) 0%, transparent 50%)",
-          }}
-        />
-
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div>
-                <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
-                  Notifications & Alerts
-                </h1>
-                <p className="text-gray-400 text-lg">
-                  Live alerts from your account activity
-                </p>
+    <main className="min-h-screen bg-[#0e0e0d] text-[#f4f4f0] font-mono">
+      <div className="relative overflow-hidden py-12 border-b border-white/10 bg-[#141413]">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <div className="levo-eyebrow mb-2">
+                <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+                <span>NOTIFICATIONS & ALERTS</span>
               </div>
-              {unreadCount > 0 && (
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-sm font-medium text-emerald-400">
-                    {unreadCount} unread
-                  </span>
-                </div>
-              )}
+              <h1 className="text-3xl sm:text-4xl font-bold text-white uppercase tracking-tight font-sans">
+                ALERT ENGINE
+              </h1>
+              <p className="text-xs text-[#8a8a86] mt-1">
+                REAL-TIME NOTIFICATIONS FROM YOUR EVENT PIPELINE.
+              </p>
             </div>
+            {unreadCount > 0 && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-[#FFB100]/10 border border-[#FFB100]/30 text-[#FFB100] text-xs">
+                <div className="w-1.5 h-1.5 bg-[#FFB100] animate-pulse" />
+                <span>{unreadCount} UNREAD</span>
+              </div>
+            )}
+          </div>
 
-            <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setIsCreateAlertOpen(true)}
+              className="px-6 py-3 bg-[#FFB100] text-black font-semibold text-xs tracking-widest uppercase hover:bg-[#ffbe25] transition-colors cursor-pointer"
+            >
+              + CREATE ALERT
+            </button>
+            {unreadCount > 0 && (
               <button
-                onClick={() => setIsCreateAlertOpen(true)}
-                className="px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium hover:from-emerald-500 hover:to-teal-500 transition-all duration-200 flex items-center gap-2"
+                onClick={handleMarkAllAsRead}
+                className="px-6 py-3 border border-white/10 bg-transparent text-white font-semibold text-xs tracking-widest uppercase hover:border-white/40 transition-colors"
               >
-                <span>🔔</span>
-                <span>Create Alert</span>
+                MARK ALL AS READ
               </button>
-              {unreadCount > 0 && (
-                <button
-                  onClick={handleMarkAllAsRead}
-                  className="px-6 py-3 rounded-lg bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all duration-200"
-                >
-                  Mark all as read
-                </button>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="border-b border-white/10 bg-background/50 sticky top-0 z-30 backdrop-blur-sm">
-        <div className="container mx-auto px-4 sm:px-6">
+      <div className="border-b border-white/10 bg-[#0e0e0d] sticky top-0 z-30">
+        <div className="container mx-auto px-6 max-w-5xl">
           <div className="flex gap-8 overflow-x-auto">
             {[
               {
                 id: "all" as TabType,
-                label: "All Notifications",
+                label: "ALL NOTIFICATIONS",
                 count: notifications.length,
                 icon: BellDotIcon,
               },
               {
                 id: "unread" as TabType,
-                label: "Unread",
+                label: "UNREAD",
                 count: unreadCount,
                 icon: Clock01Icon,
               },
               {
                 id: "alerts" as TabType,
-                label: "My Alerts",
+                label: "MY ALERTS",
                 count: alerts.length,
                 icon: Calendar01Icon,
               },
               {
                 id: "activity" as TabType,
-                label: "Activity",
+                label: "ACTIVITY",
                 count: activityItems.length,
                 icon: Note01Icon,
               },
@@ -321,15 +312,15 @@ export default function AlertsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 ${
+                className={`py-4 text-xs font-bold uppercase tracking-wider whitespace-nowrap border-b-2 transition-all duration-200 cursor-pointer ${
                   activeTab === tab.id
-                    ? "border-emerald-500 text-emerald-400"
-                    : "border-transparent text-gray-400 hover:text-white"
+                    ? "border-[#FFB100] text-[#FFB100]"
+                    : "border-transparent text-[#8a8a86] hover:text-white"
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">
+                  <span className="ml-2 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] bg-[#FFB100]/20 text-[#FFB100]">
                     {tab.count}
                   </span>
                 )}
@@ -339,131 +330,126 @@ export default function AlertsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 py-12">
-        <div className="max-w-4xl mx-auto">
-          {activeTab === "all" && (
-            <div>
-              {filteredNotifications.length > 0 ? (
-                <div className="space-y-3">
-                  {filteredNotifications.map((notification) => (
-                    <NotificationCard
-                      key={notification.id}
-                      notification={notification}
-                      onMarkAsRead={handleMarkAsRead}
-                      onDelete={handleDelete}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon="📭"
-                  title="You're all caught up!"
-                  description="No live notifications at the moment. Stay tuned for updates on your events."
-                  actionText="Explore Events"
-                  onAction={() => (window.location.href = "/events")}
-                  variant="notifications"
-                />
-              )}
-            </div>
-          )}
+      <div className="container mx-auto px-6 py-12 max-w-5xl">
+        {activeTab === "all" && (
+          <div>
+            {filteredNotifications.length > 0 ? (
+              <div className="space-y-3">
+                {filteredNotifications.map((notification) => (
+                  <NotificationCard
+                    key={notification.id}
+                    notification={notification}
+                    onMarkAsRead={handleMarkAsRead}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon="📭"
+                title="ALL CAUGHT UP!"
+                description="No active notifications at the moment."
+                actionText="Explore Events"
+                onAction={() => (window.location.href = "/events")}
+                variant="notifications"
+              />
+            )}
+          </div>
+        )}
 
-          {activeTab === "unread" && (
-            <div>
-              {filteredNotifications.length > 0 ? (
-                <div className="space-y-3">
-                  {filteredNotifications.map((notification) => (
-                    <NotificationCard
-                      key={notification.id}
-                      notification={notification}
-                      onMarkAsRead={handleMarkAsRead}
-                      onDelete={handleDelete}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon="✅"
-                  title="All marked as read"
-                  description="Great job staying on top of things!"
-                  variant="notifications"
-                />
-              )}
-            </div>
-          )}
+        {activeTab === "unread" && (
+          <div>
+            {filteredNotifications.length > 0 ? (
+              <div className="space-y-3">
+                {filteredNotifications.map((notification) => (
+                  <NotificationCard
+                    key={notification.id}
+                    notification={notification}
+                    onMarkAsRead={handleMarkAsRead}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon="✅"
+                title="NO UNREAD ALERTS"
+                description="You are completely up to date!"
+                variant="notifications"
+              />
+            )}
+          </div>
+        )}
 
-          {activeTab === "alerts" && (
-            <div className="space-y-6">
-              {alerts.length > 0 ? (
-                <div className="space-y-4">
-                  {alerts.map((alert) => (
-                    <div
-                      key={alert.id}
-                      className="group p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/5 transition-all duration-200"
-                      style={{
-                        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-                      }}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-white">
-                              {alert.message}
-                            </h3>
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                alert.read
-                                  ? "bg-gray-500/20 text-gray-400 border border-gray-500/30"
-                                  : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                              }`}
-                            >
-                              {alert.read ? "Read" : "Unread"}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-400">
-                            Created{" "}
-                            {formatRelativeTime(
-                              alert.createdAt,
-                            ).toLocaleString()}
-                          </p>
-                        </div>
-
-                        <div className="flex gap-2 flex-shrink-0">
-                          {!alert.read && (
-                            <button
-                              onClick={() => handleMarkAsRead(alert.id)}
-                              className="px-3 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-all duration-200 text-sm"
-                            >
-                              Mark Read
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleDelete(alert.id)}
-                            className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-200 text-sm"
+        {activeTab === "alerts" && (
+          <div className="space-y-6">
+            {alerts.length > 0 ? (
+              <div className="space-y-4">
+                {alerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className="p-5 border border-white/10 bg-[#141413] hover:border-[#FFB100]/40 transition-all duration-200"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-base font-bold text-white font-sans">
+                            {alert.message}
+                          </h3>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] uppercase font-bold ${
+                              alert.read
+                                ? "bg-white/10 text-[#8a8a86]"
+                                : "bg-[#FFB100]/20 text-[#FFB100] border border-[#FFB100]/40"
+                            }`}
                           >
-                            Delete
-                          </button>
+                            {alert.read ? "READ" : "UNREAD"}
+                          </span>
                         </div>
+                        <p className="text-xs text-[#8a8a86]">
+                          CREATED{" "}
+                          {formatRelativeTime(
+                            alert.createdAt,
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2 flex-shrink-0">
+                        {!alert.read && (
+                          <button
+                            onClick={() => handleMarkAsRead(alert.id)}
+                            className="px-3 py-1.5 bg-[#FFB100]/10 border border-[#FFB100]/40 text-[#FFB100] hover:bg-[#FFB100] hover:text-black transition-colors text-xs font-bold uppercase"
+                          >
+                            MARK READ
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(alert.id)}
+                          className="px-3 py-1.5 border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors text-xs font-bold uppercase"
+                        >
+                          DELETE
+                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon="🔔"
-                  title="No alerts yet"
-                  description="Create an alert to get notified about your favorite events."
-                  actionText="Create Alert"
-                  onAction={() => setIsCreateAlertOpen(true)}
-                  variant="alerts"
-                />
-              )}
-            </div>
-          )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon="🔔"
+                title="NO ALERTS SET"
+                description="Create a custom alert to get notified about upcoming event deadlines."
+                actionText="Create Alert"
+                onAction={() => setIsCreateAlertOpen(true)}
+                variant="alerts"
+              />
+            )}
+          </div>
+        )}
 
-          {activeTab === "activity" && (
-            <ActivityTimeline activities={activityItems} />
-          )}
-        </div>
+        {activeTab === "activity" && (
+          <ActivityTimeline activities={activityItems} />
+        )}
       </div>
 
       <CreateAlertModal
@@ -474,3 +460,4 @@ export default function AlertsPage() {
     </main>
   );
 }
+

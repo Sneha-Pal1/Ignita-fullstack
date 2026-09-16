@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/use-auth";
@@ -11,7 +10,6 @@ import type { CredentialResponse } from "@react-oauth/google";
 import type { JwtPayload } from "jwt-decode";
 import { jwtDecode } from "jwt-decode";
 import { authAPI } from "@/lib/auth";
-import AuthVisualPanel from "@/components/auth/AuthVisualPanel";
 
 type GoogleCredentialPayload = JwtPayload & {
   email?: string;
@@ -35,7 +33,7 @@ export default function LoginPage() {
         router.push(res.user?.role === "ADMIN" ? "/create" : "/events");
       }, 100);
     } catch {
-      // Error is handled by useAuth hook
+      // Error handled in useAuth
     }
   };
 
@@ -65,154 +63,143 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row w-full bg-[#0d1117]">
-      {/* Left panel */}
-      <AuthVisualPanel />
+    <div className="min-h-screen w-full bg-[#0e0e0d] text-[#f4f4f0] flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden">
+      
+      {/* Background Amber Glow */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#FFB100]/10 blur-[180px] rounded-full" />
 
-      {/* Right — form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-12 min-h-screen">
+      {/* Main Container Card */}
+      <div className="w-full max-w-md bg-[#141413] border border-white/10 p-8 sm:p-10 relative z-10">
+        
+        {/* Top Amber Line */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[#FFB100]" />
 
-        {/* Mobile logo */}
-        <div className="lg:hidden w-full max-w-sm mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <Image src="/icons/iglogoremovebg.png" alt="Ignita" width={24} height={24} />
-            <span className="text-sm font-semibold text-[#e6edf3]">Ignita</span>
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group">
+            <span className="h-2.5 w-2.5 bg-[#FFB100] group-hover:scale-125 transition-transform" />
+            <span className="font-mono text-base font-bold tracking-widest text-white uppercase">
+              IGNITA
+            </span>
           </Link>
-        </div>
 
-        <div className="w-full max-w-sm">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-xl font-semibold text-[#e6edf3] tracking-tight">
-              Sign in to Ignita
-            </h1>
-            <p className="mt-1 text-sm text-[#7d8590]">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/register"
-                className="text-[#3fb950] hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
+          <div className="levo-eyebrow justify-center mb-2">
+            <span>AUTHENTICATION</span>
           </div>
 
-          {/* Error messages */}
-          {error && (
-            <div className="mb-5 px-4 py-3 rounded-md border border-[#f85149]/30 bg-[#f85149]/5 text-sm text-[#f85149]">
-              {error}
-            </div>
-          )}
-          {googleAuthMessage && (
-            <div className="mb-5 px-4 py-3 rounded-md border border-[#30363d] bg-[#161b22] text-sm text-[#7d8590]">
-              {googleAuthMessage}
-            </div>
-          )}
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            SIGN IN
+          </h1>
+          <p className="mt-2 text-xs font-mono text-[#8a8a86]">
+            DON&apos;T HAVE AN ACCOUNT?{" "}
+            <Link
+              href="/register"
+              className="text-[#FFB100] hover:underline"
+            >
+              SIGN UP NOW
+            </Link>
+          </p>
+        </div>
 
-          {/* Google sign in */}
-          <div className="w-full flex justify-center mb-5">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              text="continue_with"
-              size="large"
-              width="384"
-              theme="filled_black"
+        {/* Error Notifications */}
+        {error && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-xs">
+            {error}
+          </div>
+        )}
+        {googleAuthMessage && (
+          <div className="mb-6 p-3 bg-white/5 border border-white/10 text-[#8a8a86] font-mono text-xs">
+            {googleAuthMessage}
+          </div>
+        )}
+
+        {/* Google OAuth Button */}
+        <div className="w-full flex justify-center mb-6">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="continue_with"
+            size="large"
+            theme="filled_black"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-6 font-mono text-[10px] text-[#8a8a86] uppercase">
+          <div className="h-px flex-1 bg-white/10" />
+          <span>OR EMAIL</span>
+          <div className="h-px flex-1 bg-white/10" />
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label className="block font-mono text-[11px] uppercase tracking-widest text-[#FFB100] mb-2">
+              EMAIL ADDRESS
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              placeholder="developer@ignita.io"
+              className="w-full bg-[#1c1c1a] border border-white/10 px-4 py-3 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#FFB100] transition-colors font-mono"
             />
           </div>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-px flex-1 bg-[#21262d]" />
-            <span className="text-xs text-[#484f58]">or</span>
-            <div className="h-px flex-1 bg-[#21262d]" />
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            {/* Email */}
-            <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-[#e6edf3]"
-              >
-                Email address
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block font-mono text-[11px] uppercase tracking-widest text-[#FFB100]">
+                PASSWORD
               </label>
+              <Link
+                href="/forgot-password"
+                className="font-mono text-[10px] uppercase text-[#8a8a86] hover:text-white transition-colors"
+              >
+                FORGOT?
+              </Link>
+            </div>
+            <div className="relative">
               <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
+                type={showPassword ? "text" : "password"}
                 required
-                className="w-full px-3 py-2 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                placeholder="••••••••••••"
+                className="w-full bg-[#1c1c1a] border border-white/10 px-4 py-3 pr-10 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#FFB100] transition-colors font-mono"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8a8a86] hover:text-white"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
-
-            {/* Password */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-[#e6edf3]"
-                >
-                  Password
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-[#7d8590] hover:text-[#e6edf3] transition-colors"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  className="w-full px-3 py-2 pr-10 text-sm text-[#e6edf3] placeholder-[#484f58] bg-[#0d1117] border border-[#30363d] rounded-md focus:outline-none focus:border-[#2ea043] focus:ring-1 focus:ring-[#2ea043]/30 transition-colors disabled:opacity-50"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#484f58] hover:text-[#7d8590] transition-colors cursor-pointer"
-                >
-                  {showPassword
-                    ? <EyeOff className="w-4 h-4" />
-                    : <Eye className="w-4 h-4" />
-                  }
-                </button>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2 text-sm font-medium text-white bg-[#2ea043] hover:bg-[#3fb950] rounded-md transition-colors disabled:opacity-50 cursor-pointer mt-1"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
-          </form>
-
-          {/* Back */}
-          <div className="mt-8 pt-6 border-t border-[#21262d]">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-xs text-[#7d8590] hover:text-[#e6edf3] transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Back to home
-            </Link>
           </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#FFB100] text-black font-semibold font-mono text-xs uppercase tracking-widest py-3.5 hover:bg-[#ffbe25] transition-colors cursor-pointer"
+          >
+            {loading ? "AUTHENTICATING..." : "SIGN IN →"}
+          </button>
+        </form>
+
+        {/* Back Link */}
+        <div className="mt-8 pt-6 border-t border-white/10 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8a8a86] hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>RETURN TO HOME</span>
+          </Link>
         </div>
+
       </div>
     </div>
   );

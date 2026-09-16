@@ -1,45 +1,82 @@
-import ExploreBtn from "@/components/ExploreBtn";
-import { events } from "@/lib/data/events";
-import EventCard from "@/components/EventCard";
-import HowItWorks from "@/components/HowItWorks";
-import Features from "@/components/Features";
-import CTA from "@/components/CTA";
+import React from "react";
+import { LevoHero } from "@/components/levo/LevoHero";
+import { LevoPhilosophy } from "@/components/levo/LevoPhilosophy";
+import { LevoCapabilityCard } from "@/components/levo/LevoCapabilityCard";
+import { LevoFeaturesGrid } from "@/components/levo/LevoFeaturesGrid";
+import { LevoCTA } from "@/components/levo/LevoCTA";
 import Footer from "@/components/Footer";
-const Home = () => {
+import {
+  HackathonDiagram,
+  InternshipDiagram,
+  ContestDiagram,
+  WorkshopDiagram,
+} from "@/components/levo/SVGDiagrams";
+
+export default function Home() {
   return (
-    <section>
-      <h1 className="text-center">
-        Discover, Track & Showcase Your Tech Journey
-      </h1>
-      <p className="text-center mt-5">
-        Hackathons, internships, coding contests & opportunities — all in one
-        place.
-      </p>
-      <ExploreBtn />
+    <div className="relative w-full bg-[#0e0e0d] text-[#f4f4f0]">
+      {/* 01 Hero Section */}
+      <LevoHero />
 
-      <div className="mt-20 space-y-7">
-        <h3>Featured Events</h3>
+      {/* 02 Philosophy Text Crawl Section */}
+      <LevoPhilosophy />
 
-        <ul className="events">
-          {events.map((event) => (
-            <li key={event.title}>
-              <EventCard
-                {...event}
-                showDetailsButton={false}
-                hideBookmarkButton={true}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* 03 Hackathons Capability */}
+      <LevoCapabilityCard
+        num="03"
+        category="HACKATHONS"
+        title="Global Hackathons & Build-athons"
+        description="Scrape and aggregate major hackathons from Devpost, Unstop, MLH, and university portals. Filter by track, prize pool, team size, and remote vs. in-person."
+        tags={["DEVPOST", "MLH", "UNSTOP", "PRIZE RADAR"]}
+        href="/events?category=Hackathon"
+        ctaText="Explore Hackathons"
+        diagram={<HackathonDiagram />}
+      />
 
-      <Features />
+      {/* 04 Internships Capability */}
+      <LevoCapabilityCard
+        num="04"
+        category="INTERNSHIPS"
+        title="Verified Tech Internships & Fellowships"
+        description="Never miss an application window for SDE, AI/ML, DevOps, or product management internships. Track early applications, batch releases, and referral opportunities."
+        tags={["SDE ROLES", "AI FELLOWSHIPS", "SUMMER 2026", "AUTOMATED TRACKER"]}
+        href="/events?category=Internship"
+        ctaText="Explore Internships"
+        diagram={<InternshipDiagram />}
+      />
 
-      <HowItWorks />
-      <CTA />
+      {/* 05 Contests Capability */}
+      <LevoCapabilityCard
+        num="05"
+        category="COMPETITIVE CODING"
+        title="Coding Contests & Algorithmic Clashes"
+        description="Unified schedule for LeetCode, Codeforces, CodeChef, and AtCoder contests. Sync your calendar to receive reminder alerts 30 minutes before round start."
+        tags={["LEETCODE", "CODEFORCES", "CODECHEF", "ATCODER"]}
+        href="/events?category=Contest"
+        ctaText="Explore Contests"
+        diagram={<ContestDiagram />}
+      />
+
+      {/* 06 Workshops Capability */}
+      <LevoCapabilityCard
+        num="06"
+        category="WORKSHOPS & SESSIONS"
+        title="Developer Masterclasses & Bootcamps"
+        description="Live technical webinars on System Design, LLM Engineering, Rust, and Open Source contribution hosted by industry leads and open-source maintainers."
+        tags={["SYSTEM DESIGN", "LLM INFRA", "OPEN SOURCE", "CERTIFICATIONS"]}
+        href="/events?category=Workshop"
+        ctaText="Explore Workshops"
+        diagram={<WorkshopDiagram />}
+      />
+
+      {/* 07 Core Features Grid */}
+      <LevoFeaturesGrid />
+
+      {/* 08 Terminal CTA */}
+      <LevoCTA />
+
+      {/* 09 Footer */}
       <Footer />
-    </section>
+    </div>
   );
-};
-
-export default Home;
+}

@@ -11,13 +11,6 @@ interface StatCard {
   color: string;
 }
 
-const colorMap: Record<string, string> = {
-  emerald: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
-  teal: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
-  amber: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
-  cyan: "text-[#3fb950] bg-[#2ea043]/10 border-[#238636]/30",
-};
-
 interface CompactStatsCardsProps {
   stats: StatCard[];
 }
@@ -30,7 +23,7 @@ export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
 
   return (
     <section
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono"
       aria-label="Dashboard statistics"
       role="region"
     >
@@ -38,27 +31,28 @@ export const CompactStatsCards = ({ stats }: CompactStatsCardsProps) => {
         <article
           key={stat.id}
           className={`
-            relative group rounded-md p-4 border border-[#21262d] bg-[#161b22]
-            hover:border-[#30363d]
+            relative group p-5 border border-white/10 bg-[#141413]
+            hover:border-[#FFB100]/60 hover:bg-[#181816]
             ${transitionClass}
           `}
           role="region"
           aria-label={`${stat.title}: ${stat.value}`}
         >
+          {/* Top Amber Accent Line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-transparent group-hover:bg-[#FFB100] transition-colors" />
+
           {/* Icon */}
-          <div
-            className={`inline-flex items-center justify-center w-8 h-8 rounded-md mb-3 ${colorMap[stat.color]} border`}
-          >
+          <div className="inline-flex items-center justify-center w-8 h-8 bg-[#1c1c1a] border border-[#FFB100] text-[#FFB100] mb-3">
             <HugeiconsIcon icon={stat.icon} size="16" strokeWidth={2} />
           </div>
 
           {/* Value */}
-          <p className="text-xl font-bold text-[#e6edf3] mb-1 tabular-nums">
+          <p className="text-2xl font-bold text-white mb-1 tabular-nums">
             {stat.value}
           </p>
 
           {/* Label */}
-          <p className="text-xs text-[#7d8590] font-medium">{stat.title}</p>
+          <p className="text-[11px] text-[#8a8a86] uppercase tracking-wider">{stat.title}</p>
         </article>
       ))}
     </section>

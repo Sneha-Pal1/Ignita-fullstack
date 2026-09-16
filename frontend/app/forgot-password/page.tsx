@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 hover:opacity-90 transition-opacity">
             <Image
-              src="/icons/iglogoremovebg.png"
+              src="/icons/ignita-amber-logo.svg"
               alt="logo"
               width={36}
               height={36}

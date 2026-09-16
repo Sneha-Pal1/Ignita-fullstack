@@ -224,17 +224,17 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-950 text-white">
+    <div className="flex min-h-screen bg-[#0e0e0d] text-[#f4f4f0]">
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
-        <main className="relative min-h-screen overflow-x-hidden bg-zinc-950">
+        <main className="relative min-h-screen overflow-x-hidden bg-[#0e0e0d] font-mono">
           <div className="relative">
-            <div className="h-16 border-b border-zinc-800/50 sm:h-20" />
+            <div className="h-16 border-b border-white/10 sm:h-20" />
 
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
               {error ? (
-                <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <div className="mb-6 border border-[#FFB100]/30 bg-[#FFB100]/5 px-4 py-3 text-xs text-[#FFB100]">
                   {error}
                 </div>
               ) : null}
@@ -267,3 +267,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+

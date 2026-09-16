@@ -9,6 +9,7 @@ import { useAuthContext } from "@/lib/auth-context";
 import { authStorage } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { TopHeader } from "@/components/layout/TopHeader";
 
 interface Bookmark {
   id: string;
@@ -35,9 +36,7 @@ const BookmarksPage = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Auth check
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
@@ -48,22 +47,19 @@ const BookmarksPage = () => {
     const fetchBookmarks = async () => {
       try {
         setIsLoading(true);
-        console.log("📋 Fetching bookmarks...");
-
         const accessToken = authStorage.getToken();
         if (!accessToken) {
-          setError("Please sign in again to load your bookmarks.");
+          setError("Please sign in to view saved bookmarks.");
           setBookmarks([]);
           return;
         }
 
         const data = await apiClient.get<Bookmark[]>("/bookmark");
-        console.log("✅ Bookmarks loaded:", data);
         setBookmarks(data || []);
         setError(null);
       } catch (err) {
-        console.error("❌ Failed to fetch bookmarks:", err);
-        setError("Failed to load bookmarks");
+        console.error("Failed to fetch bookmarks:", err);
+        setError("Unable to load saved bookmarks.");
         setBookmarks([]);
       } finally {
         setIsLoading(false);
@@ -77,72 +73,71 @@ const BookmarksPage = () => {
 
   const handleDeleteBookmark = async (
     bookmarkId: string,
-    eventSlug: string,
   ) => {
     try {
-      setDeletingId(bookmarkId);
       await apiClient.delete(`/bookmark/${bookmarkId}`);
       setBookmarks(bookmarks.filter((b) => b.id !== bookmarkId));
     } catch (err) {
       console.error("Failed to delete bookmark:", err);
-      alert("Failed to delete bookmark");
-    } finally {
-      setDeletingId(null);
     }
   };
 
   const bookmarkedEvents = bookmarks
     .map((bookmark) => {
       const backendEvent = bookmark.event;
-
-      // First try to find from local events array using title
       const localEvent = events.find(
         (event) =>
           event.title.toLowerCase() === backendEvent.title.toLowerCase(),
       );
 
-      // If found, return the complete local event data
       if (localEvent) {
         return {
           ...localEvent,
-          _bookmarkId: bookmark.id, // Add unique ID for React key
+          _bookmarkId: bookmark.id,
         };
       }
 
-      // Fallback: create event object from backend data
       return {
         slug: backendEvent.title.toLowerCase().replace(/\s+/g, "-"),
         title: backendEvent.title,
-        image: "/images/event1.png", // Fallback image
+        image: "/images/event1.png",
         location: "TBA",
         date: "TBA",
         time: backendEvent.description || "Check for details",
         organizer: backendEvent.organizer || "Event",
         participants: "TBA",
-        _bookmarkId: bookmark.id, // Add unique ID for React key
+        _bookmarkId: bookmark.id,
       };
     })
     .filter((event) => event !== null && event !== undefined);
 
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-[#0e0e0d] text-[#f4f4f0]">
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
-        <main className="px-6 py-10 max-w-7xl mx-auto">
+        <TopHeader savedCount={bookmarks.length} />
+
+        <main className="px-6 py-10 max-w-7xl mx-auto w-full font-mono">
           {/* HEADER */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-semibold">My Bookmarks</h1>
-            <p className="text-gray-400 mt-2">Events you've saved for later</p>
+          <div className="mb-10">
+            <div className="levo-eyebrow mb-2">
+              <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+              <span>SAVED COLLECTION</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white uppercase tracking-tight">MY BOOKMARKS</h1>
+            <p className="text-xs text-[#8a8a86] mt-2">
+              EVENTS & OPPORTUNITIES YOU HAVE SAVED TO YOUR PERSONAL DASHBOARD.
+            </p>
           </div>
 
           {/* CONTENT */}
           {authLoading || isLoading ? (
-            <div className="text-gray-400 text-center py-12">Loading...</div>
+            <div className="text-xs text-[#8a8a86] py-12">LOADING BOOKMARKS...</div>
           ) : error ? (
-            <div className="text-red-400 text-center py-12">{error}</div>
+            <div className="p-4 border border-[#FFB100]/30 bg-[#FFB100]/5 text-xs text-[#FFB100]">{error}</div>
           ) : bookmarkedEvents.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {bookmarkedEvents.map((event) => (
                 <EventCard
                   key={event._bookmarkId}
@@ -150,19 +145,19 @@ const BookmarksPage = () => {
                   showDetailsButton={true}
                   isBookmarkCard={true}
                   onDelete={() =>
-                    handleDeleteBookmark(event._bookmarkId, event.slug)
+                    handleDeleteBookmark(event._bookmarkId)
                   }
                 />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-400 mb-4">No bookmarks yet</p>
+            <div className="p-12 border border-white/10 bg-[#141413] text-center">
+              <p className="text-xs text-[#8a8a86] mb-6">NO BOOKMARKS SAVED YET.</p>
               <Link
                 href="/events"
-                className="inline-block px-6 py-2 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                className="inline-block px-6 py-3 bg-[#FFB100] text-black font-semibold text-xs tracking-widest uppercase hover:bg-[#ffbe25] transition-colors"
               >
-                Explore Events
+                EXPLORE EVENTS →
               </Link>
             </div>
           )}

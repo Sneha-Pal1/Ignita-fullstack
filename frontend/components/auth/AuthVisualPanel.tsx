@@ -33,7 +33,7 @@ export default function AuthVisualPanel() {
       <div>
         <Link href="/" className="inline-flex items-center gap-2.5">
           <Image
-            src="/icons/iglogoremovebg.png"
+            src="/icons/ignita-amber-logo.svg"
             alt="Ignita"
             width={28}
             height={28}
