@@ -82,13 +82,14 @@ export function LevoPhilosophy() {
               }}
             >
               {words.map((word, idx) => {
-                // Map scroll progress so reveal completes at scrollProgress = 0.85
+                // Map scroll progress so reveal completes for ALL words at scrollProgress = 0.85
                 const revealEnd = 0.85;
-                const normalizedProgress = Math.min(1, Math.max(0, scrollProgress / revealEnd));
+                const progress = Math.min(1, Math.max(0, scrollProgress / revealEnd));
 
-                const targetStart = idx / Math.max(1, totalWords - 1);
-                const windowSize = 0.05;
-                const rawW = (normalizedProgress - (targetStart - windowSize)) / (2 * windowSize);
+                // Span each word's transition across 12% of the reveal timeline
+                const wordWindow = 0.12;
+                const startFraction = (idx / Math.max(1, totalWords)) * (1 - wordWindow);
+                const rawW = (progress - startFraction) / wordWindow;
                 const w = Math.min(1, Math.max(0, rawW));
 
                 // Interpolate blur and opacity

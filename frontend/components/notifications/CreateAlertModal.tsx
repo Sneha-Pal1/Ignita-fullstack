@@ -49,7 +49,7 @@ export default function CreateAlertModal({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-in fade-in duration-300"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 animate-in fade-in duration-300"
         onClick={onClose}
       />
 
@@ -59,53 +59,38 @@ export default function CreateAlertModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="w-full max-w-md rounded-2xl overflow-hidden"
+          className="w-full max-w-md bg-[#141413] border border-white/10 font-mono"
           style={{
-            background: "rgba(15, 23, 42, 0.95)",
-            backdropFilter: "blur(20px)",
-            border: "1px solid rgba(16, 185, 129, 0.2)",
-            boxShadow:
-              "0 0 40px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+            boxShadow: "0 0 40px rgba(255, 177, 0, 0.15)",
           }}
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-white">
-                  Create Alert
+                <div className="levo-eyebrow mb-1">
+                  <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+                  <span>ALERT CREATION</span>
+                </div>
+                <h2 className="text-xl font-bold text-white font-sans">
+                  Create Event Alert
                 </h2>
-                <p className="text-sm text-gray-400 mt-1">
-                  Get notified about your favorite events
-                </p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                className="p-1.5 border border-white/10 bg-[#0e0e0d] text-[#8a8a86] hover:text-white transition-colors"
               >
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                ✕
               </button>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-5">
             {/* Event Selection */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">
-                📌 Select Event
+              <label className="block text-xs uppercase tracking-wider text-[#8a8a86] mb-2 font-mono">
+                Select Event
               </label>
               <input
                 type="text"
@@ -114,39 +99,35 @@ export default function CreateAlertModal({
                 onChange={(e) =>
                   setFormData({ ...formData, eventTitle: e.target.value })
                 }
-                className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white placeholder-gray-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all duration-200"
+                className="w-full px-3 py-2 bg-[#0e0e0d] border border-white/10 text-xs text-white placeholder-[#8a8a86] focus:border-[#FFB100] focus:outline-none transition-colors font-mono"
               />
-              <p className="text-xs text-gray-400 mt-2">
-                💡 Start typing to find your events
-              </p>
             </div>
 
             {/* Reminder Type */}
             <div>
-              <label className="block text-sm font-medium text-white mb-3">
-                🔔 Reminder Timing
+              <label className="block text-xs uppercase tracking-wider text-[#8a8a86] mb-2 font-mono">
+                Reminder Timing
               </label>
               <div className="space-y-2">
                 {reminderOptions.map((option) => (
                   <button
                     key={option.value}
+                    type="button"
                     onClick={() =>
                       setFormData({ ...formData, reminderType: option.value })
                     }
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 text-left flex items-center justify-between ${
+                    className={`w-full px-3 py-2.5 border transition-all text-left flex items-center justify-between font-mono text-xs ${
                       formData.reminderType === option.value
-                        ? "border-emerald-500 bg-emerald-500/10"
-                        : "border-white/10 bg-white/[0.02] hover:border-emerald-500/50"
+                        ? "border-[#FFB100] bg-[#FFB100] text-black font-semibold"
+                        : "border-white/10 bg-[#0e0e0d] text-white hover:border-[#FFB100]/40"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <span className="text-lg">{option.icon}</span>
-                      <span className="text-sm font-medium text-white">
-                        {option.label}
-                      </span>
+                      <span>{option.icon}</span>
+                      <span>{option.label}</span>
                     </span>
                     {formData.reminderType === option.value && (
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span className="w-2 h-2 bg-black" />
                     )}
                   </button>
                 ))}
@@ -155,8 +136,8 @@ export default function CreateAlertModal({
 
             {/* Time Selection */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">
-                🕐 Preferred Reminder Time
+              <label className="block text-xs uppercase tracking-wider text-[#8a8a86] mb-2 font-mono">
+                Reminder Time
               </label>
               <input
                 type="time"
@@ -164,30 +145,22 @@ export default function CreateAlertModal({
                 onChange={(e) =>
                   setFormData({ ...formData, reminderTime: e.target.value })
                 }
-                className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all duration-200"
+                className="w-full px-3 py-2 bg-[#0e0e0d] border border-white/10 text-xs text-white focus:border-[#FFB100] focus:outline-none transition-colors font-mono"
               />
-            </div>
-
-            {/* Info */}
-            <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-              <p className="text-xs text-emerald-400">
-                ✨ You'll receive a notification at the selected time before the
-                event.
-              </p>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10 flex gap-3">
+          <div className="p-6 border-t border-white/10 flex gap-3 font-mono">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 font-medium transition-all duration-200"
+              className="flex-1 px-4 py-2.5 border border-white/10 bg-[#0e0e0d] text-xs font-semibold text-[#8a8a86] hover:text-white uppercase tracking-wider transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-medium transition-all duration-200"
+              className="flex-1 px-4 py-2.5 bg-[#FFB100] hover:bg-[#ffbe26] text-black text-xs font-semibold uppercase tracking-wider transition-colors"
             >
               Create Alert
             </button>

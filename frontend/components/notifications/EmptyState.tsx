@@ -15,48 +15,21 @@ interface EmptyStateProps {
 
 export default function EmptyState({
   icon = (
-    <HugeiconsIcon icon={Note01Icon} size="36" className="text-emerald-400" />
+    <HugeiconsIcon icon={Note01Icon} size="36" className="text-[#FFB100]" />
   ),
   title,
   description,
   actionText,
   onAction,
-  variant = "notifications",
 }: EmptyStateProps) {
-  const getVariantStyles = () => {
-    const styles: Record<
-      string,
-      { bg: string; gradientFrom: string; gradientTo: string }
-    > = {
-      notifications: {
-        bg: "from-emerald-600/20 to-teal-600/20",
-        gradientFrom: "from-emerald-500",
-        gradientTo: "to-teal-500",
-      },
-      alerts: {
-        bg: "from-cyan-600/20 to-blue-600/20",
-        gradientFrom: "from-cyan-500",
-        gradientTo: "to-blue-500",
-      },
-      activity: {
-        bg: "from-purple-600/20 to-pink-600/20",
-        gradientFrom: "from-purple-500",
-        gradientTo: "to-pink-500",
-      },
-    };
-    return styles[variant] || styles.notifications;
-  };
-
-  const styles = getVariantStyles();
-
   return (
-    <div className="w-full py-16 px-6 text-center">
-      {/* Large icon with glow */}
+    <div className="w-full py-16 px-6 text-center font-mono">
+      {/* Icon container */}
       <div className="flex justify-center mb-6">
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center text-5xl bg-gradient-to-r ${styles.bg} border border-white/20 shadow-lg animate-pulse`}
+          className="w-20 h-20 flex items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]"
           style={{
-            boxShadow: `0 0 40px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+            boxShadow: `0 0 40px rgba(255, 177, 0, 0.15)`,
           }}
         >
           {icon}
@@ -64,16 +37,16 @@ export default function EmptyState({
       </div>
 
       {/* Title */}
-      <h3 className="text-2xl font-semibold text-white mb-2">{title}</h3>
+      <h3 className="text-xl font-bold text-white font-sans mb-2">{title}</h3>
 
       {/* Description */}
-      <p className="text-gray-400 max-w-sm mx-auto mb-8">{description}</p>
+      <p className="text-xs text-[#8a8a86] max-w-sm mx-auto mb-6 leading-relaxed font-mono">{description}</p>
 
       {/* CTA Button */}
       {actionText && onAction && (
         <button
           onClick={onAction}
-          className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r ${styles.gradientFrom} ${styles.gradientTo} text-white font-medium hover:shadow-lg transition-all duration-200 transform hover:scale-105`}
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#FFB100] text-black font-semibold text-xs uppercase tracking-wider hover:bg-[#ffbe26] transition-colors"
         >
           <span>{actionText}</span>
           <svg
@@ -92,19 +65,11 @@ export default function EmptyState({
         </button>
       )}
 
-      {/* Decorative elements */}
-      <div className="mt-12 space-y-2">
-        <div className="flex justify-center gap-8">
-          <div className="w-1 h-1 rounded-full bg-emerald-500/30 animate-bounce" />
-          <div
-            className="w-1 h-1 rounded-full bg-teal-500/30 animate-bounce"
-            style={{ animationDelay: "0.1s" }}
-          />
-          <div
-            className="w-1 h-1 rounded-full bg-cyan-500/30 animate-bounce"
-            style={{ animationDelay: "0.2s" }}
-          />
-        </div>
+      {/* Decorative dots */}
+      <div className="mt-10 flex justify-center gap-3">
+        <div className="w-1.5 h-1.5 bg-[#FFB100]/40 animate-pulse" />
+        <div className="w-1.5 h-1.5 bg-[#FFB100]/60 animate-pulse" />
+        <div className="w-1.5 h-1.5 bg-[#FFB100]/40 animate-pulse" />
       </div>
     </div>
   );

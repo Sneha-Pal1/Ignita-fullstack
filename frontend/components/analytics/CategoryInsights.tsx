@@ -16,12 +16,12 @@ interface CategoryInsightsProps {
 }
 
 const palette = [
-  "#34d399",
-  "#22d3ee",
-  "#a78bfa",
-  "#f59e0b",
-  "#fb7185",
-  "#60a5fa",
+  "#FFB100",
+  "#ffffff",
+  "#8a8a86",
+  "#d4a373",
+  "#e63946",
+  "#457b9d",
 ];
 
 export function CategoryInsights({ categories }: CategoryInsightsProps) {
@@ -29,9 +29,9 @@ export function CategoryInsights({ categories }: CategoryInsightsProps) {
   const topCategory = local[0] ?? null;
 
   return (
-    <section className="rounded-[24px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
+    <section className="border border-white/10 bg-[#141413] p-6 font-mono">
       <div className="flex items-start gap-3">
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
+        <div className="inline-flex h-9 w-9 items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]">
           <HugeiconsIcon
             icon={FileChartColumnIncreasingIcon}
             size="18"
@@ -39,37 +39,37 @@ export function CategoryInsights({ categories }: CategoryInsightsProps) {
           />
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-white">
+          <h2 className="text-lg font-semibold tracking-tight text-white font-sans">
             Category Insights
           </h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">
+          <p className="mt-0.5 text-xs text-[#8a8a86]">
             Top category and distribution from live bookmark totals.
           </p>
         </div>
       </div>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+        <div className="border border-white/10 bg-[#0e0e0d] p-5">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#8a8a86]">
             Top category
           </p>
-          <h3 className="mt-3 text-2xl font-semibold tracking-tight text-white">
+          <h3 className="mt-2 text-2xl font-bold tracking-tight text-[#FFB100] font-sans">
             {topCategory?.category ?? "No categories yet"}
           </h3>
-          <p className="mt-2 text-sm leading-6 text-zinc-400">
+          <p className="mt-2 text-xs leading-relaxed text-[#8a8a86]">
             {topCategory
               ? `${topCategory.count} bookmarks in the leading category.`
               : "Category data will appear once bookmarks exist."}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 sm:p-5">
-          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-zinc-500">
+        <div className="border border-white/10 bg-[#0e0e0d] p-5">
+          <div className="mb-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#8a8a86]">
             <HugeiconsIcon
               icon={Bookmark01Icon}
               size="14"
               strokeWidth={2}
-              className="text-zinc-400"
+              className="text-[#FFB100]"
             />
             Category distribution
           </div>
@@ -87,16 +87,16 @@ export function CategoryInsights({ categories }: CategoryInsightsProps) {
                   4,
                 )}%`;
                 return (
-                  <div key={category.category} className="space-y-2">
-                    <div className="flex items-center justify-between gap-3 text-xs text-zinc-400">
-                      <span className="truncate">{category.category}</span>
-                      <span className="tabular-nums text-zinc-300">
+                  <div key={category.category} className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-3 text-xs text-[#8a8a86]">
+                      <span className="truncate text-white font-sans font-medium">{category.category}</span>
+                      <span className="tabular-nums text-[#FFB100]">
                         {category.count}
                       </span>
                     </div>
-                    <div className="h-2 rounded-full bg-zinc-800">
+                    <div className="h-1.5 w-full bg-white/5">
                       <div
-                        className="h-2 rounded-full"
+                        className="h-1.5 transition-all"
                         style={{ width, backgroundColor: color }}
                       />
                     </div>
@@ -104,7 +104,7 @@ export function CategoryInsights({ categories }: CategoryInsightsProps) {
                 );
               })
             ) : (
-              <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-10 text-center text-sm text-zinc-500">
+              <div className="border border-dashed border-white/10 px-4 py-8 text-center text-xs text-[#8a8a86]">
                 No category data available yet.
               </div>
             )}

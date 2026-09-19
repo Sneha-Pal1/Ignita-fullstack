@@ -76,64 +76,63 @@ export default function NotificationCard({
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative transition-colors duration-150 rounded-md border ${
+      className={`relative transition-colors duration-150 border font-mono ${
         !notification.isRead
-          ? "border-emerald-600/30"
-          : "border-zinc-700"
-      } bg-zinc-900/50 hover:bg-zinc-800/50 p-3 flex items-start gap-3`}
+          ? "border-[#FFB100]/40 bg-[#FFB100]/5"
+          : "border-white/10 bg-[#141413]"
+      } hover:border-[#FFB100]/60 p-4 flex items-start gap-3`}
     >
-      <div className="shrink-0 w-10 h-10 rounded-md flex items-center justify-center bg-zinc-800">
+      <div className="shrink-0 w-8 h-8 flex items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]">
         <HugeiconsIcon
           icon={getIcon()}
-          size="18"
-          className="text-white"
+          size="16"
         />
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-sm font-semibold text-white truncate">
+            <span className="text-xs font-bold text-white truncate font-sans">
               {notification.title}
             </span>
             <span
-              className={`text-xs font-medium px-2 py-0.5 rounded-full border ${badgeClass} ml-1 whitespace-nowrap`}
+              className={`text-[10px] font-mono font-semibold px-2 py-0.5 border ${badgeClass} ml-1 whitespace-nowrap uppercase`}
             >
               {cat.label}
             </span>
           </div>
-          <div className="text-xs text-gray-400 whitespace-nowrap shrink-0">
+          <div className="text-[10px] text-[#8a8a86] font-mono whitespace-nowrap shrink-0">
             {formatTime(notification.timestamp)}
           </div>
         </div>
 
-        <p className="text-xs text-gray-300 mt-1 line-clamp-2">
+        <p className="text-xs text-[#8a8a86] mt-1 line-clamp-2 font-mono">
           {notification.message}
         </p>
 
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-3 flex items-center gap-2 font-mono text-[11px]">
           {notification.actionUrl && (
             <Link
               href={notification.actionUrl}
-              className="text-xs text-emerald-300 bg-emerald-600/10 px-2 py-1 rounded-md hover:bg-emerald-600/20 transition-colors"
+              className="text-[#FFB100] border border-[#FFB100]/40 px-2 py-0.5 hover:bg-[#FFB100] hover:text-black transition-colors"
             >
-              View
+              VIEW
             </Link>
           )}
           {!notification.isRead && onMarkAsRead && (
             <button
               onClick={() => onMarkAsRead(notification.id)}
-              className="text-xs text-gray-300 px-2 py-1 rounded-md hover:bg-zinc-700 transition-colors"
+              className="text-white border border-white/10 px-2 py-0.5 hover:border-white transition-colors"
             >
-              Mark read
+              MARK READ
             </button>
           )}
           {onDelete && (
             <button
               onClick={() => onDelete(notification.id)}
-              className="text-xs text-red-300 px-2 py-1 rounded-md hover:bg-red-600/10 transition-colors"
+              className="text-red-400 border border-red-500/20 px-2 py-0.5 hover:bg-red-500/10 transition-colors"
             >
-              Dismiss
+              DISMISS
             </button>
           )}
         </div>
@@ -141,7 +140,7 @@ export default function NotificationCard({
 
       {/* Unread indicator */}
       {!notification.isRead && (
-        <span className="shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-1" />
+        <span className="shrink-0 w-2 h-2 bg-[#FFB100] mt-1" />
       )}
 
       {/* suppress unused variable warning */}

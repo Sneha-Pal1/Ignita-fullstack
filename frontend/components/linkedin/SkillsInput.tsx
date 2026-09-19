@@ -53,10 +53,10 @@ export default function SkillsInput({
   };
 
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-medium text-zinc-200">
+    <div className="space-y-3 font-mono">
+      <label className="block text-xs uppercase tracking-wider text-[#8a8a86]">
         Skills Used
-        <span className="text-zinc-500 ml-1">({skills.length}/5)</span>
+        <span className="text-[#8a8a86] ml-1">({skills.length}/5)</span>
       </label>
 
       {/* Selected Skills Tags */}
@@ -65,12 +65,13 @@ export default function SkillsInput({
           {skills.map((skill) => (
             <div
               key={skill}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-md text-sm text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+              className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FFB100]/10 border border-[#FFB100]/40 text-xs text-[#FFB100] font-mono"
             >
               {skill}
               <button
+                type="button"
                 onClick={() => removeSkill(skill)}
-                className="ml-1 hover:text-emerald-200 transition-colors"
+                className="ml-1 hover:text-white transition-colors"
               >
                 ×
               </button>
@@ -90,17 +91,18 @@ export default function SkillsInput({
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           placeholder="Add skills (max 5)..."
           disabled={skills.length >= 5}
-          className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-3 py-2 bg-[#0e0e0d] border border-white/10 text-xs text-white placeholder-[#8a8a86] focus:outline-none focus:border-[#FFB100] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-mono"
         />
 
         {/* Suggestions Dropdown */}
         {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-[#141413] border border-white/10 shadow-xl z-10 max-h-48 overflow-y-auto">
             {filteredSuggestions.map((skill) => (
               <button
                 key={skill}
+                type="button"
                 onClick={() => addSkill(skill)}
-                className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-700/50 transition-colors"
+                className="w-full text-left px-3 py-2 text-xs font-mono text-white hover:bg-[#FFB100] hover:text-black transition-colors"
               >
                 {skill}
               </button>
@@ -108,10 +110,6 @@ export default function SkillsInput({
           </div>
         )}
       </div>
-
-      <p className="text-xs text-zinc-500">
-        Press Enter to add custom skills, or select from suggestions
-      </p>
     </div>
   );
 }

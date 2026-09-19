@@ -17,50 +17,50 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
   const feed = items ?? [];
 
   return (
-    <section className="rounded-[24px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
+    <section className="border border-white/10 bg-[#141413] p-6 font-mono">
       <div className="flex items-start gap-3">
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-500/20 bg-violet-500/10 text-violet-300">
+        <div className="inline-flex h-9 w-9 items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]">
           <HugeiconsIcon icon={UserIcon} size="18" strokeWidth={2} />
         </div>
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-white">
+          <h2 className="text-lg font-semibold tracking-tight text-white font-sans">
             Recent Activity
           </h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-400">
-            Latest monthly user-growth records from the backend.
+          <p className="mt-0.5 text-xs text-[#8a8a86]">
+            Latest monthly user-growth records from backend.
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 sm:p-5">
+      <div className="mt-5 border border-white/10 bg-[#0e0e0d] p-5">
         {feed.length > 0 ? (
           <div className="space-y-3">
             {feed.map((item, index) => (
-              <div key={item.id} className="relative pl-8">
+              <div key={item.id} className="relative pl-7">
                 {index < feed.length - 1 ? (
-                  <span className="absolute left-[14px] top-8 h-full w-px bg-zinc-800" />
+                  <span className="absolute left-[11px] top-6 h-full w-px bg-white/10" />
                 ) : null}
-                <span className="absolute left-0 top-0 inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900/80 text-zinc-400">
-                  <HugeiconsIcon icon={UserIcon} size="14" strokeWidth={2} />
+                <span className="absolute left-0 top-0 inline-flex h-6 w-6 items-center justify-center border border-[#FFB100]/40 bg-[#FFB100]/10 text-[#FFB100]">
+                  <HugeiconsIcon icon={UserIcon} size="12" strokeWidth={2} />
                 </span>
 
-                <div className="flex items-start justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
+                <div className="flex items-start justify-between gap-4 border border-white/10 bg-[#141413] p-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-white">
-                      {item.count} new users
+                    <p className="text-xs font-semibold text-white font-sans">
+                      {item.count} new users registered
                     </p>
-                    <p className="mt-1 text-xs text-zinc-500">{item.month}</p>
+                    <p className="mt-0.5 text-[10px] text-[#8a8a86] font-mono">{item.month}</p>
                   </div>
-                  <span className="whitespace-nowrap text-xs text-zinc-500 tabular-nums">
-                    {item.count}
+                  <span className="whitespace-nowrap text-xs text-[#FFB100] font-mono font-bold tabular-nums">
+                    +{item.count}
                   </span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-zinc-800 px-4 py-10 text-center text-sm text-zinc-500">
-            No recent activity yet.
+          <div className="border border-dashed border-white/10 px-4 py-8 text-center text-xs text-[#8a8a86]">
+            No recent activity recorded yet.
           </div>
         )}
       </div>

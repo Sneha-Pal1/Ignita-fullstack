@@ -12,22 +12,23 @@ export default function ToneSelector({
   onToneChange,
 }: ToneSelectorProps) {
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-medium text-zinc-200">Tone</label>
+    <div className="space-y-3 font-mono">
+      <label className="block text-xs uppercase tracking-wider text-[#8a8a86]">Select Tone</label>
 
       <div className="grid grid-cols-2 gap-2">
         {toneOptions.map((option) => (
           <button
             key={option.value}
+            type="button"
             onClick={() => onToneChange(option.value)}
-            className={`p-3 rounded-lg text-left transition-colors border ${
+            className={`p-3 text-left transition-colors border ${
               tone === option.value
-                ? "bg-emerald-500/10 border-emerald-500 text-emerald-100"
-                : "bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800"
+                ? "bg-[#FFB100] border-[#FFB100] text-black font-semibold"
+                : "bg-[#0e0e0d] border-white/10 text-[#8a8a86] hover:border-[#FFB100]/40 hover:text-white"
             }`}
           >
-            <div className="font-medium text-sm">{option.label}</div>
-            <div className="text-xs text-zinc-500 mt-0.5">
+            <div className="font-semibold text-xs uppercase">{option.label}</div>
+            <div className={`text-[10px] mt-0.5 ${tone === option.value ? "text-black/80" : "text-[#8a8a86]"}`}>
               {option.description}
             </div>
           </button>

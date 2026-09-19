@@ -29,36 +29,39 @@ export function AnalyticsHeader({
   ];
 
   return (
-    <section className="rounded-[24px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl space-y-3">
+    <section className="border border-white/10 bg-[#141413] p-6">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl space-y-2">
+          <div className="levo-eyebrow mb-2">
+            <span className="h-1.5 w-1.5 bg-[#FFB100]" />
+            <span>01 / ANALYTICS OVERVIEW</span>
+          </div>
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+            <div className="inline-flex h-9 w-9 items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]">
               <HugeiconsIcon icon={Calendar01Icon} size="18" strokeWidth={2} />
             </div>
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                Analytics
+              <h1 className="text-2xl font-bold tracking-tight text-white font-sans sm:text-3xl">
+                System Analytics
               </h1>
-              <p className="mt-1 text-sm text-zinc-400">
-                Real bookmark, event, category, and user activity from the
-                backend.
+              <p className="mt-0.5 text-xs text-[#8a8a86] font-mono">
+                Real bookmark, event, category, and user activity from backend.
               </p>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-1 rounded-2xl border border-zinc-800 bg-zinc-950/80 p-1">
+          <div className="flex items-center gap-1 border border-white/10 bg-[#0e0e0d] p-1 font-mono text-xs">
             {timeframeOptions.map((option) => (
               <button
                 key={option.value}
                 type="button"
                 onClick={() => onTimeframeChange?.(option.value)}
-                className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5 font-medium transition-colors ${
                   timeframe === option.value
-                    ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/20"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900"
+                    ? "bg-[#FFB100] text-black font-semibold"
+                    : "text-[#8a8a86] hover:text-white"
                 }`}
               >
                 {option.label}
@@ -69,15 +72,14 @@ export function AnalyticsHeader({
           <button
             type="button"
             onClick={onExport}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-zinc-700 bg-zinc-950/80 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-zinc-900"
+            className="inline-flex h-9 items-center justify-center gap-2 border border-white/10 bg-[#0e0e0d] px-4 font-mono text-xs font-semibold text-white transition-colors hover:border-[#FFB100] hover:text-[#FFB100]"
           >
             <HugeiconsIcon
               icon={Download01Icon}
-              size="18"
+              size="16"
               strokeWidth={2}
-              className="text-zinc-300"
             />
-            <span>Export</span>
+            <span>Export Data</span>
           </button>
         </div>
       </div>

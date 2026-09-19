@@ -14,8 +14,8 @@ interface ActivityChartProps {
 }
 
 const chartColors = {
-  bookmarks: "#34d399",
-  events: "#22d3ee",
+  bookmarks: "#FFB100",
+  events: "#f4f4f0",
 };
 
 const chartLabels = {
@@ -52,9 +52,9 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
   };
 
   return (
-    <section className="rounded-[24px] border border-zinc-800 bg-zinc-900/70 p-5 sm:p-6">
+    <section className="border border-white/10 bg-[#141413] p-6 font-mono">
       <div className="flex items-start gap-3">
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-300">
+        <div className="inline-flex h-9 w-9 items-center justify-center border border-[#FFB100]/30 bg-[#FFB100]/10 text-[#FFB100]">
           <HugeiconsIcon
             icon={FileChartColumnIncreasingIcon}
             size="18"
@@ -71,7 +71,7 @@ export function ActivityChart({ monthlyData }: ActivityChartProps) {
         </div>
       </div>
 
-      <div className="mt-5 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 sm:p-5">
+      <div className="mt-5 border border-white/10 bg-[#0e0e0d] p-4 sm:p-5">
         {data.length > 0 ? (
           <div className="grid gap-4 lg:grid-cols-[56px_1fr] lg:gap-5">
             <div className="flex flex-col justify-between py-1 text-[10px] uppercase tracking-[0.24em] text-zinc-500">
