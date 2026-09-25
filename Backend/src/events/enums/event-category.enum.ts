@@ -3,4 +3,9 @@ export enum EventCategory {
   INTERNSHIP = 'INTERNSHIP',
   CODING_FEST = 'CODING_FEST',
   WORKSHOP = 'WORKSHOP',
+  CONTEST = 'CONTEST',
+  JOB = 'JOB',
+  INTERVIEW = 'INTERVIEW',
+  QUIZ = 'QUIZ',
 }
+

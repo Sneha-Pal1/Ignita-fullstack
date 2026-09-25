@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notificationAPI, type NotificationRecord } from "@/lib/api-endpoints";
 import { formatRelativeTime } from "@/lib/notifications-utils";
 import { useAuthContext } from "@/lib/auth-context";
+import { APIError } from "@/lib/api-client";
 
 export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,11 @@ export default function NotificationBell() {
           setNotifications(data || []);
         }
       } catch (error) {
-        console.error("Failed to load notifications:", error);
+        if (error instanceof APIError && error.status === 401) {
+          if (mounted) setNotifications([]);
+          return;
+        }
+        console.warn("Could not load notifications:", error);
       }
     };
 

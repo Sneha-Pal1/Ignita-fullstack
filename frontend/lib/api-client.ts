@@ -79,7 +79,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
       return null;
     } catch (error) {
-      console.error("❌ Token refresh error:", error);
+      console.warn("⚠️ Token refresh error:", error);
       // On error, clear auth
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth_token");
@@ -154,7 +154,7 @@ async function request<T>(
         // Retry the request with new token
         return request<T>(endpoint, options, retryCount + 1);
       } else {
-        console.error("❌ Token refresh failed. User logged out.");
+        console.warn("⚠️ Token refresh failed. User logged out.");
         // Token refresh failed, throw error
         throw new APIError(401, data, "Session expired. Please log in again.");
       }

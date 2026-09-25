@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAuthContext } from "@/lib/auth-context";
 import EventCard from "@/components/EventCard";
-import { events as mockEvents } from "@/lib/data/events";
 import { eventsAPI, type Event as BackendEvent } from "@/lib/api-endpoints";
-import { APIError } from "@/lib/api-client";
-import { authStorage } from "@/lib/auth";
 
 type EventCardData = {
   id: string;
@@ -66,65 +63,33 @@ function mapBackendEvent(event: BackendEvent): EventCardData {
   };
 }
 
-function mapMockEvent(event: (typeof mockEvents)[number]): EventCardData {
-  return {
-    id: event.slug,
-    title: event.title,
-    image: event.image,
-    slug: event.slug,
-    location: event.location,
-    date: event.date,
-    time: event.time,
-    organizer: event.organizer,
-    participants: event.participants,
-    tags: event.tags,
-  };
-}
-
 const EventsPage = () => {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuthContext();
   const [search, setSearch] = useState("");
   const [dateRange, setDateRange] = useState("");
   const [mode, setMode] = useState("");
-  const [events, setEvents] = useState<EventCardData[]>(
-    mockEvents.map(mapMockEvent),
-  );
+  const [events, setEvents] = useState<EventCardData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const isAdmin = user?.role === "ADMIN";
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const accessToken = authStorage.getToken();
-
-      if (!accessToken) {
-        setEvents(mockEvents.map(mapMockEvent));
-        setError(null);
-        setIsLoading(false);
-        return;
-      }
-
       try {
         setIsLoading(true);
         const data = await eventsAPI.getAll();
 
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setEvents(data.map(mapBackendEvent));
         } else {
-          setEvents(mockEvents.map(mapMockEvent));
+          setEvents([]);
         }
         setError(null);
       } catch (fetchError) {
-        if (fetchError instanceof APIError && fetchError.status === 401) {
-          setEvents(mockEvents.map(mapMockEvent));
-          setError(null);
-          return;
-        }
-
         console.error("Failed to fetch events:", fetchError);
-        setError("Unable to connect to live server. Displaying cached offline catalog.");
-        setEvents(mockEvents.map(mapMockEvent));
+        setError("Unable to connect to live server.");
+        setEvents([]);
       } finally {
         setIsLoading(false);
       }
@@ -223,7 +188,7 @@ const EventsPage = () => {
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
-          className="px-4 py-3 text-xs text-white bg-[#141413] border border-white/10 focus:outline-none focus:border-[#FFB100] transition-colors cursor-pointer"
+          className="px-4 py-3 text-xs text-[#8a8a86] bg-[#141413] border border-white/10 focus:outline-none focus:border-[#FFB100] transition-colors cursor-pointer"
         >
           <option value="" className="bg-[#141413]">DATE RANGE</option>
           <option value="week" className="bg-[#141413]">THIS WEEK</option>
@@ -234,7 +199,7 @@ const EventsPage = () => {
 
       {/* EVENTS GRID */}
       {isLoading ? (
-        <p className="font-mono text-xs text-[#8a8a86]">LOADING CATALOG...</p>
+        <p className="font-mono text-xs text-[#8a8a86]">LOADING LIVE CATALOG...</p>
       ) : filteredEvents.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredEvents.map((event) => (

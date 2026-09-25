@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { events } from "@/lib/data/events";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Bookmark, Gift, CheckCircle, Calendar, Clock, MapPin, Users } from "lucide-react";
@@ -64,16 +63,10 @@ const EventDetailPage = () => {
   const router = useRouter();
   const slug = params.slug as string;
 
-  const mockEvent = events.find((e) => e.slug === slug);
   const [backendEvent, setBackendEvent] = useState<DetailData | null>(null);
-  const [isLoadingEvent, setIsLoadingEvent] = useState(!mockEvent);
+  const [isLoadingEvent, setIsLoadingEvent] = useState(true);
 
   useEffect(() => {
-    if (mockEvent) {
-      setIsLoadingEvent(false);
-      return;
-    }
-
     const fetchEvent = async () => {
       try {
         setIsLoadingEvent(true);
@@ -88,24 +81,9 @@ const EventDetailPage = () => {
     };
 
     fetchEvent();
-  }, [mockEvent, slug]);
+  }, [slug]);
 
-  const event = mockEvent
-    ? {
-        title: mockEvent.title,
-        image: mockEvent.image,
-        organizer: mockEvent.organizer,
-        tags: mockEvent.tags,
-        date: mockEvent.date,
-        applicationDeadline: mockEvent.applicationDeadline,
-        location: mockEvent.location,
-        prizes: mockEvent.prizes,
-        participants: mockEvent.participants,
-        requirements: mockEvent.requirements,
-        about: mockEvent.about,
-        schedule: mockEvent.schedule,
-      }
-    : backendEvent;
+  const event = backendEvent;
 
   const { isBookmarked, isLoading, toggleBookmark } = useBookmark(
     slug,

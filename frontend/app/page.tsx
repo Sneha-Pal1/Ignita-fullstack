@@ -13,7 +13,9 @@ import {
 } from "@/components/levo/SVGDiagrams";
 
 export default function Home() {
+  //creating a React component called Home
   return (
+    //This is the UI that the Home component should display
     <div className="relative w-full bg-[#0e0e0d] text-[#f4f4f0]">
       {/* 01 Hero Section */}
       <LevoHero />
@@ -22,7 +24,7 @@ export default function Home() {
       <LevoPhilosophy />
 
       {/* 03 Hackathons Capability */}
-      <LevoCapabilityCard
+      <LevoCapabilityCard //These are props
         num="03"
         category="HACKATHONS"
         title="Global Hackathons & Build-athons"
@@ -30,7 +32,7 @@ export default function Home() {
         tags={["DEVPOST", "MLH", "UNSTOP", "PRIZE RADAR"]}
         href="/events?category=Hackathon"
         ctaText="Explore Hackathons"
-        diagram={<HackathonDiagram />}
+        diagram={<HackathonDiagram />} //passing a React element as a prop
       />
 
       {/* 04 Internships Capability */}
@@ -39,7 +41,12 @@ export default function Home() {
         category="INTERNSHIPS"
         title="Verified Tech Internships & Fellowships"
         description="Never miss an application window for SDE, AI/ML, DevOps, or product management internships. Track early applications, batch releases, and referral opportunities."
-        tags={["SDE ROLES", "AI FELLOWSHIPS", "SUMMER 2026", "AUTOMATED TRACKER"]}
+        tags={[
+          "SDE ROLES",
+          "AI FELLOWSHIPS",
+          "SUMMER 2026",
+          "AUTOMATED TRACKER",
+        ]}
         href="/events?category=Internship"
         ctaText="Explore Internships"
         diagram={<InternshipDiagram />}

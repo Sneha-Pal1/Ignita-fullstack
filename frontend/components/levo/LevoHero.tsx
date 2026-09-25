@@ -1,4 +1,4 @@
-"use client";
+"use client"; //This component should run on the client/browser
 
 import React from "react";
 import Link from "next/link";
@@ -24,9 +24,11 @@ export function LevoHero() {
           <span className="text-[#FFB100]">One place.</span>
         </h1>
 
-        {/* Subtitle / Lede */}
+        {/* Subtitle */}
         <p className="max-w-2xl text-lg sm:text-xl font-normal leading-relaxed text-[#8a8a86] mb-10">
-          Ignita indexes hackathons, software engineering internships, competitive programming contests, and tech workshops across the globe into a real-time, unified dashboard.
+          Ignita indexes hackathons, software engineering internships,
+          competitive programming contests, and tech workshops across the globe
+          into a real-time, unified dashboard.
         </p>
 
         {/* CTAs */}
@@ -47,19 +49,29 @@ export function LevoHero() {
           </a>
         </div>
 
-        {/* Levo-style Footer Meta Bar */}
+        {/* Footer */}
         <div className="pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-[#8a8a86]">
           <div className="flex flex-wrap items-center gap-6">
-            <span className="text-white font-semibold uppercase">● HACKATHONS</span>
+            <span className="text-white font-semibold uppercase">
+              ● HACKATHONS
+            </span>
             <span>·</span>
-            <span className="text-white font-semibold uppercase">● INTERNSHIPS</span>
+            <span className="text-white font-semibold uppercase">
+              ● INTERNSHIPS
+            </span>
             <span>·</span>
-            <span className="text-white font-semibold uppercase">● CONTESTS</span>
+            <span className="text-white font-semibold uppercase">
+              ● CONTESTS
+            </span>
             <span>·</span>
-            <span className="text-white font-semibold uppercase">● WORKSHOPS</span>
+            <span className="text-white font-semibold uppercase">
+              ● WORKSHOPS
+            </span>
           </div>
           <div className="flex items-center gap-2 text-[#FFB100]">
-            <span className="uppercase text-[10px] tracking-widest">SCROLL TO EXPLORE</span>
+            <span className="uppercase text-[10px] tracking-widest">
+              SCROLL TO EXPLORE
+            </span>
             <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
           </div>
         </div>
@@ -67,3 +79,8 @@ export function LevoHero() {
     </section>
   );
 }
+//md: means Apply this style when the screen reaches the medium breakpoint.
+//pointer-events-none : means the element doesn't interfere with mouse interactions.
+//mx-auto: Centers it horizontally.
+//px-6: Horizontal padding.
+//sm:px-10: More padding on larger screens.

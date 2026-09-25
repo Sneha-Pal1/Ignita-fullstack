@@ -1,130 +1,18 @@
-export const events = [
-  {
-    title: "HackMIT 2026",
-    image: "/images/event1.png",
-    slug: "hackmit-2026",
-    location: "Cambridge, MA",
-    date: "Mar 19-21, 2026",
-    time: "48 hours of innovation and coding at one of the world's most prestigious hackathons.",
-    organizer: "by MIT",
-    participants: "500+ students",
-    applicationDeadline: "Mar 5, 2026",
-    prizes: "$50,000 in prizes",
-    requirements: "Open to all university students",
-    about:
-      "Join us for 48 hours of innovation, collaboration, and coding at one of the most prestigious hackathons in the world. HackMIT brings together students from around the globe to build amazing projects and compete for incredible prizes.",
-    tags: ["Hackathon", "Technology", "Innovation"],
-    schedule: [
-      { time: "Friday 6:00 PM", activity: "Registration & Opening Ceremony" },
-      { time: "Friday 8:00 PM", activity: "Hacking Begins" },
-      { time: "Saturday 12:00 PM", activity: "Lunch & Workshops" },
-      { time: "Sunday 12:00 PM", activity: "Project Submissions Due" },
-      { time: "Sunday 4:00 PM", activity: "Presentations & Awards" },
-    ],
-  },
-  {
-    title: "Google Summer Internship",
-    image: "/images/event2.png",
-    slug: "google-summer-internship",
-    location: "Multiple Locations",
-    date: "Summer 2026",
-    time: "Join Google's summer internship program and work on cutting-edge projects.",
-    organizer: "by Google",
-    participants: "Limited spots",
-    applicationDeadline: "Mar 18, 2026",
-    prizes: "Competitive compensation and benefits",
-    requirements: "Current students pursuing CS degree",
-    about:
-      "Join Google's summer internship program and work on cutting-edge projects with some of the brightest minds in tech.",
-    tags: ["Internship", "Technology"],
-    schedule: [
-      { time: "Mar 1", activity: "Application Deadline" },
-      { time: "Mar 15", activity: "Phone Interviews" },
-      { time: "Apr 1", activity: "Onsite Interviews" },
-    ],
-  },
-  {
-    title: "Stanford AI Conference 2027",
-    image: "/images/event3.png",
-    slug: "stanford-ai-conference",
-    location: "Stanford, CA",
-    date: "Apr 22-24, 2027",
-    time: "Explore the latest developments in artificial intelligence and machine learning.",
-    organizer: "by Stanford University",
-    participants: "1000+ attendees",
-    applicationDeadline: "Apr 5, 2027",
-    prizes: "N/A",
-    requirements: "Open to researchers and industry professionals",
-    about:
-      "Explore the latest developments in artificial intelligence and machine learning at this premier conference.",
-    tags: ["Conference", "AI"],
-    schedule: [
-      { time: "Apr 20", activity: "Keynote Address" },
-      { time: "Apr 21", activity: "Workshop Sessions" },
-      { time: "Apr 22", activity: "Panel Discussions" },
-    ],
-  },
-  {
-    title: "TechCrunch Startup Competition 2027",
-    image: "/images/event4.png",
-    slug: "techcrunch-competition",
-    location: "San Francisco, CA",
-    date: "May 14-16, 2027",
-    time: "Pitch your startup idea to top investors and win funding opportunities.",
-    organizer: "by TechCrunch",
-    participants: "200+ teams",
-    applicationDeadline: "Apr 20, 2027",
-    prizes: "Funding opportunities",
-    requirements: "Early-stage startups only",
-    about:
-      "Pitch your startup idea to top investors and win funding opportunities.",
-    tags: ["Competition", "Startup"],
-    schedule: [
-      { time: "May 10", activity: "Registration & Networking" },
-      { time: "May 11", activity: "Pitch Day" },
-      { time: "May 12", activity: "Awards Ceremony" },
-    ],
-  },
-  {
-    title: "Microsoft Build Workshop 2028",
-    image: "/images/event5.png",
-    slug: "microsoft-build-workshop",
-    location: "Online",
-    date: "Mar 27, 2028",
-    time: "Learn about the latest Microsoft technologies and development tools.",
-    organizer: "by Microsoft",
-    participants: "Unlimited",
-    applicationDeadline: "Mar 22, 2028",
-    prizes: "Certificates of completion",
-    requirements: "Open to all developers",
-    about:
-      "Learn about the latest Microsoft technologies and development tools.",
-    tags: ["Workshop", "Development"],
-    schedule: [
-      { time: "10:00 AM", activity: "Introduction" },
-      { time: "11:00 AM", activity: "Technical Workshop" },
-      { time: "2:00 PM", activity: "Q&A Session" },
-    ],
-  },
-  {
-    title: "University Tech Fest 2028",
-    image: "/images/event6.png",
-    slug: "university-tech-fest",
-    location: "Berkeley, CA",
-    date: "Apr 6-8, 2028",
-    time: "Annual tech fest featuring competitions, workshops, and networking events.",
-    organizer: "by UC Berkeley",
-    participants: "2000+ students",
-    applicationDeadline: "Mar 28, 2028",
-    prizes: "Prizes and recognition",
-    requirements: "Open to all students",
-    about:
-      "Annual tech fest featuring competitions, workshops, and networking events.",
-    tags: ["Fest", "Technology"],
-    schedule: [
-      { time: "Apr 5", activity: "Opening Ceremony" },
-      { time: "Apr 6", activity: "Competitions & Workshops" },
-      { time: "Apr 7", activity: "Closing Ceremony" },
-    ],
-  },
-];
+// Ignita live event data structure - hardcoded dummy data has been removed.
+// Real event data is ingested dynamically from backend API endpoints (/events).
+export const events: Array<{
+  title: string;
+  image: string;
+  slug: string;
+  location: string;
+  date: string;
+  time: string;
+  organizer?: string;
+  participants?: string;
+  applicationDeadline?: string;
+  prizes?: string;
+  requirements?: string;
+  about?: string;
+  tags?: string[];
+  schedule?: Array<{ time: string; activity: string }>;
+}> = [];
