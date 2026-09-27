@@ -217,10 +217,10 @@ function AdminCreateEventForm() {
   if (isLoadingEvent) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-6xl rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 text-zinc-400">
+        <div className="mx-auto max-w-6xl rounded-md border border-[#242422] bg-[#141413] p-6 text-[#8a8a86]">
           <div className="flex items-center gap-3">
-            <Loader2 className="animate-spin text-emerald-400" size={20} />
-            <span>Loading event details...</span>
+            <Loader2 className="animate-spin text-[#FFB100]" size={20} />
+            <span className="font-mono text-sm">Loading event details...</span>
           </div>
         </div>
       </div>
@@ -232,46 +232,46 @@ function AdminCreateEventForm() {
       <div className="mb-2 flex items-center justify-between gap-4">
         <Link
           href="/admin/events"
-          className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-emerald-400"
+          className="inline-flex items-center gap-2 font-mono text-xs text-[#8a8a86] transition-colors hover:text-[#FFB100]"
         >
           <ArrowLeft size={16} /> Back to Admin Events
         </Link>
-        <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-          Admin Only
+        <span className="rounded-md border border-[#FFB100]/30 bg-[#FFB100]/10 px-3 py-1 font-mono text-xs font-medium text-[#FFB100]">
+          Admin Portal
         </span>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl shadow-black/20 sm:p-8">
+        <section className="rounded-md border border-[#242422] bg-[#141413] p-6 shadow-2xl shadow-black/40 sm:p-8">
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[#FFB100]">
                 {isEditing ? "Edit Event" : "Create Event"}
               </p>
-              <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#f4f4f0] sm:text-4xl">
                 {isEditing
                   ? "Update the event details"
                   : "Publish a new IGNITA opportunity"}
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#8a8a86] sm:text-base">
                 {isEditing
                   ? "Update the event with the latest details. Changes will appear on the live events feed once saved."
                   : "Add a new event with the key details the platform needs. The event will be visible on the live events feed once saved."}
               </p>
             </div>
-            <div className="hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-400 md:block">
+            <div className="hidden rounded-md border border-[#FFB100]/30 bg-[#FFB100]/10 p-4 text-[#FFB100] md:block">
               <Plus size={24} />
             </div>
           </div>
 
           {successMessage && (
-            <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+            <div className="mb-6 rounded-md border border-[#FFB100]/30 bg-[#FFB100]/10 px-4 py-3 font-mono text-sm text-[#FFB100]">
               {successMessage}
             </div>
           )}
 
           {errorMessage && (
-            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            <div className="mb-6 rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 font-mono text-sm text-red-400">
               {errorMessage}
             </div>
           )}
@@ -425,15 +425,15 @@ function AdminCreateEventForm() {
               </Field>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-zinc-800 pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-zinc-500">
+            <div className="flex flex-col gap-3 border-t border-[#242422] pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-[#8a8a86]">
                 Only admins can publish events. Newly created events are
                 immediately available in the events feed.
               </p>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-[#FFB100] px-5 py-3 text-sm font-semibold text-[#0e0e0d] transition-all hover:bg-[#FFB100]/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <>
@@ -451,28 +451,37 @@ function AdminCreateEventForm() {
         </section>
 
         <aside className="space-y-6">
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <h2 className="text-lg font-semibold text-white">
+          <div className="rounded-md border border-[#242422] bg-[#141413] p-6">
+            <h2 className="font-schibsted-grotesk text-lg font-semibold text-[#f4f4f0]">
               Admin checklist
             </h2>
-            <ul className="mt-4 space-y-3 text-sm text-zinc-400">
-              <li>• Verify the content is ready for production.</li>
-              <li>
-                • Use a valid registration URL if applicants need to register
-                externally.
+            <ul className="mt-4 space-y-3 text-sm text-[#8a8a86]">
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
+                <span>Verify content is ready for production.</span>
               </li>
-              <li>• Keep deadline before the event start date.</li>
-              <li>• Add tags so the event is easier to filter later.</li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
+                <span>Use a valid external registration URL.</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
+                <span>Keep deadline before event start date.</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
+                <span>Add tags for quick category filtering.</span>
+              </li>
             </ul>
           </div>
 
-          <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-6">
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-300">
+          <div className="rounded-md border border-[#FFB100]/30 bg-[#FFB100]/10 p-6">
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-[#FFB100]">
               LIVE WORKFLOW
             </p>
-            <p className="mt-2 text-sm leading-6 text-emerald-100/80">
-              Once the event is saved, the backend persists it to PostgreSQL and
-              the Events page reads the live records directly.
+            <p className="mt-2 text-sm leading-6 text-[#f4f4f0]/90">
+              Once saved, the backend persists the record directly to PostgreSQL
+              and updates the platform feed in real time.
             </p>
           </div>
         </aside>
@@ -524,9 +533,11 @@ function Field({
 }) {
   return (
     <label className="block space-y-2">
-      <span className="text-sm font-medium text-zinc-300">{label}</span>
+      <span className="font-mono text-xs font-medium uppercase tracking-wider text-[#8a8a86]">
+        {label}
+      </span>
       {children}
-      {error ? <span className="text-xs text-red-300">{error}</span> : null}
+      {error ? <span className="font-mono text-xs text-red-400">{error}</span> : null}
     </label>
   );
 }
@@ -534,20 +545,20 @@ function Field({
 function ChecklistItem({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="h-2 w-2 rounded-full bg-emerald-400" />
+      <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
       <span>{label}</span>
     </div>
   );
 }
 
 const inputClass =
-  "w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-200 outline-none transition-colors placeholder:text-zinc-600 focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/60";
+  "w-full rounded-md border border-[#242422] bg-[#0e0e0d] px-4 py-3 text-sm text-[#f4f4f0] outline-none transition-colors placeholder:text-[#8a8a86]/50 focus:border-[#FFB100]/60 focus:ring-1 focus:ring-[#FFB100]/40";
 
 export default function AdminCreateEventPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen bg-zinc-950 text-white items-center justify-center">
-        <Loader2 className="animate-spin text-emerald-400" size={32} />
+      <div className="flex min-h-screen bg-[#0e0e0d] text-[#f4f4f0] items-center justify-center">
+        <Loader2 className="animate-spin text-[#FFB100]" size={32} />
       </div>
     }>
       <AdminCreateEventForm />
