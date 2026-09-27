@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { adminAPI, type Event } from "@/lib/api-endpoints";
-import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Loader2, Plus, Save } from "lucide-react";
 
 type FormState = {
   title: string;
@@ -171,55 +171,31 @@ function AdminCreateEventForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
-      const formData = new FormData();
-
-      formData.append("title", form.title.trim());
-      formData.append("description", form.description.trim());
-      formData.append("category", form.category);
-      formData.append("mode", form.mode);
-      formData.append("organizer", form.organizer.trim());
-      formData.append("location", form.location.trim());
-
-      if (form.registrationLink.trim()) {
-        formData.append("registrationLink", form.registrationLink.trim());
-      }
-
-      formData.append(
-        "startDate",
-        new Date(form.startDate).toISOString()
-      );
-
-      formData.append(
-        "endDate",
-        new Date(form.endDate).toISOString()
-      );
-
-      if (form.deadline) {
-        formData.append(
-          "deadline",
-          new Date(form.deadline).toISOString()
-        );
-      }
-
-      formData.append(
-        "tags",
-        JSON.stringify(
-          form.tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        )
-      );
-
-      if (form.bannerImage.trim()) {
-        formData.append("bannerImage", form.bannerImage.trim());
-      }
+      const payload = {
+        title: form.title.trim(),
+        description: form.description.trim(),
+        category: form.category,
+        mode: form.mode,
+        organizer: form.organizer.trim(),
+        location: form.location.trim(),
+        registrationLink: form.registrationLink.trim() || undefined,
+        startDate: new Date(form.startDate).toISOString(),
+        endDate: new Date(form.endDate).toISOString(),
+        deadline: form.deadline
+          ? new Date(form.deadline).toISOString()
+          : undefined,
+        tags: form.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+        bannerImage: form.bannerImage.trim() || undefined,
+      };
 
       if (isEditing && editId) {
-        await adminAPI.updateEvent(editId, formData);
+        await adminAPI.updateEvent(editId, payload);
         setSuccessMessage("Event updated successfully.");
       } else {
-        await adminAPI.createEvent(formData);
+        await adminAPI.createEvent(payload);
         setSuccessMessage("Event created successfully.");
         setForm(initialForm);
       }
@@ -241,61 +217,75 @@ function AdminCreateEventForm() {
   if (isLoadingEvent) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-zinc-400">
-          Loading event details...
+        <div className="mx-auto max-w-6xl rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 text-zinc-400">
+          <div className="flex items-center gap-3">
+            <Loader2 className="animate-spin text-emerald-400" size={20} />
+            <span>Loading event details...</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <section className="flex flex-col gap-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-emerald-400">
-            {isEditing ? "Edit Event" : "Create Event"}
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-            {title}
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
-            Publish a structured event using the live backend API and keep the
-            admin workflow clean, fast, and consistent.
-          </p>
-        </div>
-
+    <div className="mx-auto max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
+      <div className="mb-2 flex items-center justify-between gap-4">
         <Link
           href="/admin/events"
-          className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-emerald-400"
+          className="inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-emerald-400"
         >
-          <ArrowLeft size={16} />
-          Back to events
+          <ArrowLeft size={16} /> Back to Admin Events
         </Link>
-      </section>
+        <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+          Admin Only
+        </span>
+      </div>
 
-      {successMessage ? (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-          {successMessage}
-        </div>
-      ) : null}
-      {errorMessage ? (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-          {errorMessage}
-        </div>
-      ) : null}
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <section className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl shadow-black/20 sm:p-8">
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
+                {isEditing ? "Edit Event" : "Create Event"}
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
+                {isEditing
+                  ? "Update the event details"
+                  : "Publish a new IGNITA opportunity"}
+              </h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+                {isEditing
+                  ? "Update the event with the latest details. Changes will appear on the live events feed once saved."
+                  : "Add a new event with the key details the platform needs. The event will be visible on the live events feed once saved."}
+              </p>
+            </div>
+            <div className="hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-400 md:block">
+              <Plus size={24} />
+            </div>
+          </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
-        <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 sm:p-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field label="Title" error={errors.title}>
+          {successMessage && (
+            <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+              {successMessage}
+            </div>
+          )}
+
+          {errorMessage && (
+            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {errorMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Field label="Event Title" error={errors.title}>
                 <input
                   value={form.title}
                   onChange={(event) =>
                     handleChange("title", event.target.value)
                   }
                   className={inputClass}
-                  placeholder="AI Career Summit 2026"
+                  placeholder="Ignita Hackathon 2026"
                 />
               </Field>
 
@@ -306,7 +296,7 @@ function AdminCreateEventForm() {
                     handleChange("organizer", event.target.value)
                   }
                   className={inputClass}
-                  placeholder="IGNITA"
+                  placeholder="IGNITA x Google Developer Group"
                 />
               </Field>
             </div>
@@ -317,12 +307,12 @@ function AdminCreateEventForm() {
                 onChange={(event) =>
                   handleChange("description", event.target.value)
                 }
-                className={`${inputClass} min-h-[140px] resize-y`}
-                placeholder="Summarize the event goals, format, and audience."
+                className={`${inputClass} min-h-32 resize-y`}
+                placeholder="Describe the event, audience, agenda, and why it matters."
               />
             </Field>
 
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3">
               <Field label="Category">
                 <select
                   value={form.category}
@@ -360,37 +350,13 @@ function AdminCreateEventForm() {
                     handleChange("location", event.target.value)
                   }
                   className={inputClass}
-                  placeholder="Virtual, Bengaluru, or campus venue"
+                  placeholder="Bengaluru, India / Online"
                 />
               </Field>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field label="Registration link" error={errors.registrationLink}>
-                <input
-                  value={form.registrationLink}
-                  onChange={(event) =>
-                    handleChange("registrationLink", event.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="https://..."
-                />
-              </Field>
-
-              <Field label="Banner image" error={errors.bannerImage}>
-                <input
-                  value={form.bannerImage}
-                  onChange={(event) =>
-                    handleChange("bannerImage", event.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="https://images..."
-                />
-              </Field>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-3">
-              <Field label="Start date" error={errors.startDate}>
+            <div className="grid gap-6 md:grid-cols-2">
+              <Field label="Start Date" error={errors.startDate}>
                 <input
                   value={form.startDate}
                   onChange={(event) =>
@@ -401,7 +367,7 @@ function AdminCreateEventForm() {
                 />
               </Field>
 
-              <Field label="End date" error={errors.endDate}>
+              <Field label="End Date" error={errors.endDate}>
                 <input
                   value={form.endDate}
                   onChange={(event) =>
@@ -411,7 +377,9 @@ function AdminCreateEventForm() {
                   type="datetime-local"
                 />
               </Field>
+            </div>
 
+            <div className="grid gap-6 md:grid-cols-2">
               <Field label="Deadline" error={errors.deadline}>
                 <input
                   value={form.deadline}
@@ -422,21 +390,45 @@ function AdminCreateEventForm() {
                   type="datetime-local"
                 />
               </Field>
+
+              <Field label="Registration Link" error={errors.registrationLink}>
+                <input
+                  value={form.registrationLink}
+                  onChange={(event) =>
+                    handleChange("registrationLink", event.target.value)
+                  }
+                  className={inputClass}
+                  placeholder="https://..."
+                />
+              </Field>
             </div>
 
-            <Field label="Tags">
-              <input
-                value={form.tags}
-                onChange={(event) => handleChange("tags", event.target.value)}
-                className={inputClass}
-                placeholder="hackathon, ai, career"
-              />
-            </Field>
+            <div className="grid gap-6 md:grid-cols-2">
+              <Field label="Banner Image URL" error={errors.bannerImage}>
+                <input
+                  value={form.bannerImage}
+                  onChange={(event) =>
+                    handleChange("bannerImage", event.target.value)
+                  }
+                  className={inputClass}
+                  placeholder="https://images..."
+                />
+              </Field>
 
-            <div className="flex flex-col gap-3 border-t border-zinc-800 pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <Field label="Tags / Skills">
+                <input
+                  value={form.tags}
+                  onChange={(event) => handleChange("tags", event.target.value)}
+                  className={inputClass}
+                  placeholder="AI, React, Product Design"
+                />
+              </Field>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-zinc-800 pt-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-zinc-500">
-                Validation, saving, and redirects are powered by the backend
-                API.
+                Only admins can publish events. Newly created events are
+                immediately available in the events feed.
               </p>
               <button
                 type="submit"
@@ -444,40 +436,45 @@ function AdminCreateEventForm() {
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? (
-                  <Loader2 size={16} className="animate-spin" />
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Saving...
+                  </>
                 ) : (
-                  <Save size={16} />
+                  <>
+                    <Save size={16} />
+                    {isEditing ? "Update Event" : "Publish Event"}
+                  </>
                 )}
-                {isSubmitting
-                  ? "Saving..."
-                  : isEditing
-                    ? "Update event"
-                    : "Publish event"}
               </button>
             </div>
           </form>
         </section>
 
-        <aside className="space-y-4">
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Checklist
-            </p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-300">
-              <ChecklistItem label="Clear title and description" />
-              <ChecklistItem label="Valid dates and deadline" />
-              <ChecklistItem label="Correct registration URL" />
-              <ChecklistItem label="Banner image optional" />
-            </div>
-          </section>
+        <aside className="space-y-6">
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6">
+            <h2 className="text-lg font-semibold text-white">
+              Admin checklist
+            </h2>
+            <ul className="mt-4 space-y-3 text-sm text-zinc-400">
+              <li>• Verify the content is ready for production.</li>
+              <li>
+                • Use a valid registration URL if applicants need to register
+                externally.
+              </li>
+              <li>• Keep deadline before the event start date.</li>
+              <li>• Add tags so the event is easier to filter later.</li>
+            </ul>
+          </div>
 
-          <section className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5">
-            <p className="font-semibold text-emerald-300">Production ready</p>
-            <p className="mt-2 text-sm leading-6 text-emerald-100/80">
-              This form talks directly to the admin API, so the dashboard stays
-              data-driven and ready for organizer moderation later.
+          <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-6">
+            <p className="text-sm font-medium uppercase tracking-[0.18em] text-emerald-300">
+              LIVE WORKFLOW
             </p>
-          </section>
+            <p className="mt-2 text-sm leading-6 text-emerald-100/80">
+              Once the event is saved, the backend persists it to PostgreSQL and
+              the Events page reads the live records directly.
+            </p>
+          </div>
         </aside>
       </div>
     </div>
@@ -544,7 +541,7 @@ function ChecklistItem({ label }: { label: string }) {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30";
+  "w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-200 outline-none transition-colors placeholder:text-zinc-600 focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/60";
 
 export default function AdminCreateEventPage() {
   return (
