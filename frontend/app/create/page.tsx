@@ -59,7 +59,7 @@ function CreateEventForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof FormState, string>>
+    Partial<Record<keyof FormState | "bannerImage", string>>
   >({});
   const [isLoadingEvent, setIsLoadingEvent] = useState(false);
   const isEditing = Boolean(editId);
