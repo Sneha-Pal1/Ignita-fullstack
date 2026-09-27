@@ -39,6 +39,10 @@ const categoryOptions = [
   { label: "Internship", value: "INTERNSHIP" },
   { label: "Coding Fest", value: "CODING_FEST" },
   { label: "Workshop", value: "WORKSHOP" },
+  { label: "Contest", value: "CONTEST" },
+  { label: "Job", value: "JOB" },
+  { label: "Interview", value: "INTERVIEW" },
+  { label: "Quiz", value: "QUIZ" },
 ];
 
 const modeOptions = [
@@ -232,6 +236,10 @@ function AdminCreateEventForm() {
 
       if (bannerImageFile) {
         formData.append("bannerImage", bannerImageFile);
+      }
+
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
       }
 
       if (isEditing && editId) {

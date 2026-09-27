@@ -212,14 +212,14 @@ export const adminAPI = {
 
   createEvent: async (data: CreateEventPayload | FormData) => {
     if (data instanceof FormData) {
-      return apiClient.postForm<Event>("/admin/events", data);
+      return apiClient.postForm<Event>("/events", data);
     }
     return apiClient.post<Event>("/admin/events", data);
   },
 
   updateEvent: async (id: string, data: Partial<CreateEventPayload> | FormData) => {
     if (data instanceof FormData) {
-      return apiClient.patchForm<Event>(`/admin/events/${id}`, data);
+      return apiClient.patchForm<Event>(`/events/${id}`, data);
     }
     return apiClient.patch<Event>(`/admin/events/${id}`, data);
   },
