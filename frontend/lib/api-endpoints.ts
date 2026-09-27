@@ -79,7 +79,6 @@ export interface CreateEventPayload {
   registrationLink?: string;
   startDate: string;
   endDate: string;
-  bannerImage?: string;
   tags?: string[];
   deadline?: string;
 }
@@ -95,14 +94,14 @@ export const eventsAPI = {
     return apiClient.get<Event>(`/events/${id}`);
   },
 
-  // Create event
-  create: async (data: CreateEventPayload) => {
-    return apiClient.post<Event>("/events", data);
+  // Create event (multipart/form-data)
+  create: async (data: FormData) => {
+    return apiClient.postForm<Event>("/events", data);
   },
 
-  // Update event
-  update: async (id: string, data: Partial<CreateEventPayload>) => {
-    return apiClient.patch<Event>(`/events/${id}`, data);
+  // Update event (multipart/form-data)
+  update: async (id: string, data: FormData) => {
+    return apiClient.patchForm<Event>(`/events/${id}`, data);
   },
 
   // Delete event
@@ -204,12 +203,12 @@ export const adminAPI = {
     return apiClient.get<Event>(`/admin/events/${id}`);
   },
 
-  createEvent: async (data: CreateEventPayload) => {
-    return apiClient.post<Event>("/admin/events", data);
+  createEvent: async (data: FormData) => {
+    return apiClient.postForm<Event>("/admin/events", data);
   },
 
-  updateEvent: async (id: string, data: Partial<CreateEventPayload>) => {
-    return apiClient.patch<Event>(`/admin/events/${id}`, data);
+  updateEvent: async (id: string, data: FormData) => {
+    return apiClient.patchForm<Event>(`/admin/events/${id}`, data);
   },
 
   deleteEvent: async (id: string) => {

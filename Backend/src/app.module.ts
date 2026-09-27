@@ -26,7 +26,7 @@ import { PasswordResetToken } from './auth/entities/password-reset-token.entity'
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [User, Bookmark, Event, Alert, PasswordResetToken],
-      synchronize: true,
+      synchronize: false,
       logging: true,
     }),
     AuthModule,
@@ -42,4 +42,4 @@ import { PasswordResetToken } from './auth/entities/password-reset-token.entity'
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

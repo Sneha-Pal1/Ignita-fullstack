@@ -4,7 +4,6 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  IsUrl,
 } from 'class-validator';
 import { EventCategory } from '../enums/event-category.enum';
 import { EventType } from '../enums/event-type.enum';
@@ -32,7 +31,7 @@ export class CreateEventDto {
   deadline?: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsString()
   bannerImage?: string;
 
   @IsOptional()

@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventSyncService } from './event-sync.service';
@@ -18,6 +20,8 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../auth/entities/user.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/enum/user-role.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadedFile as UploadedFileType } from '../storage/uploaded-file.interface';
 
 /**
  * EventsController
@@ -29,7 +33,7 @@ export class EventsController {
   constructor(
     private readonly eventService: EventsService,
     private readonly eventSyncService: EventSyncService, // Injected for manual sync requests
-  ) {}
+  ) { }
 
   /**
    * POST /events/sync
@@ -50,8 +54,13 @@ export class EventsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post()
-  create(@Body() dto: CreateEventDto, @CurrentUser() user: User) {
-    return this.eventService.create(dto, user); // Creates event linked to admin user
+  @UseInterceptors(FileInterceptor('bannerImage'))
+  create(
+    @Body() dto: CreateEventDto,
+    @UploadedFile() file: UploadedFileType | undefined,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventService.create(dto, user, file);
   }
 
   /**
@@ -81,8 +90,13 @@ export class EventsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
-    return this.eventService.update(id, dto); // Updates event details in PostgreSQL
+  @UseInterceptors(FileInterceptor('bannerImage'))
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateEventDto,
+    @UploadedFile() file: UploadedFileType | undefined,
+  ) {
+    return this.eventService.update(id, dto, file);
   }
 
   /**

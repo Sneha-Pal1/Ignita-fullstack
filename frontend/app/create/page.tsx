@@ -17,7 +17,6 @@ type FormState = {
   registrationLink: string;
   startDate: string;
   endDate: string;
-  bannerImage: string;
   tags: string;
   deadline: string;
 };
@@ -32,7 +31,6 @@ const initialState: FormState = {
   registrationLink: "",
   startDate: "",
   endDate: "",
-  bannerImage: "",
   tags: "",
   deadline: "",
 };
@@ -56,6 +54,7 @@ function CreateEventForm() {
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
   const [form, setForm] = useState<FormState>(initialState);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -100,7 +99,6 @@ function CreateEventForm() {
           registrationLink: event.registrationLink ?? "",
           startDate: toLocalDateTime(event.startDate),
           endDate: toLocalDateTime(event.endDate),
-          bannerImage: event.bannerImage ?? "",
           tags: Array.isArray(event.tags) ? event.tags.join(", ") : "",
           deadline: toLocalDateTime(event.deadline),
         });
@@ -158,14 +156,6 @@ function CreateEventForm() {
       }
     }
 
-    if (form.bannerImage) {
-      try {
-        new URL(form.bannerImage);
-      } catch {
-        errors.bannerImage = "Enter a valid banner image URL.";
-      }
-    }
-
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -181,32 +171,39 @@ function CreateEventForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
-      const payload = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        category: form.category,
-        mode: form.mode,
-        organizer: form.organizer.trim(),
-        location: form.location.trim(),
-        registrationLink: form.registrationLink.trim() || undefined,
-        startDate: new Date(form.startDate).toISOString(),
-        endDate: new Date(form.endDate).toISOString(),
-        bannerImage: form.bannerImage.trim() || undefined,
-        tags: form.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-        deadline: new Date(form.deadline).toISOString(),
-      };
+      // Build FormData — text fields first, then optional file
+      const formData = new FormData();
+      formData.append("title", form.title.trim());
+      formData.append("description", form.description.trim());
+      formData.append("category", form.category);
+      formData.append("mode", form.mode);
+      formData.append("organizer", form.organizer.trim());
+      formData.append("location", form.location.trim());
+      if (form.registrationLink.trim()) {
+        formData.append("registrationLink", form.registrationLink.trim());
+      }
+      formData.append("startDate", new Date(form.startDate).toISOString());
+      formData.append("endDate", new Date(form.endDate).toISOString());
+      formData.append("deadline", new Date(form.deadline).toISOString());
+      const tagList = form.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+      tagList.forEach((tag) => formData.append("tags", tag));
+      // Only append the file when the user selected one
+      if (bannerImageFile) {
+        formData.append("bannerImage", bannerImageFile);
+      }
 
       if (isEditing && editId) {
-        await eventsAPI.update(editId, payload);
+        await eventsAPI.update(editId, formData);
         setSuccessMessage("Event updated successfully. Redirecting to events...");
       } else {
-        await eventsAPI.create(payload);
+        await eventsAPI.create(formData);
         setSuccessMessage("Event created successfully. Redirecting to events...");
       }
       setForm(initialState);
+      setBannerImageFile(null);
 
       window.setTimeout(() => {
         router.push("/events");
@@ -395,15 +392,20 @@ function CreateEventForm() {
               </div>
 
               <div className="grid gap-6 md:grid-cols-2">
-                <Field label="Banner Image URL" error={fieldErrors.bannerImage}>
+                <Field label="Banner Image" error={fieldErrors.bannerImage}>
                   <input
-                    value={form.bannerImage}
+                    type="file"
+                    accept="image/*"
                     onChange={(e) =>
-                      handleChange("bannerImage", e.target.value)
+                      setBannerImageFile(e.target.files?.[0] ?? null)
                     }
-                    className={inputClass}
-                    placeholder="https://images.example.com/banner.jpg"
+                    className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-sm text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-500/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-emerald-400 outline-none transition-colors focus:border-emerald-500/60"
                   />
+                  {bannerImageFile && (
+                    <p className="mt-1 truncate text-xs text-zinc-500">
+                      {bannerImageFile.name}
+                    </p>
+                  )}
                 </Field>
 
                 <Field label="Tags / Skills">

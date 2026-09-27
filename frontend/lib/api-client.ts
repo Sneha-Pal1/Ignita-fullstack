@@ -117,9 +117,13 @@ async function request<T>(
     tokenLength: token?.length || 0,
   });
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+  // For FormData requests the caller passes headers without Content-Type so
+  // the browser can set the correct multipart boundary automatically.
+  const isFormData = options.body instanceof FormData;
+
+  const headers: Record<string, string> = isFormData
+    ? {}
+    : { "Content-Type": "application/json" };
 
   if (options.headers) {
     Object.assign(headers, options.headers);
@@ -202,6 +206,11 @@ export const apiClient = {
   patch: <T>(endpoint: string, body?: unknown) =>
     request<T>(endpoint, { method: "PATCH", body: JSON.stringify(body) }),
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
+  // Multipart form-data helpers — do NOT set Content-Type; browser sets boundary
+  postForm: <T>(endpoint: string, body: FormData) =>
+    request<T>(endpoint, { method: "POST", body }),
+  patchForm: <T>(endpoint: string, body: FormData) =>
+    request<T>(endpoint, { method: "PATCH", body }),
 };
 
 // Bookmark API methods
