@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { adminAPI, type Event } from "@/lib/api-endpoints";
-import { ArrowLeft, Loader2, Plus, Save } from "lucide-react";
+import { ArrowLeft, Loader2, Plus, Save, Trash2 } from "lucide-react";
 
 type FormState = {
   title: string;
@@ -18,7 +18,6 @@ type FormState = {
   endDate: string;
   deadline: string;
   tags: string;
-  bannerImage: string;
 };
 
 const initialForm: FormState = {
@@ -33,7 +32,6 @@ const initialForm: FormState = {
   endDate: "",
   deadline: "",
   tags: "",
-  bannerImage: "",
 };
 
 const categoryOptions = [
@@ -55,8 +53,11 @@ function AdminCreateEventForm() {
   const editId = searchParams.get("edit");
   const isEditing = Boolean(editId);
   const [form, setForm] = useState<FormState>(initialForm);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
+  const [bannerImagePreview, setBannerImagePreview] = useState<string | null>(null);
+  const [fileValidationError, setFileValidationError] = useState<string | null>(null);
   const [errors, setErrors] = useState<
-    Partial<Record<keyof FormState, string>>
+    Partial<Record<keyof FormState | "bannerImage", string>>
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingEvent, setIsLoadingEvent] = useState(false);
@@ -77,6 +78,9 @@ function AdminCreateEventForm() {
 
         if (isMounted) {
           setForm(mapEventToForm(event));
+          if (event.bannerImage) {
+            setBannerImagePreview(event.bannerImage);
+          }
         }
       } catch (loadError) {
         if (isMounted) {
@@ -112,8 +116,41 @@ function AdminCreateEventForm() {
     setErrorMessage(null);
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFileValidationError(null);
+    setErrors((current) => ({ ...current, bannerImage: undefined }));
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      setFileValidationError("Invalid format. Please select a PNG, JPG, or WEBP image.");
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5 MB
+    if (file.size > maxSize) {
+      setFileValidationError("File size exceeds the 5 MB limit.");
+      return;
+    }
+
+    setBannerImageFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setBannerImagePreview(objectUrl);
+  };
+
+  const handleRemoveImage = () => {
+    setBannerImageFile(null);
+    setBannerImagePreview(null);
+    setFileValidationError(null);
+    setErrors((current) => ({ ...current, bannerImage: undefined }));
+  };
+
   const validate = () => {
-    const nextErrors: Partial<Record<keyof FormState, string>> = {};
+    const nextErrors: Partial<Record<keyof FormState | "bannerImage", string>> = {};
 
     if (!form.title.trim()) nextErrors.title = "Title is required.";
     if (!form.description.trim())
@@ -148,12 +185,8 @@ function AdminCreateEventForm() {
       }
     }
 
-    if (form.bannerImage) {
-      try {
-        new URL(form.bannerImage);
-      } catch {
-        nextErrors.bannerImage = "Enter a valid image URL.";
-      }
+    if (fileValidationError) {
+      nextErrors.bannerImage = fileValidationError;
     }
 
     setErrors(nextErrors);
@@ -171,33 +204,45 @@ function AdminCreateEventForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
-      const payload = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        category: form.category,
-        mode: form.mode,
-        organizer: form.organizer.trim(),
-        location: form.location.trim(),
-        registrationLink: form.registrationLink.trim() || undefined,
-        startDate: new Date(form.startDate).toISOString(),
-        endDate: new Date(form.endDate).toISOString(),
-        deadline: form.deadline
-          ? new Date(form.deadline).toISOString()
-          : undefined,
-        tags: form.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-        bannerImage: form.bannerImage.trim() || undefined,
-      };
+      const formData = new FormData();
+
+      formData.append("title", form.title.trim());
+      formData.append("description", form.description.trim());
+      formData.append("category", form.category);
+      formData.append("mode", form.mode);
+      formData.append("organizer", form.organizer.trim());
+      formData.append("location", form.location.trim());
+
+      if (form.registrationLink.trim()) {
+        formData.append("registrationLink", form.registrationLink.trim());
+      }
+
+      formData.append("startDate", new Date(form.startDate).toISOString());
+      formData.append("endDate", new Date(form.endDate).toISOString());
+
+      if (form.deadline) {
+        formData.append("deadline", new Date(form.deadline).toISOString());
+      }
+
+      const tagList = form.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      tagList.forEach((tag) => formData.append("tags", tag));
+
+      if (bannerImageFile) {
+        formData.append("bannerImage", bannerImageFile);
+      }
 
       if (isEditing && editId) {
-        await adminAPI.updateEvent(editId, payload);
+        await adminAPI.updateEvent(editId, formData);
         setSuccessMessage("Event updated successfully.");
       } else {
-        await adminAPI.createEvent(payload);
+        await adminAPI.createEvent(formData);
         setSuccessMessage("Event created successfully.");
         setForm(initialForm);
+        setBannerImageFile(null);
+        setBannerImagePreview(null);
       }
 
       window.setTimeout(() => {
@@ -403,26 +448,100 @@ function AdminCreateEventForm() {
               </Field>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <Field label="Banner Image URL" error={errors.bannerImage}>
-                <input
-                  value={form.bannerImage}
-                  onChange={(event) =>
-                    handleChange("bannerImage", event.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="https://images..."
-                />
-              </Field>
+            <Field label="Tags / Skills">
+              <input
+                value={form.tags}
+                onChange={(event) => handleChange("tags", event.target.value)}
+                className={inputClass}
+                placeholder="AI, React, Product Design"
+              />
+            </Field>
 
-              <Field label="Tags / Skills">
-                <input
-                  value={form.tags}
-                  onChange={(event) => handleChange("tags", event.target.value)}
-                  className={inputClass}
-                  placeholder="AI, React, Product Design"
-                />
-              </Field>
+            {/* Banner Image Upload Control */}
+            <div className="space-y-2">
+              <span className="font-mono text-xs font-medium uppercase tracking-wider text-[#8a8a86]">
+                Banner Image
+              </span>
+
+              {bannerImagePreview ? (
+                <div className="relative overflow-hidden rounded-md border border-[#242422] bg-[#0e0e0d] p-3">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-md border border-[#242422] bg-[#141413]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={bannerImagePreview}
+                      alt="Banner Preview"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#242422] pt-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-mono text-xs font-medium text-[#f4f4f0]">
+                        {bannerImageFile
+                          ? bannerImageFile.name
+                          : "Current Banner Image"}
+                      </p>
+                      {bannerImageFile && (
+                        <p className="font-mono text-[10px] text-[#8a8a86]">
+                          {(bannerImageFile.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label
+                        htmlFor="banner-image-input"
+                        className="inline-flex items-center gap-1 rounded-md border border-[#242422] bg-[#141413] px-3 py-1.5 font-mono text-xs font-medium text-[#f4f4f0] transition-colors hover:border-[#FFB100]/40 hover:text-[#FFB100] cursor-pointer"
+                      >
+                        <input
+                          id="banner-image-input"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          onChange={handleImageSelect}
+                          className="sr-only"
+                        />
+                        Replace
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="inline-flex items-center gap-1 rounded-md border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20"
+                      >
+                        <Trash2 size={13} /> Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <label
+                  htmlFor="banner-image-input"
+                  className="group relative flex flex-col items-center justify-center rounded-md border border-dashed border-[#242422] bg-[#0e0e0d] p-6 text-center transition-all hover:border-[#FFB100]/50 hover:bg-[#141413] cursor-pointer"
+                >
+                  <input
+                    id="banner-image-input"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={handleImageSelect}
+                    className="sr-only"
+                  />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md border border-[#242422] bg-[#141413] text-[#FFB100] transition-transform group-hover:scale-105">
+                    <Plus size={20} />
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-[#f4f4f0]">
+                    Upload banner image
+                  </p>
+                  <p className="mt-1 text-xs text-[#8a8a86]">
+                    Click to choose an image
+                  </p>
+                  <p className="mt-3 font-mono text-[11px] text-[#8a8a86]">
+                    PNG / JPG / WEBP · Max 5 MB
+                  </p>
+                </label>
+              )}
+
+              {(errors.bannerImage || fileValidationError) && (
+                <span className="font-mono text-xs text-red-400">
+                  {errors.bannerImage || fileValidationError}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-col gap-3 border-t border-[#242422] pt-6 sm:flex-row sm:items-center sm:justify-between">
@@ -503,7 +622,6 @@ function mapEventToForm(event: Event): FormState {
     endDate: toDateTimeLocal(event.endDate),
     deadline: toDateTimeLocal(event.deadline),
     tags: Array.isArray(event.tags) ? event.tags.join(", ") : "",
-    bannerImage: event.bannerImage ?? "",
   };
 }
 
@@ -539,15 +657,6 @@ function Field({
       {children}
       {error ? <span className="font-mono text-xs text-red-400">{error}</span> : null}
     </label>
-  );
-}
-
-function ChecklistItem({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="h-1.5 w-1.5 rounded-full bg-[#FFB100]" />
-      <span>{label}</span>
-    </div>
   );
 }
 
