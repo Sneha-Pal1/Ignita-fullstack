@@ -25,6 +25,9 @@ import { PasswordResetToken } from './auth/entities/password-reset-token.entity'
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
       entities: [User, Bookmark, Event, Alert, PasswordResetToken],
       synchronize: false,
       logging: true,
@@ -42,4 +45,4 @@ import { PasswordResetToken } from './auth/entities/password-reset-token.entity'
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
