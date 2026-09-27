@@ -171,31 +171,55 @@ function AdminCreateEventForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
-      const payload = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        category: form.category,
-        mode: form.mode,
-        organizer: form.organizer.trim(),
-        location: form.location.trim(),
-        registrationLink: form.registrationLink.trim() || undefined,
-        startDate: new Date(form.startDate).toISOString(),
-        endDate: new Date(form.endDate).toISOString(),
-        deadline: form.deadline
-          ? new Date(form.deadline).toISOString()
-          : undefined,
-        tags: form.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-        bannerImage: form.bannerImage.trim() || undefined,
-      };
+      const formData = new FormData();
+
+      formData.append("title", form.title.trim());
+      formData.append("description", form.description.trim());
+      formData.append("category", form.category);
+      formData.append("mode", form.mode);
+      formData.append("organizer", form.organizer.trim());
+      formData.append("location", form.location.trim());
+
+      if (form.registrationLink.trim()) {
+        formData.append("registrationLink", form.registrationLink.trim());
+      }
+
+      formData.append(
+        "startDate",
+        new Date(form.startDate).toISOString()
+      );
+
+      formData.append(
+        "endDate",
+        new Date(form.endDate).toISOString()
+      );
+
+      if (form.deadline) {
+        formData.append(
+          "deadline",
+          new Date(form.deadline).toISOString()
+        );
+      }
+
+      formData.append(
+        "tags",
+        JSON.stringify(
+          form.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        )
+      );
+
+      if (form.bannerImage.trim()) {
+        formData.append("bannerImage", form.bannerImage.trim());
+      }
 
       if (isEditing && editId) {
-        await adminAPI.updateEvent(editId, payload);
+        await adminAPI.updateEvent(editId, formData);
         setSuccessMessage("Event updated successfully.");
       } else {
-        await adminAPI.createEvent(payload);
+        await adminAPI.createEvent(formData);
         setSuccessMessage("Event created successfully.");
         setForm(initialForm);
       }
