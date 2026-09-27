@@ -16,7 +16,11 @@ async function bootstrap() {
 
   // Enable CORS so frontend can call backend
   const frontendUrl = process.env.FRONTEND_URL;
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://ignita.in',
+  ];
   if (frontendUrl) {
     allowedOrigins.push(frontendUrl);
     // Add variations (e.g. without trailing slash if present)
@@ -28,6 +32,10 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(process.env.PORT ?? 3001);
+  // await app.listen(process.env.PORT ?? 3001);
+
+  const port = process.env.PORT || 10000;
+
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
