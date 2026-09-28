@@ -16,6 +16,7 @@ import { AdminModule } from './admin/admin.module';
 import { Alert } from './alerts/entities/alert.entity';
 import { PasswordResetToken } from './auth/entities/password-reset-token.entity';
 import { AddMissingEventCategoryEnumValues1710000000000 } from './migrations/1710000000000-AddMissingEventCategoryEnumValues';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -48,8 +49,9 @@ import { AddMissingEventCategoryEnumValues1710000000000 } from './migrations/171
     AnalyticsModule,
     NotificationModule,
     AdminModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
