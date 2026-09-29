@@ -1,338 +1,720 @@
 # Ignita
 
-Ignita is a full-stack, decoupled platform designed to centralize and automate opportunity discovery, deadline tracking, and participation analytics for students and software engineers. The platform unifies distributed listings for hackathons, engineering internships, competitive programming contests, and technical conferences into a single searchable index with automated alerting and role-based administrative workflows.
+A full-stack opportunity discovery and career growth platform for students, developers, and tech enthusiasts.
 
----
+Ignita brings hackathons, internships, coding contests, workshops, jobs, and other technical opportunities into a single platform where users can discover opportunities, save them, track deadlines, receive alerts, and analyze their activity.
 
-## Architecture Overview
+## Live Application
 
-The system is implemented as a decoupled client-server architecture. The presentation tier utilizes Next.js with React Server and Client Components, while the core business domain is managed by a modular NestJS application serving structured REST APIs over PostgreSQL managed via TypeORM.
+https://ignita.in/
+
+## Repository
+
+https://github.com/Sneha-Pal1/Ignita-fullstack
+
+
+## Overview
+
+Ignita is built using a decoupled frontend and backend architecture.
+
+The frontend is developed with Next.js and React, while the backend is built with NestJS and TypeScript. PostgreSQL is used as the primary database through TypeORM.
+
+The production backend is containerized with Docker and deployed on AWS ECS Fargate behind an Application Load Balancer. Amazon RDS provides the production PostgreSQL database, while Amazon S3 and CloudFront handle media storage and delivery.
+
+Authentication is implemented using JWT, Passport, bcrypt, and Google OAuth, with role-based authorization for ADMIN and USER accounts.
+
+
+## Architecture
 
 ```mermaid
 flowchart TB
-    %% Styling Definitions - Eraser.io Style Clean Minimalist Theme
-    classDef clientStyle fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc;
-    classDef edgeStyle fill:#0f172a,stroke:#334155,stroke-width:1.5px,color:#f8fafc;
-    classDef gwStyle fill:#111827,stroke:#374151,stroke-width:1.5px,color:#f8fafc;
-    classDef appStyle fill:#18181b,stroke:#3f3f46,stroke-width:1.5px,color:#f8fafc;
-    classDef dataStyle fill:#022c22,stroke:#065f46,stroke-width:1.5px,color:#f8fafc;
-    classDef extStyle fill:#312e81,stroke:#4338ca,stroke-width:1.5px,color:#f8fafc;
 
-    subgraph CLIENT_TIER ["1. Client Tier"]
-        Browser["Desktop & Mobile Clients"]:::clientStyle
-    end
+    USER["User"]
 
-    subgraph PRESENTATION_TIER ["2. Presentation & Rendering Tier (Next.js / Vercel Edge)"]
-        direction TB
-        AppRouter["App Router (SSR & Static Pages)"]:::edgeStyle
-        AuthContext["Auth Context & State Store"]:::edgeStyle
-        APIClient["API Client / Axios Interceptors"]:::edgeStyle
-        
-        AppRouter <--> AuthContext
-        AppRouter --> APIClient
-    end
+    DNS["DNS
+    ignita.in
+    api.ignita.in"]
 
-    subgraph GATEWAY_TIER ["3. Ingress & Security Middleware Tier (NestJS)"]
-        direction TB
-        CORS["CORS & ValidationPipe"]:::gwStyle
-        JWTGuard["JwtAuthGuard (Passport JWT)"]:::gwStyle
-        RolesGuard["RolesGuard (RBAC: ADMIN / USER)"]:::gwStyle
-        
-        CORS --> JWTGuard --> RolesGuard
-    end
+    VERCEL["Vercel
+    Next.js Frontend"]
 
-    subgraph SERVICE_TIER ["4. Core Domain Services Tier (NestJS / Render)"]
-        direction TB
-        AuthService["Auth & OAuth Service"]:::appStyle
-        EventService["Events Management Service"]:::appStyle
-        BookmarkService["Bookmark & Tracking Service"]:::appStyle
-        AlertService["Alerts & Notifications Service"]:::appStyle
-        AnalyticsService["Participation Analytics Service"]:::appStyle
-        LinkedInService["LinkedIn Post Generator Service"]:::appStyle
-        AdminService["Admin Control Service"]:::appService
-    end
+    ALB["AWS Application Load Balancer
+    HTTPS :443"]
 
-    subgraph DATA_TIER ["5. Persistence Tier (PostgreSQL / TypeORM)"]
-        direction TB
-        ORM["TypeORM Entity Manager"]:::dataStyle
-        
-        subgraph TABLES ["PostgreSQL Schemas"]
-            UserTable[("users")]:::dataStyle
-            EventTable[("events")]:::dataStyle
-            BookmarkTable[("bookmarks")]:::dataStyle
-            AlertTable[("alerts")]:::dataStyle
-            TokenTable[("password_reset_tokens")]:::dataStyle
-        end
-        
-        ORM --> UserTable
-        ORM --> EventTable
-        ORM --> BookmarkTable
-        ORM --> AlertTable
-        ORM --> TokenTable
-    end
+    ECS["AWS ECS Fargate
+    NestJS Backend
+    Port :10000"]
 
-    subgraph EXTERNAL_SERVICES ["6. External Integrations"]
-        GoogleAuth["Google OAuth 2.0 API"]:::extStyle
-        SMTPService["SMTP Email Provider"]:::extStyle
-    end
+    RDS["Amazon RDS
+    PostgreSQL"]
 
-    %% Communication Flow
-    Browser -->|"HTTPS / JSON"| AppRouter
-    APIClient -->|"REST API Requests (Bearer Token)"| CORS
-    
-    RolesGuard --> AuthService
-    RolesGuard --> EventService
-    RolesGuard --> BookmarkService
-    RolesGuard --> AlertService
-    RolesGuard --> AnalyticsService
-    RolesGuard --> LinkedInService
-    RolesGuard --> AdminService
+    S3["Amazon S3
+    Private Media Storage"]
 
-    AuthService <-->|"OAuth Validation"| GoogleAuth
-    AlertService -->|"Dispatch Email Alerts"| SMTPService
-    AuthService -->|"Password Reset Mails"| SMTPService
+    CF["Amazon CloudFront
+    CDN"]
 
-    AuthService --> ORM
-    EventService --> ORM
-    BookmarkService --> ORM
-    AlertService --> ORM
-    AnalyticsService --> ORM
-    AdminService --> ORM
-```
+    ECR["Amazon ECR
+    Docker Images"]
 
----
+    SM["AWS Secrets Manager
+    Production Secrets"]
 
-## Core System Modules
+    CW["Amazon CloudWatch
+    Application Logs"]
 
-### 1. Opportunity Aggregation and Filtering
-* Full-text search and category-based filtering across Hackathons, Internships, Coding Contests, and Workshops.
-* Event detail schema capturing registration deadlines, participation modes (Online / In-Person), organizer metadata, and direct external application links.
-* Fallback rendering mechanisms for unauthenticated guest sessions to maintain page responsiveness and indexing efficiency.
+    USER --> DNS
 
-### 2. User State, Bookmarks, and Tracking
-* Relational bookmarking engine establishing foreign-key constraints between user identifiers and event entities.
-* Persistent bookmark status synchronization across UI cards and detailed view pages with optimistic UI updates.
+    DNS --> VERCEL
+    DNS --> ALB
 
-### 3. Automated Alerts and Notification Delivery
-* Event deadline tracking system delivering structured notification payloads to prevent missed application cutoffs.
-* Direct integration with SMTP email transport for account notifications and transactional authentication messages.
+    VERCEL -->|"HTTPS REST API"| ALB
 
-### 4. Participation Analytics
-* Client dashboard visualizer calculating user interaction rates, saved event ratios, and engagement trends.
-* Server-side metric aggregation endpoints supporting reporting queries.
+    ALB -->|"HTTP :10000"| ECS
 
-### 5. Content Generation Utility
-* LinkedIn post formulation utility creating structured announcement copy from event milestones.
+    ECS -->|"PostgreSQL"| RDS
+    ECS -->|"Upload / Delete"| S3
 
-### 6. Role-Based Access Control (RBAC) and Admin Management
-* Dual-role permission hierarchy (`ADMIN`, `USER`) enforced via metadata reflection decorators (`@Roles()`) and custom NestJS execution guards (`RolesGuard`).
-* Administrative interface for creating, modifying, categorizing, and deleting live event records.
+    S3 --> CF
+    CF --> USER
 
----
+    ECS -->|"Read Secrets"| SM
+    ECS -->|"Logs"| CW
 
-## Technical Specifications
+    ECR -->|"Container Image"| ECS
 
-| Layer | Technology | Key Details |
-| :--- | :--- | :--- |
-| **Frontend Framework** | Next.js (React 19) | Server Components, App Router, Client Component hydration |
-| **Frontend Styling** | Tailwind CSS, Lucide | Design system with responsive layout boundaries |
-| **Client Auth** | Google OAuth React | Token storage abstraction, Axios request interceptors |
-| **Backend Framework** | NestJS | Dependency injection, module encapsulation, TypeScript |
-| **Database & ORM** | PostgreSQL, TypeORM | Relational schema definitions, automatic sync/migrations |
-| **Security & Auth** | Passport-JWT, Bcrypt | Stateless Bearer token verification, password hashing |
-| **Containerization** | Docker, Docker Compose | Isolated multi-stage production and development containers |
-| **Infrastructure** | Vercel, Render | Edge-hosted frontend and cloud-hosted API and managed PostgreSQL |
+## Production Architecture
+                         Users
+                           |
+                           v
+                    DNS / Domain
+                    /           \
+                   /             \
+                  v               v
+             ignita.in       api.ignita.in
+                 |                |
+                 v                v
+              Vercel             ALB
+                 |                |
+                 | HTTPS           | HTTP :10000
+                 |                |
+                 +--------------> ECS Fargate
+                                      |
+                       +--------------+--------------+
+                       |              |              |
+                       v              v              v
+                    RDS            S3          Secrets Manager
+                 PostgreSQL       Storage
+                                      |
+                                      v
+                                  CloudFront
 
----
+                       ECS
+                        |
+                        v
+                   CloudWatch
 
-## Database Entity Relationship Diagram
+                       ECR
+                        |
+                        v
+                  Docker Image
 
-```mermaid
-erDiagram
-    USERS ||--o{ BOOKMARKS : creates
-    USERS ||--o{ ALERTS : receives
-    USERS ||--o{ EVENTS : organizes
-    USERS ||--o{ PASSWORD_RESET_TOKENS : requests
-    EVENTS ||--o{ BOOKMARKS : referenced_in
-    EVENTS ||--o{ ALERTS : triggers
+Core Features
+Opportunity Discovery
 
-    USERS {
-        uuid id PK
-        string name
-        string email UK
-        string phone
-        string password
-        enum role "USER | ADMIN"
-        timestamp createdAt
-        timestamp updatedAt
-    }
+Discover opportunities across multiple categories:
 
-    EVENTS {
-        uuid id PK
-        string title
-        text description
-        enum category "HACKATHON | INTERNSHIP | CONTEST | WORKSHOP"
-        enum mode "ONLINE | OFFLINE | HYBRID"
-        string organizer
-        string location
-        string registrationLink
-        timestamp startDate
-        timestamp endDate
-        timestamp deadline
-        string bannerImage
-        json tags
-        uuid createdById FK
-        timestamp createdAt
-        timestamp updatedAt
-    }
+Hackathons
+Internships
+Coding contests
+Workshops
+Jobs
+Interviews
+Quizzes
+Coding festivals
 
-    BOOKMARKS {
-        uuid id PK
-        uuid userId FK
-        uuid eventId FK
-        timestamp createdAt
-    }
+Each opportunity can contain:
 
-    ALERTS {
-        uuid id PK
-        uuid userId FK
-        uuid eventId FK
-        string message
-        boolean isRead
-        timestamp createdAt
-    }
+Title
+Description
+Organization
+Category
+Location
+Participation mode
+Registration URL
+Start date
+End date
+Registration deadline
+Tags
+Banner image
+Search and Filtering
 
-    PASSWORD_RESET_TOKENS {
-        uuid id PK
-        string token
-        uuid userId FK
-        timestamp expiresAt
-        timestamp createdAt
-    }
-```
+Users can search and filter opportunities based on their requirements.
 
----
+The discovery interface provides category-based filtering and event-specific information.
 
-## Directory Structure
+Event Details
 
-```
-Ignita/
-├── frontend/
-│   ├── app/
-│   │   ├── (auth)/                 # Login, Registration, Password Reset routes
-│   │   ├── admin/                  # Protected administrative management portal
-│   │   ├── alerts/                 # Deadline notifications dashboard
-│   │   ├── analytics/              # Participation statistics view
-│   │   ├── Bookmarks/              # User-saved event collection
-│   │   ├── Dashboard/              # Authenticated user landing portal
-│   │   ├── events/                 # Discovery listings and slug-based detail routes
-│   │   ├── linkedin-post-generator/# Copywriting generator utility
-│   │   └── profile/                # User profile settings
-│   ├── components/                 # Atomic UI components, cards, navigation wrappers
-│   ├── lib/                        # Axios client, auth context provider, custom hooks
-│   └── public/                     # Static media and brand assets
+Every opportunity has a dedicated details page containing the relevant event information and registration details.
+
+Users can directly access the external registration page from Ignita.
+
+Bookmarks
+
+Authenticated users can bookmark opportunities for later.
+Bookmarks are persisted in PostgreSQL and associated with the authenticated user.
+
+Alerts and Notifications
+
+Ignita provides deadline-related alerts and notification functionality to help users keep track of important opportunity deadlines.
+
+The backend contains dedicated alert and notification modules for managing this functionality.
+
+Analytics
+
+The analytics module provides insights into user activity and opportunity engagement.
+
+It can track information such as:
+
+Saved opportunities
+User interactions
+Engagement metrics
+Participation-related statistics
+LinkedIn Post Generator
+
+Ignita includes a LinkedIn post generation utility that helps users create structured LinkedIn content based on opportunity or participation information.
+
+Authentication
+
+Ignita supports:
+
+Email/password authentication
+JWT authentication
+Google OAuth
+Password hashing with bcrypt
+Password reset functionality
+Protected routes
+Role-Based Access Control
+
+The platform supports two roles:
+
+USER
+ADMIN
+
+Administrative functionality is protected using NestJS guards and role-based authorization.
+
+Admins can:
+
+Create opportunities
+Update opportunities
+Delete opportunities
+Manage event information
+Upload event banner images
+Technology Stack
+Frontend
+Next.js
+React
+TypeScript
+Tailwind CSS
+Lucide React
+Axios
+App Router
+Backend
+NestJS
+TypeScript
+TypeORM
+PostgreSQL
+Passport
+JWT
+bcrypt
+class-validator
+Authentication
+JWT
+Passport JWT
+Google OAuth
+bcrypt
+Role-Based Access Control
+Cloud and Infrastructure
+AWS ECS Fargate
+AWS Application Load Balancer
+Amazon RDS PostgreSQL
+Amazon S3
+Amazon CloudFront
+Amazon ECR
+AWS Secrets Manager
+Amazon CloudWatch
+AWS IAM
+AWS ACM
+Deployment and Development
+Docker
+Docker Compose
+Vercel
+GitHub
+AWS
+Backend Architecture
+
+The backend follows a modular NestJS architecture.
+
+Backend/
+└── src/
+    ├── admin/
+    ├── alerts/
+    ├── analytics/
+    ├── auth/
+    ├── bookmark/
+    ├── events/
+    ├── health/
+    ├── linkedin-post/
+    ├── migrations/
+    ├── notification/
+    ├── storage/
+    ├── user/
+    ├── app.module.ts
+    ├── data-source.ts
+    └── main.ts
+
+Each major domain is separated into its own NestJS module.
+
+This keeps authentication, events, bookmarks, alerts, analytics, storage, and administrative functionality independently maintainable.
+
+Frontend Architecture
+frontend/
+├── app/
+│   ├── (auth)/
+│   ├── admin/
+│   ├── alerts/
+│   ├── analytics/
+│   ├── bookmarks/
+│   ├── dashboard/
+│   ├── events/
+│   ├── linkedin-post-generator/
+│   └── profile/
+│
+├── components/
+├── lib/
+└── public/
+
+The frontend uses the Next.js App Router with a combination of server and client components.
+
+API communication is handled through a centralized API client.
+
+Database
+
+Ignita uses PostgreSQL with TypeORM.
+
+Production PostgreSQL is hosted on Amazon RDS.
+
+The main entities include:
+
+Users
+Events
+Bookmarks
+Alerts
+PasswordResetTokens
+
+Relationships include:
+
+Authentication Flow
+User
+ |
+ v
+Next.js Frontend
+ |
+ | Login
+ v
+NestJS Auth API
+ |
+ v
+Validate Credentials
+ |
+ v
+PostgreSQL
+ |
+ v
+Generate JWT
+ |
+ v
+Frontend
+ |
+ | Bearer Token
+ v
+Protected API
+ |
+ v
+JwtAuthGuard
+ |
+ v
+RolesGuard
+ |
+ v
+Controller
+ |
+ v
+Service
+ |
+ v
+Database
+Security
+
+Ignita uses multiple security layers.
+
+Application Security
+JWT authentication
+Passport JWT
+Role-Based Access Control
+bcrypt password hashing
+DTO validation
+CORS configuration
+Protected admin routes
+AWS Security
+HTTPS through AWS Application Load Balancer
+AWS Security Groups
+Private S3 bucket
+IAM permissions
+AWS Secrets Manager
+CloudFront Origin Access Control
+RDS authentication
+Container-level isolation through ECS
+S3 and CloudFront
+
+Event banner images are stored in a private Amazon S3 bucket.
+
+The upload flow is:
+
+Admin
+ |
+ v
+Next.js
+ |
+ | multipart/form-data
+ v
+NestJS
+ |
+ v
+StorageService
+ |
+ v
+Amazon S3
+ |
+ v
+CloudFront
+ |
+ v
+User
+
+The backend stores the S3 object key and resolves it to the CloudFront URL when returning event data.
+
+This keeps the S3 bucket private while allowing media to be delivered efficiently through CloudFront.
+
+Docker
+
+Ignita provides separate Docker configurations for development and production.
+
+docker-compose.dev.yml
+docker-compose.prod.yml
+
+The production backend uses a dedicated production Dockerfile.
+
+Backend/
+├── Dockerfile.dev
+└── Dockerfile.prod
+
+The container image is stored in Amazon ECR and deployed to ECS Fargate.
+
+AWS Deployment Flow
+Developer
+    |
+    v
+GitHub
+    |
+    v
+Docker Build
+    |
+    v
+Amazon ECR
+    |
+    v
+ECS Task Definition
+    |
+    v
+ECS Fargate
+    |
+    v
+Application Load Balancer
+    |
+    v
+api.ignita.in
+
+The frontend is independently deployed through Vercel.
+
+GitHub
+   |
+   v
+Vercel
+   |
+   v
+Next.js
+   |
+   v
+ignita.in
+AWS Services
+Service	Purpose
+Amazon ECS Fargate	Runs the NestJS backend container
+Application Load Balancer	Routes HTTPS traffic to ECS
+Amazon RDS	Hosts production PostgreSQL
+Amazon S3	Stores uploaded media
+Amazon CloudFront	Delivers media through CDN
+Amazon ECR	Stores Docker images
+AWS Secrets Manager	Stores production secrets
+Amazon CloudWatch	Stores application logs
+AWS IAM	Controls AWS permissions
+AWS ACM	Provides TLS certificate for the API domain
+Vercel	Hosts the Next.js frontend
+Health Check
+
+The backend exposes:
+
+GET /health
+
+Response:
+
+{
+  "status": "ok",
+  "service": "ignita-backend"
+}
+
+The Application Load Balancer uses this endpoint to determine whether the ECS backend is healthy.
+
+Local Development
+Prerequisites
+Node.js
+npm
+Docker
+Docker Compose
+PostgreSQL
+Git
+Clone the Repository
+git clone https://github.com/Sneha-Pal1/Ignita-fullstack.git
+
+cd Ignita-fullstack
+Backend
+cd Backend
+
+npm install
+
+npm run start:dev
+
+Backend:
+
+http://localhost:3001
+
+Health check:
+
+http://localhost:3001/health
+Frontend
+
+Open another terminal:
+
+cd frontend
+
+npm install
+
+npm run dev
+
+Frontend:
+
+http://localhost:3000
+Environment Variables
+Backend
+
+Create:
+
+Backend/.env.development
+
+Example:
+
+NODE_ENV=development
+PORT=3001
+
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ignita_db
+
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+
+FRONTEND_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+AWS_REGION=ap-south-1
+AWS_S3_BUCKET_NAME=your_bucket
+AWS_CLOUDFRONT_URL=https://your-cloudfront-domain
+Frontend
+
+Create:
+
+frontend/.env.local
+
+Example:
+
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
+
+Never commit real credentials or secrets to Git.
+
+Docker Development
+
+Start the complete development environment:
+
+docker compose -f docker-compose.dev.yml up --build
+
+Stop the environment:
+
+docker compose -f docker-compose.dev.yml down
+Database Migrations
+
+Production database synchronization is disabled.
+
+synchronize: false
+
+Database schema changes are managed through TypeORM migrations.
+
+Run migrations with:
+
+cd Backend
+
+npm run migration:run
+Production Build
+Backend
+cd Backend
+
+npm run build
+
+docker build -f Dockerfile.prod -t ignita-backend:latest .
+Frontend
+cd frontend
+
+npm run build
+API Structure
+
+The backend is organized around domain-specific REST APIs.
+
+/auth
+/users
+/events
+/bookmarks
+/alerts
+/analytics
+/notifications
+/linkedin-post
+/admin
+/health
+
+Authentication and authorization are applied to protected endpoints through NestJS guards.
+
+Project Structure
+Ignita-fullstack/
 │
 ├── Backend/
 │   ├── src/
-│   │   ├── admin/                  # Admin-specific handlers and service overrides
-│   │   ├── alerts/                 # Alert generation and query controllers
-│   │   ├── analytics/              # Metric calculation and reporting modules
-│   │   ├── auth/                   # JWT strategies, guards, login/register controllers
-│   │   ├── bookmark/               # User-event relational bookmarking handlers
-│   │   ├── events/                 # CRUD operations and filtering for event records
-│   │   ├── linkedin-post/          # Structured text generation utilities
-│   │   ├── notification/           # Email transport and notification dispatchers
-│   │   ├── user/                   # User profile and account query logic
-│   │   ├── app.module.ts           # Root dependency injection tree
-│   │   └── main.ts                 # Bootstrap entry point, CORS, and ValidationPipe
-│   ├── Dockerfile.dev              # Development environment container spec
-│   └── Dockerfile.prod             # Multi-stage optimized production build spec
+│   │   ├── admin/
+│   │   ├── alerts/
+│   │   ├── analytics/
+│   │   ├── auth/
+│   │   ├── bookmark/
+│   │   ├── events/
+│   │   ├── health/
+│   │   ├── linkedin-post/
+│   │   ├── migrations/
+│   │   ├── notification/
+│   │   ├── storage/
+│   │   ├── user/
+│   │   ├── app.module.ts
+│   │   ├── data-source.ts
+│   │   └── main.ts
+│   │
+│   ├── Dockerfile.dev
+│   └── Dockerfile.prod
 │
-├── docker-compose.dev.yml          # Local container composition (Client, Server, DB)
-├── docker-compose.prod.yml         # Production orchestration manifest
+├── frontend/
+│   ├── app/
+│   │   ├── (auth)/
+│   │   ├── admin/
+│   │   ├── alerts/
+│   │   ├── analytics/
+│   │   ├── bookmarks/
+│   │   ├── dashboard/
+│   │   ├── events/
+│   │   ├── linkedin-post-generator/
+│   │   └── profile/
+│   │
+│   ├── components/
+│   ├── lib/
+│   └── public/
+│
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
 └── README.md
-```
+Current Production Setup
+Frontend
+    Vercel
+    https://ignita.in/
 
----
+Backend
+    AWS ECS Fargate
+    |
+    +-- Application Load Balancer
+    |
+    +-- https://api.ignita.in
 
-## Environment Configuration
+Database
+    Amazon RDS PostgreSQL
 
-### Backend Environment Configuration (`Backend/.env.development` or `Backend/.env.production`)
+Object Storage
+    Amazon S3
 
-```env
-NODE_ENV=development
-PORT=3001
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ignita_db
-JWT_SECRET=your_production_grade_jwt_secret_key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_specific_password
-```
+CDN
+    Amazon CloudFront
 
-### Frontend Environment Configuration (`frontend/.env.local` or `frontend/.env.production`)
+Container Registry
+    Amazon ECR
 
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
-```
+Secrets
+    AWS Secrets Manager
 
----
+Monitoring
+    Amazon CloudWatch
+Future Improvements
 
-## Local Development and Deployment
+Planned improvements include:
 
-### Option A: Native Node Execution
+GitHub Actions CI/CD
+Automated ECS deployments
+Terraform for Infrastructure as Code
+Redis and BullMQ for background jobs
+Automated opportunity ingestion workers
+ECS auto scaling
+CloudWatch alarms and dashboards
+Improved observability
+API rate limiting
+Additional automated testing
+Private networking for production database infrastructure
+Project Goals
 
-#### 1. Database Provisioning
-Ensure a PostgreSQL server instance is running and accessible via the `DATABASE_URL` specified in your backend environment configuration.
+Ignita is designed around three primary goals:
 
-#### 2. Backend Service
-```bash
-cd Backend
-npm install
-npm run start:dev
-```
-The NestJS API will be available at `http://localhost:3001`.
+Centralize fragmented technical opportunities.
+Help users track and manage opportunities efficiently.
+Provide a scalable production architecture that can support additional opportunity sources and platform features.
+Author
 
-#### 3. Frontend Client
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The Next.js client interface will be available at `http://localhost:3000`.
+Sneha Pal
 
----
+B.Tech Computer Science and Engineering
 
-### Option B: Docker Orchestration
+GitHub:
+https://github.com/Sneha-Pal1
 
-To initialize the entire service mesh (PostgreSQL, NestJS API, and Next.js Frontend) in isolated network containers:
+License
 
-```bash
-docker compose -f docker-compose.dev.yml up --build
-```
-
-To stop all running services and remove container volumes:
-```bash
-docker compose -f docker-compose.dev.yml down
-```
-
----
-
-## Production Build Verification
-
-To execute production compilation and type checks:
-
-```bash
-# Backend compilation
-cd Backend
-npm run build
-
-# Frontend static and server bundle optimization
-cd ../frontend
-npm run build
-```
+This project is maintained as a personal engineering and portfolio project.
