@@ -1,157 +1,149 @@
 # Ignita
 
-Ignita is a full-stack, decoupled platform designed to centralize and automate opportunity discovery, deadline tracking, and participation analytics for students and software engineers. The platform unifies distributed listings for hackathons, engineering internships, competitive programming contests, and technical conferences into a single searchable index with automated alerting and role-based administrative workflows.
+A full-stack platform that centralises opportunity discovery for students and software engineers. Ignita aggregates hackathons, internships, coding contests, and workshops from public APIs into a single searchable index, with bookmark tracking, deadline alerts, notifications, and an admin-managed event pipeline.
+
+**Production:** [ignita.in](https://ignita.in) &nbsp;|&nbsp; **API:** [api.ignita.in](https://api.ignita.in) &nbsp;|&nbsp; **Repository:** [github.com/Sneha-Pal1/Ignita-fullstack](https://github.com/Sneha-Pal1/Ignita-fullstack)
 
 ---
 
-## Architecture Overview
+## Overview
 
-The system is implemented as a decoupled client-server architecture. The presentation tier utilizes Next.js with React Server and Client Components, while the core business domain is managed by a modular NestJS application serving structured REST APIs over PostgreSQL managed via TypeORM.
+| | |
+|---|---|
+| **Frontend** | Next.js + TypeScript, deployed on Vercel |
+| **Backend** | NestJS + TypeScript, containerised and deployed on AWS ECS Fargate |
+| **Database** | Amazon RDS PostgreSQL, accessed via TypeORM |
+| **Media** | Amazon S3 (private) served through Amazon CloudFront CDN |
+| **Auth** | JWT (access + refresh tokens), Google OAuth 2.0, bcrypt, RBAC |
+
+---
+
+## Architecture
+
+
+### System Architecture
+
+![Ignita System Architecture](docs/architecture.jpg)
+
+The diagram above shows the full production architecture:
+- **Client** requests hit Vercel (frontend) or `api.ignita.in` (API).
+- The ALB terminates HTTPS (ACM), performs health checks, and forwards to ECS Fargate.
+- The NestJS container connects outward to RDS, S3 (media upload), Secrets Manager, and CloudWatch.
+- S3 media is served exclusively through CloudFront — the bucket is not publicly accessible.
+- Secrets Manager injects environment secrets into the ECS task at runtime.
+- ECR is the source registry for ECS task definitions.
+
+### Deployment Pipeline
 
 ```mermaid
-flowchart TB
-    %% Styling Definitions - Eraser.io Style Clean Minimalist Theme
-    classDef clientStyle fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#f8fafc;
-    classDef edgeStyle fill:#0f172a,stroke:#334155,stroke-width:1.5px,color:#f8fafc;
-    classDef gwStyle fill:#111827,stroke:#374151,stroke-width:1.5px,color:#f8fafc;
-    classDef appStyle fill:#18181b,stroke:#3f3f46,stroke-width:1.5px,color:#f8fafc;
-    classDef dataStyle fill:#022c22,stroke:#065f46,stroke-width:1.5px,color:#f8fafc;
-    classDef extStyle fill:#312e81,stroke:#4338ca,stroke-width:1.5px,color:#f8fafc;
+flowchart LR
+    GH["GitHub"] --> DB["Docker Build"]
+    DB --> ECR["Amazon ECR"]
+    ECR --> TD["ECS Task\nDefinition"]
+    TD --> ECS["ECS Fargate\nService"]
+    ECS --> ALB["Application\nLoad Balancer"]
+```
 
-    subgraph CLIENT_TIER ["1. Client Tier"]
-        Browser["Desktop & Mobile Clients"]:::clientStyle
-    end
+### Media Flow
 
-    subgraph PRESENTATION_TIER ["2. Presentation & Rendering Tier (Next.js / Vercel Edge)"]
-        direction TB
-        AppRouter["App Router (SSR & Static Pages)"]:::edgeStyle
-        AuthContext["Auth Context & State Store"]:::edgeStyle
-        APIClient["API Client / Axios Interceptors"]:::edgeStyle
-        
-        AppRouter <--> AuthContext
-        AppRouter --> APIClient
-    end
-
-    subgraph GATEWAY_TIER ["3. Ingress & Security Middleware Tier (NestJS)"]
-        direction TB
-        CORS["CORS & ValidationPipe"]:::gwStyle
-        JWTGuard["JwtAuthGuard (Passport JWT)"]:::gwStyle
-        RolesGuard["RolesGuard (RBAC: ADMIN / USER)"]:::gwStyle
-        
-        CORS --> JWTGuard --> RolesGuard
-    end
-
-    subgraph SERVICE_TIER ["4. Core Domain Services Tier (NestJS / Render)"]
-        direction TB
-        AuthService["Auth & OAuth Service"]:::appStyle
-        EventService["Events Management Service"]:::appStyle
-        BookmarkService["Bookmark & Tracking Service"]:::appStyle
-        AlertService["Alerts & Notifications Service"]:::appStyle
-        AnalyticsService["Participation Analytics Service"]:::appStyle
-        LinkedInService["LinkedIn Post Generator Service"]:::appStyle
-        AdminService["Admin Control Service"]:::appService
-    end
-
-    subgraph DATA_TIER ["5. Persistence Tier (PostgreSQL / TypeORM)"]
-        direction TB
-        ORM["TypeORM Entity Manager"]:::dataStyle
-        
-        subgraph TABLES ["PostgreSQL Schemas"]
-            UserTable[("users")]:::dataStyle
-            EventTable[("events")]:::dataStyle
-            BookmarkTable[("bookmarks")]:::dataStyle
-            AlertTable[("alerts")]:::dataStyle
-            TokenTable[("password_reset_tokens")]:::dataStyle
-        end
-        
-        ORM --> UserTable
-        ORM --> EventTable
-        ORM --> BookmarkTable
-        ORM --> AlertTable
-        ORM --> TokenTable
-    end
-
-    subgraph EXTERNAL_SERVICES ["6. External Integrations"]
-        GoogleAuth["Google OAuth 2.0 API"]:::extStyle
-        SMTPService["SMTP Email Provider"]:::extStyle
-    end
-
-    %% Communication Flow
-    Browser -->|"HTTPS / JSON"| AppRouter
-    APIClient -->|"REST API Requests (Bearer Token)"| CORS
-    
-    RolesGuard --> AuthService
-    RolesGuard --> EventService
-    RolesGuard --> BookmarkService
-    RolesGuard --> AlertService
-    RolesGuard --> AnalyticsService
-    RolesGuard --> LinkedInService
-    RolesGuard --> AdminService
-
-    AuthService <-->|"OAuth Validation"| GoogleAuth
-    AlertService -->|"Dispatch Email Alerts"| SMTPService
-    AuthService -->|"Password Reset Mails"| SMTPService
-
-    AuthService --> ORM
-    EventService --> ORM
-    BookmarkService --> ORM
-    AlertService --> ORM
-    AnalyticsService --> ORM
-    AdminService --> ORM
+```
+Admin upload → NestJS → S3 (private)
+                              ↓
+                     key stored in RDS
+                              ↓
+              EventsService resolves key → CloudFront URL
+                              ↓
+                         Browser / User
 ```
 
 ---
 
-## Core System Modules
 
-### 1. Opportunity Aggregation and Filtering
-* Full-text search and category-based filtering across Hackathons, Internships, Coding Contests, and Workshops.
-* Event detail schema capturing registration deadlines, participation modes (Online / In-Person), organizer metadata, and direct external application links.
-* Fallback rendering mechanisms for unauthenticated guest sessions to maintain page responsiveness and indexing efficiency.
 
-### 2. User State, Bookmarks, and Tracking
-* Relational bookmarking engine establishing foreign-key constraints between user identifiers and event entities.
-* Persistent bookmark status synchronization across UI cards and detailed view pages with optimistic UI updates.
+## Core Features
 
-### 3. Automated Alerts and Notification Delivery
-* Event deadline tracking system delivering structured notification payloads to prevent missed application cutoffs.
-* Direct integration with SMTP email transport for account notifications and transactional authentication messages.
+**Opportunity Discovery**
+- Aggregates hackathons, internships, coding contests, workshops, and jobs from public APIs via a background sync service (`EventSyncService`) that runs on startup and refreshes every 6 hours.
+- Deduplication by `registrationLink` prevents duplicate records.
+- Full-text search and category/mode filtering on the events feed.
 
-### 4. Participation Analytics
-* Client dashboard visualizer calculating user interaction rates, saved event ratios, and engagement trends.
-* Server-side metric aggregation endpoints supporting reporting queries.
+**User Features**
+- Bookmark events and view a saved collection.
+- Receive deadline alerts and in-app notifications.
+- Participation analytics dashboard.
+- LinkedIn post generator utility for sharing event milestones.
+- Google OAuth sign-in and email/password authentication.
+- Password reset via secure single-use tokenised email link.
 
-### 5. Content Generation Utility
-* LinkedIn post formulation utility creating structured announcement copy from event milestones.
-
-### 6. Role-Based Access Control (RBAC) and Admin Management
-* Dual-role permission hierarchy (`ADMIN`, `USER`) enforced via metadata reflection decorators (`@Roles()`) and custom NestJS execution guards (`RolesGuard`).
-* Administrative interface for creating, modifying, categorizing, and deleting live event records.
+**Admin Features**
+- Create, edit, and delete events with optional banner image upload (stored in S3, served via CloudFront).
+- Admin dashboard with overview statistics, user management, and alert review.
+- Manual event sync trigger via `POST /events/sync`.
+- Role-based access control enforced on all write routes.
 
 ---
 
-## Technical Specifications
+## Technology Stack
 
-| Layer | Technology | Key Details |
-| :--- | :--- | :--- |
-| **Frontend Framework** | Next.js (React 19) | Server Components, App Router, Client Component hydration |
-| **Frontend Styling** | Tailwind CSS, Lucide | Design system with responsive layout boundaries |
-| **Client Auth** | Google OAuth React | Token storage abstraction, Axios request interceptors |
-| **Backend Framework** | NestJS | Dependency injection, module encapsulation, TypeScript |
-| **Database & ORM** | PostgreSQL, TypeORM | Relational schema definitions, automatic sync/migrations |
-| **Security & Auth** | Passport-JWT, Bcrypt | Stateless Bearer token verification, password hashing |
-| **Containerization** | Docker, Docker Compose | Isolated multi-stage production and development containers |
-| **Infrastructure** | Vercel, Render | Edge-hosted frontend and cloud-hosted API and managed PostgreSQL |
+| Layer | Technology |
+|---|---|
+| Frontend framework | Next.js 15 (App Router, Server + Client Components) |
+| Frontend styling | Tailwind CSS, Lucide icons |
+| Backend framework | NestJS |
+| Language | TypeScript (frontend and backend) |
+| ORM | TypeORM |
+| Database | PostgreSQL (Amazon RDS in production) |
+| Authentication | Passport JWT, bcrypt, Google OAuth 2.0 |
+| Media storage | Amazon S3 + CloudFront CDN |
+| Containerisation | Docker (multi-stage build), Docker Compose |
+| Container registry | Amazon ECR |
+| Container runtime | Amazon ECS Fargate |
+| Load balancing | AWS Application Load Balancer |
+| TLS | AWS ACM |
+| Secrets | AWS Secrets Manager |
+| Logging | Amazon CloudWatch |
+| Frontend deployment | Vercel |
 
 ---
 
-## Database Entity Relationship Diagram
+## Authentication and Authorisation
+
+The backend uses a dual-token JWT strategy:
+
+- **Access token** — short-lived, signed with `JWT_SECRET`, carries `{ sub, role }` payload used by `JwtAuthGuard` and `RolesGuard`.
+- **Refresh token** — long-lived, signed with `JWT_REFRESH_SECRET`, used by `POST /auth/refresh` to issue new access tokens without re-login.
+- **Google OAuth** — `POST /auth/google` accepts a Google ID token, finds or provisions a user record, and returns the same token pair.
+- **Password reset** — a SHA-256 hashed one-time token is stored in `password_reset_tokens`, emailed as a raw link, and invalidated on use or expiry (15 minutes).
+
+Two roles exist: `USER` (default) and `ADMIN`. Admin accounts are created either by direct database promotion or via `POST /auth/admin/register` (requires an existing admin JWT).
+
+---
+
+## Backend Module Reference
+
+| Module | Path | Responsibility |
+|---|---|---|
+| `AuthModule` | `src/auth` | Registration, login, Google OAuth, JWT strategy, password reset, token refresh |
+| `UserModule` | `src/user` | User profile read and update |
+| `EventsModule` | `src/events` | Event CRUD, banner upload to S3, `EventSyncService` background ingestion |
+| `AdminModule` | `src/admin` | Admin-scoped event and user management endpoints, analytics aggregation |
+| `BookmarkModule` | `src/bookmark` | Create and remove user-event bookmark relationships |
+| `AlertsModule` | `src/alerts` | Create and query deadline alert records |
+| `NotificationModule` | `src/notification` | In-app notification delivery and read-state management |
+| `AnalyticsModule` | `src/analytics` | Aggregated usage statistics for the client dashboard |
+| `LinkedinPostModule` | `src/linkedin-post` | Generate formatted LinkedIn announcement text from event data |
+| `StorageModule` | `src/storage` | AWS S3 file upload (`PutObject`) and delete (`DeleteObject`) via AWS SDK v3 |
+| `HealthModule` | `src/health` | `GET /health` — public endpoint used as ALB health check target |
+
+---
+
+## Database Schema
 
 ```mermaid
 erDiagram
     USERS ||--o{ BOOKMARKS : creates
     USERS ||--o{ ALERTS : receives
-    USERS ||--o{ EVENTS : organizes
+    USERS ||--o{ EVENTS : creates
     USERS ||--o{ PASSWORD_RESET_TOKENS : requests
     EVENTS ||--o{ BOOKMARKS : referenced_in
     EVENTS ||--o{ ALERTS : triggers
@@ -171,11 +163,11 @@ erDiagram
         uuid id PK
         string title
         text description
-        enum category "HACKATHON | INTERNSHIP | CONTEST | WORKSHOP"
+        enum category "HACKATHON | INTERNSHIP | CODING_FEST | WORKSHOP"
         enum mode "ONLINE | OFFLINE | HYBRID"
         string organizer
         string location
-        string registrationLink
+        string registrationLink UK
         timestamp startDate
         timestamp endDate
         timestamp deadline
@@ -196,7 +188,6 @@ erDiagram
     ALERTS {
         uuid id PK
         uuid userId FK
-        uuid eventId FK
         string message
         boolean isRead
         timestamp createdAt
@@ -204,135 +195,299 @@ erDiagram
 
     PASSWORD_RESET_TOKENS {
         uuid id PK
-        string token
+        string tokenHash
         uuid userId FK
         timestamp expiresAt
         timestamp createdAt
     }
 ```
 
----
-
-## Directory Structure
-
-```
-Ignita/
-├── frontend/
-│   ├── app/
-│   │   ├── (auth)/                 # Login, Registration, Password Reset routes
-│   │   ├── admin/                  # Protected administrative management portal
-│   │   ├── alerts/                 # Deadline notifications dashboard
-│   │   ├── analytics/              # Participation statistics view
-│   │   ├── Bookmarks/              # User-saved event collection
-│   │   ├── Dashboard/              # Authenticated user landing portal
-│   │   ├── events/                 # Discovery listings and slug-based detail routes
-│   │   ├── linkedin-post-generator/# Copywriting generator utility
-│   │   └── profile/                # User profile settings
-│   ├── components/                 # Atomic UI components, cards, navigation wrappers
-│   ├── lib/                        # Axios client, auth context provider, custom hooks
-│   └── public/                     # Static media and brand assets
-│
-├── Backend/
-│   ├── src/
-│   │   ├── admin/                  # Admin-specific handlers and service overrides
-│   │   ├── alerts/                 # Alert generation and query controllers
-│   │   ├── analytics/              # Metric calculation and reporting modules
-│   │   ├── auth/                   # JWT strategies, guards, login/register controllers
-│   │   ├── bookmark/               # User-event relational bookmarking handlers
-│   │   ├── events/                 # CRUD operations and filtering for event records
-│   │   ├── linkedin-post/          # Structured text generation utilities
-│   │   ├── notification/           # Email transport and notification dispatchers
-│   │   ├── user/                   # User profile and account query logic
-│   │   ├── app.module.ts           # Root dependency injection tree
-│   │   └── main.ts                 # Bootstrap entry point, CORS, and ValidationPipe
-│   ├── Dockerfile.dev              # Development environment container spec
-│   └── Dockerfile.prod             # Multi-stage optimized production build spec
-│
-├── docker-compose.dev.yml          # Local container composition (Client, Server, DB)
-├── docker-compose.prod.yml         # Production orchestration manifest
-└── README.md
-```
+`bannerImage` stores the raw S3 object key (e.g. `events/uuid.jpg`). The `EventsService.resolveImageUrl()` method converts it to a CloudFront URL on every read. External URLs from the sync pipeline pass through unchanged.
 
 ---
 
-## Environment Configuration
+## S3 and CloudFront Media
 
-### Backend Environment Configuration (`Backend/.env.development` or `Backend/.env.production`)
+The S3 bucket (`ignita-2026`, region `ap-south-1`) is fully private — Block Public Access is enabled, ACLs are disabled, and SSE-S3 encryption is on. The backend IAM user holds a minimal policy (`IgnitaS3Access`) restricted to the bucket.
 
-```env
-NODE_ENV=development
-PORT=3001
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ignita_db
-JWT_SECRET=your_production_grade_jwt_secret_key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_specific_password
-```
-
-### Frontend Environment Configuration (`frontend/.env.local` or `frontend/.env.production`)
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
-```
+CloudFront serves as the only public access path to S3 objects via Origin Access Control (OAC). The `AWS_CLOUDFRONT_URL` environment variable is read once at `EventsService` startup and prepended to S3 keys when returning event responses.
 
 ---
 
-## Local Development and Deployment
+## AWS Infrastructure
 
-### Option A: Native Node Execution
+| Service | Role |
+|---|---|
+| ECS Fargate | Serverless container runtime for the NestJS backend |
+| Application Load Balancer | HTTPS termination, health check routing, ECS target group |
+| Amazon ECR | Private Docker image registry; images are pulled by ECS task definitions |
+| Amazon RDS PostgreSQL | Managed relational database; `synchronize: false`, migrations run manually |
+| Amazon S3 | Private object storage for event banner images |
+| Amazon CloudFront | CDN distribution serving S3 media without exposing bucket URLs |
+| AWS Secrets Manager | Stores production secrets injected into ECS task environment at runtime |
+| AWS ACM | TLS certificates for `api.ignita.in` attached to the ALB |
+| AWS IAM | Scoped roles and policies for ECS task execution and S3 access |
+| Amazon CloudWatch | Container log group for ECS task stdout/stderr |
 
-#### 1. Database Provisioning
-Ensure a PostgreSQL server instance is running and accessible via the `DATABASE_URL` specified in your backend environment configuration.
-
-#### 2. Backend Service
-```bash
-cd Backend
-npm install
-npm run start:dev
-```
-The NestJS API will be available at `http://localhost:3001`.
-
-#### 3. Frontend Client
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The Next.js client interface will be available at `http://localhost:3000`.
+DNS resolution: `ignita.in` → Vercel, `api.ignita.in` → ALB. The ECS security group accepts inbound traffic from the ALB security group only; the containers are not publicly reachable.
 
 ---
 
-### Option B: Docker Orchestration
+## Docker and Deployment
 
-To initialize the entire service mesh (PostgreSQL, NestJS API, and Next.js Frontend) in isolated network containers:
+### Image Build (multi-stage)
+
+`Dockerfile.prod` uses a two-stage build:
+
+1. **Build stage** (`node:22-slim`) — installs all dependencies via pnpm, runs `pnpm run build` to compile TypeScript to `dist/`.
+2. **Production stage** (`node:22-slim`) — installs production-only dependencies, copies `dist/`, exposes port `3001`, and runs `node dist/main`.
+
+### Local Development with Docker Compose
+
+`docker-compose.dev.yml` defines three services: a PostgreSQL container, the NestJS backend (with volume-mounted source for hot reload), and the Next.js frontend.
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-To stop all running services and remove container volumes:
-```bash
-docker compose -f docker-compose.dev.yml down
+Backend: `http://localhost:3001` &nbsp;|&nbsp; Frontend: `http://localhost:3000`
+
+### Production Deployment to ECS
+
+1. Build and tag the Docker image.
+2. Push to Amazon ECR.
+3. Update the ECS task definition with the new image URI.
+4. Deploy the updated service; ECS performs a rolling replacement.
+5. The ALB health check (`GET /health`) determines when new tasks are healthy before draining old ones.
+
+---
+
+## Health Check
+
+```
+GET /health
+```
+
+Returns HTTP 200 with no authentication required:
+
+```json
+{
+  "status": "ok",
+  "service": "ignita-backend"
+}
+```
+
+This endpoint is the configured health check path on the ALB target group. ECS tasks that fail this check are replaced automatically.
+
+---
+
+## Project Structure
+
+```
+Ignita/
+├── frontend/
+│   ├── app/
+│   │   ├── login/                      # Email/password login
+│   │   ├── register/                   # User registration
+│   │   ├── forgot-password/            # Password reset request
+│   │   ├── reset-password/             # Password reset confirmation
+│   │   ├── Dashboard/                  # Authenticated user home
+│   │   ├── events/                     # Event discovery and detail views
+│   │   ├── create/                     # Admin event create / edit form
+│   │   ├── Bookmarks/                  # Saved events
+│   │   ├── alerts/                     # Deadline alerts
+│   │   ├── Notification/               # In-app notifications
+│   │   ├── analytics/                  # Usage statistics
+│   │   ├── linkedin-post-generator/    # Post copy generator
+│   │   ├── profile/                    # User profile settings
+│   │   └── admin/                      # Admin management portal
+│   ├── components/                     # Shared UI components
+│   └── lib/                            # API client, auth context, hooks
+│
+├── Backend/
+│   ├── src/
+│   │   ├── auth/                       # Auth controllers, strategies, guards, DTOs
+│   │   ├── user/                       # User profile module
+│   │   ├── events/                     # Events CRUD, sync service, entities
+│   │   ├── admin/                      # Admin-scoped handlers
+│   │   ├── bookmark/                   # Bookmark module
+│   │   ├── alerts/                     # Alerts module
+│   │   ├── notification/               # Notification module
+│   │   ├── analytics/                  # Analytics module
+│   │   ├── linkedin-post/              # Post generation module
+│   │   ├── storage/                    # S3 upload/delete service
+│   │   ├── health/                     # Health check endpoint
+│   │   ├── migrations/                 # TypeORM migration files
+│   │   ├── app.module.ts               # Root module
+│   │   └── main.ts                     # Bootstrap, CORS, ValidationPipe
+│   ├── Dockerfile.dev
+│   └── Dockerfile.prod
+│
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+└── README.md
 ```
 
 ---
 
-## Production Build Verification
+## Local Development Setup
 
-To execute production compilation and type checks:
+### Prerequisites
+
+- Node.js 22+
+- pnpm
+- PostgreSQL (or Docker)
+
+### Without Docker
 
 ```bash
-# Backend compilation
+# Backend
 cd Backend
-npm run build
+cp .env.development .env.development.local   # fill in values
+pnpm install
+pnpm run start:dev
+# API available at http://localhost:3001
 
-# Frontend static and server bundle optimization
-cd ../frontend
-npm run build
+# Frontend (separate terminal)
+cd frontend
+cp .env.local.example .env.local             # fill in values
+npm install
+npm run dev
+# Client available at http://localhost:3000
 ```
+
+### With Docker Compose
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+---
+
+## Environment Variables
+
+### Backend (`Backend/.env.development`)
+
+```env
+NODE_ENV=development
+PORT=3001
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ignita_db
+
+JWT_SECRET=
+JWT_EXPIRY=15m
+JWT_REFRESH_SECRET=
+JWT_REFRESH_EXPIRY=7d
+
+FRONTEND_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+
+AWS_REGION=ap-south-1
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_S3_BUCKET_NAME=ignita-2026
+AWS_CLOUDFRONT_URL=https://d1dzmn8cgl7n9m.cloudfront.net
+```
+
+### Frontend (`frontend/.env.local`)
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=
+```
+
+In production, secrets are injected into ECS tasks from AWS Secrets Manager rather than committed `.env` files.
+
+---
+
+## Database Migrations
+
+TypeORM `synchronize` is disabled in all environments. Schema changes are managed through migration files in `src/migrations/`.
+
+```bash
+# Generate a migration (after modifying entities)
+cd Backend
+pnpm run migration:generate -- src/migrations/MigrationName
+
+# Run pending migrations
+pnpm run migration:run
+
+# Revert the last migration
+pnpm run migration:revert
+```
+
+---
+
+## Production Deployment
+
+### Steps
+
+1. Build and push the Docker image to ECR:
+   ```bash
+   aws ecr get-login-password --region ap-south-1 | \
+     docker login --username AWS --password-stdin <account_id>.dkr.ecr.ap-south-1.amazonaws.com
+
+   docker build -f Backend/Dockerfile.prod -t ignita-backend ./Backend
+
+   docker tag ignita-backend:latest \
+     <account_id>.dkr.ecr.ap-south-1.amazonaws.com/ignita-backend:latest
+
+   docker push <account_id>.dkr.ecr.ap-south-1.amazonaws.com/ignita-backend:latest
+   ```
+
+2. Update the ECS task definition to reference the new image URI.
+
+3. Deploy the updated ECS service:
+   ```bash
+   aws ecs update-service \
+     --cluster ignita-cluster \
+     --service ignita-backend-service \
+     --force-new-deployment
+   ```
+
+4. ECS performs a rolling update. The ALB health check (`GET /health`) gates traffic to new tasks.
+
+### Frontend
+
+The frontend is deployed via Vercel. Push to the connected branch triggers an automatic build and deployment. `NEXT_PUBLIC_API_URL=https://api.ignita.in` is set in Vercel project environment variables.
+
+---
+
+## Current Production Setup
+
+| Component | Details |
+|---|---|
+| Frontend URL | https://ignita.in |
+| API URL | https://api.ignita.in |
+| Health check | https://api.ignita.in/health |
+| Frontend host | Vercel |
+| Backend host | AWS ECS Fargate (ap-south-1) |
+| Database | Amazon RDS PostgreSQL (ap-south-1) |
+| Media | S3 bucket `ignita-2026` via CloudFront |
+| TLS | AWS ACM on ALB |
+| Secrets | AWS Secrets Manager → ECS task environment |
+| Logs | Amazon CloudWatch (ECS log group) |
+
+---
+
+## Future Improvements
+
+- Automated CI/CD pipeline (GitHub Actions → ECR → ECS deployment)
+- TypeORM migration execution as an ECS task pre-hook
+- Redis-backed caching for the events feed
+- Rate limiting on public and auth endpoints
+- Structured JSON logging with correlation IDs
+- End-to-end and integration test suite
+
+---
+
+## Author
+
+**Sneha Pal**
+[github.com/Sneha-Pal1](https://github.com/Sneha-Pal1)
